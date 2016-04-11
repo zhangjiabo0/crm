@@ -1,0 +1,1 @@
+<?php	return array ( 'logo' => './Uploads/201604/06/5704602bb55fb.png', 'name' => '神洲酷奇CRM', 'description' => '开源免费的客户关系管理系统', 'state' => '浙江省', 'city' => '杭州市', 'allow_file_type' => 'pdf,doc,jpg,png,gif,txt,doc,xls,zip,docx', 'contract_alert_time' => 30, 'task_model' => '2', );?>

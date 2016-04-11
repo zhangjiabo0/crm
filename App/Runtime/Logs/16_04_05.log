@@ -1,0 +1,396 @@
+[ 2016-04-05T15:55:33+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
+[ 2016-04-05T15:55:59+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=knowledge
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:01:36+08:00 ] 192.168.1.59 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T16:02:01+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
+[ 2016-04-05T16:02:22+08:00 ] 192.168.1.59 /v0.5.3/index.php?m=leads
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:04:33+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
+[ 2016-04-05T16:11:25+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:13:22+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:13:33+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index&by=me
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:13:35+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:13:46+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:13:56+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index&by=sub
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') ) AND ( leads.is_deleted <> 1 ) ORDER BY leads.create_time desc LIMIT 0,15' at line 1
+ [ SQL语句 ] : SELECT leads.nextstep_time AS nextstep_time,leads.nextstep AS nextstep,leads.contacts_name AS contacts_name,leads.saltname AS saltname,leads.mobile AS mobile,leads.email AS email,leads.position AS position,leads.address AS address,leads.name AS name,leads.source AS source,leads.leads_id AS leads_id,leads.creator_role_id AS creator_role_id,leads.owner_role_id AS owner_role_id,leads.create_time AS create_time,leads.update_time AS update_time,leads.contacts_id AS contacts_id,leads.customer_id AS customer_id,leads.is_deleted AS is_deleted,leads_data.description AS description FROM 5kcrm_leads leads LEFT JOIN 5kcrm_leads_data leads_data ON leads.leads_id = leads_data.leads_id WHERE ( `have_time` >= 1457252036 ) AND ( `is_transformed` <> 1 ) AND ( leads.owner_role_id IN () ) AND ( leads.is_deleted <> 1 ) ORDER BY leads.create_time desc LIMIT 0,15  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') ) AND ( leads.is_deleted <> 1 ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT COUNT(*) AS tp_count FROM 5kcrm_leads leads LEFT JOIN 5kcrm_leads_data leads_data ON leads.leads_id = leads_data.leads_id WHERE ( `have_time` >= 1457252036 ) AND ( `is_transformed` <> 1 ) AND ( leads.owner_role_id IN () ) AND ( leads.is_deleted <> 1 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:13:58+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index&by=me
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:14:12+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index&by=public
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:14:38+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:14:45+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index&by=public
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:14:45+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index&by=public
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:14:50+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads&a=index
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:15:40+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:19:52+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=business
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in () ) 
+
+[ 2016-04-05T16:19:57+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=leads
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:20:07+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=business
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in () ) 
+
+[ 2016-04-05T16:20:32+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=business
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in () ) 
+
+[ 2016-04-05T16:23:38+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=product&a=allproductdialog
+ERR: Table '5kcrm.5kcrm_stock' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_stock`
+ERR: Table '5kcrm.5kcrm_stock' doesn't exist
+ [ SQL语句 ] : SELECT SUM(amounts) AS tp_sum FROM `5kcrm_stock` WHERE ( product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:24:26+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task&a=index
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:24:56+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task&a=view&id=2
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT * FROM `5kcrm_log` WHERE ( log_id in (%s) ) 
+
+[ 2016-04-05T16:28:39+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
+[ 2016-04-05T16:28:45+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract&a=view&id=2
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT * FROM `5kcrm_file` WHERE ( file_id in (%s) ) 
+
+[ 2016-04-05T16:29:28+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=product&a=adddialog&r=RContractProduct&module=contract&id=2
+ERR: Column 'product_id' in where clause is ambiguous
+ [ SQL语句 ] : SELECT product.category_id AS category_id,product.name AS name,product.cost_price AS cost_price,product.suggested_price AS suggested_price,product.development_team AS development_team,product.development_time AS development_time,product.link AS link,product.product_id AS product_id,product.creator_role_id AS creator_role_id,product.create_time AS create_time,product.update_time AS update_time,product_data.description AS description,product_category.name AS category_name FROM 5kcrm_product product LEFT JOIN 5kcrm_product_data product_data ON product.product_id = product_data.product_id LEFT JOIN 5kcrm_product_category product_category ON product.category_id=product_category.category_id WHERE ( product_id not in (0) ) 
+
+[ 2016-04-05T16:29:30+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=product&a=allproductdialog
+ERR: Table '5kcrm.5kcrm_stock' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_stock`
+ERR: Table '5kcrm.5kcrm_stock' doesn't exist
+ [ SQL语句 ] : SELECT SUM(amounts) AS tp_sum FROM `5kcrm_stock` WHERE ( product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:31:40+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract&a=view&id=2
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT * FROM `5kcrm_file` WHERE ( file_id in (%s) ) 
+
+[ 2016-04-05T16:31:46+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract&a=view&id=2
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT * FROM `5kcrm_file` WHERE ( file_id in (%s) ) 
+
+[ 2016-04-05T16:33:10+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task&a=index
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:35:09+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task&a=index
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:38:25+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T16:38:33+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T16:39:56+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T16:46:14+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=knowledge
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:46:38+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=knowledge&a=index
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:50:27+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task&a=listdialog
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:50:35+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=product&a=allproductdialog
+ERR: Table '5kcrm.5kcrm_stock' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_stock`
+ERR: Table '5kcrm.5kcrm_stock' doesn't exist
+ [ SQL语句 ] : SELECT SUM(amounts) AS tp_sum FROM `5kcrm_stock` WHERE ( product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:51:59+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:52:16+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement&a=index
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:52:42+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:53:50+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:54:16+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement&a=index
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:54:42+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:54:45+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement&a=view&id=2
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE ( announcement_id=2 )' at line 1
+ [ SQL语句 ] : UPDATE `5kcrm_announcement` SET  WHERE ( announcement_id=2 )
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_user_role` WHERE ( role_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T16:54:50+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement&a=index
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T16:55:17+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_log` WHERE ( log_id = 4 ) LIMIT 1  
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_leads` WHERE ( leads_id = 4 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:55:51+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_log` WHERE ( log_id = 4 ) LIMIT 1  
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_leads` WHERE ( leads_id = 4 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:56:28+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_log` WHERE ( log_id = 4 ) LIMIT 1  
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_leads` WHERE ( leads_id = 4 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:56:41+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log&a=index&module=business&by=&act=
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:56:44+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log&a=index&module=product&by=&act=
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:57:08+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_log` WHERE ( log_id = 4 ) LIMIT 1  
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_leads` WHERE ( leads_id = 4 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:57:15+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log&a=index&module=business&by=&act=
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:57:16+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log&a=index&module=product&by=&act=
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T16:58:38+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=dynamic&a=index&department_id=1
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') ) ORDER BY create_time desc LIMIT 0,5' at line 1
+ [ SQL语句 ] : SELECT * FROM `5kcrm_action_log` WHERE ( `role_id` IN () ) ORDER BY create_time desc LIMIT 0,5  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT COUNT(*) AS tp_count FROM `5kcrm_action_log` WHERE ( `role_id` IN () ) LIMIT 1  
+
+[ 2016-04-05T16:58:40+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=dynamic&a=index&department_id=2
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') ) ORDER BY create_time desc LIMIT 0,5' at line 1
+ [ SQL语句 ] : SELECT * FROM `5kcrm_action_log` WHERE ( `role_id` IN () ) ORDER BY create_time desc LIMIT 0,5  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT COUNT(*) AS tp_count FROM `5kcrm_action_log` WHERE ( `role_id` IN () ) LIMIT 1  
+
+[ 2016-04-05T16:58:42+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task&a=index&by=me
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T17:02:28+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T17:04:21+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract&a=index&by=me
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
+[ 2016-04-05T17:04:51+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task&a=index&by=me
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T17:07:24+08:00 ] 192.168.1.59 /v0.5.3/index.php?m=task
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T17:11:27+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
+[ 2016-04-05T17:14:48+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T17:15:19+08:00 ] 192.168.1.59 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T17:15:51+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=action_log
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_log` WHERE ( log_id = 4 ) LIMIT 1  
+ERR: Unknown column 'name' in 'field list'
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_contract` WHERE ( contract_id = 2 ) LIMIT 1  
+ERR: Unknown column 'subject' in 'field list'
+ [ SQL语句 ] : SELECT `subject` FROM `5kcrm_leads` WHERE ( leads_id = 4 ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%s) )' at line 1
+ [ SQL语句 ] : SELECT role.user_id AS user_id,role.role_id AS role_id,role.position_id AS position_id,user.name AS user_name,user.status AS status,user.weixinid AS weixinid,user.category_id AS category_id,user.sex AS sex,user.address AS address,user.email AS email,user.img AS img,user.telephone AS telephone,user.dashboard AS dashboard,position.name AS role_name,position.parent_id AS parent_id,position.department_id AS department_id,position.description AS description,role_department.name AS department_name FROM 5kcrm_role role LEFT JOIN 5kcrm_user user ON user.user_id=role.user_id LEFT JOIN 5kcrm_position position ON position.position_id=role.position_id LEFT JOIN 5kcrm_role_department role_department ON role_department.department_id=position.department_id WHERE ( role.role_id in (%s) ) 
+
+[ 2016-04-05T17:16:24+08:00 ] 192.168.1.59 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T17:16:44+08:00 ] 192.168.1.59 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T17:18:18+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T17:20:49+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=email&a=smtpadd
+ERR: Unknown column 'smtpmail' in 'field list'
+ [ SQL语句 ] : SELECT `smtpmail` FROM `5kcrm_user_smtp` WHERE ( name = "smtp" ) LIMIT 1  
+
+[ 2016-04-05T17:22:57+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=announcement
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T17:23:30+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=task
+ERR: Unknown column 'is_deleted' in 'field list'
+ [ SQL语句 ] : SELECT `is_deleted` FROM `5kcrm_product` WHERE ( Product_id = 1 ) LIMIT 1  
+
+[ 2016-04-05T17:23:38+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=contract
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
+[ 2016-04-05T17:24:12+08:00 ] 192.168.1.33 /v0.5.3/index.php?m=knowledge
+ERR: Table '5kcrm.5kcrm_user_role' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_user_role`
+
+[ 2016-04-05T17:37:14+08:00 ] 192.168.1.59 /v0.5.3/index.php?m=contract
+ERR: Table '5kcrm.5kcrm_supplier' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `5kcrm_supplier`
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+ERR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '%d ) LIMIT 1' at line 1
+ [ SQL语句 ] : SELECT `name` FROM `5kcrm_supplier` WHERE ( supplier_id = %d ) LIMIT 1  
+
