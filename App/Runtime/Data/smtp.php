@@ -1,1 +1,0 @@
-<?php	return array ( 'MAIL_ADDRESS' => 'zhangjiabo_123@126.com', 'MAIL_SMTP' => 'smtp.126.com', 'MAIL_PORT' => '25', 'MAIL_LOGINNAME' => 'zhangjiabo_123@126.com', 'MAIL_PASSWORD' => '123456', 'MAIL_SECURE' => NULL, 'MAIL_CHARSET' => 'UTF-8', 'MAIL_AUTH' => true, 'MAIL_HTML' => true, );?>
