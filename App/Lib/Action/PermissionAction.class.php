@@ -296,7 +296,82 @@ class PermissionAction extends Action{
 			}
 		}
 	}
-	
+	public function extends_authorize(){
+		if($this->isAjax() && $this->isPost()){
+			$position_id = isset($_POST['position_id']) ? $_POST['position_id'] : 0;
+			if($position_id != 0){
+				if($position_id == 1){
+					$this->ajaxReturn(L('PERMISSION_EXTENDS_FAILED'),'info',1);
+				}
+				else{
+					$position = M('Position');
+					$permission = M('Permission');
+					$parent_id = $position->where('position_id = %d ',$position_id)->getField('parent_id');
+					$parent_name = $position->where('position_id = %d ',$parent_id)->getField('name');
+					if(!empty($parent_id)){
+						$owned_urls = $permission->where('position_id = %d', $position_id)->getField('url', true);
+						$urls = $permission->where('position_id = %d ',$parent_id)->getField('url', true);
+						if(!empty($owned_urls)){
+							$add_permission = array_diff($urls,$owned_urls); 				//需要增加的
+							$delete_permission = array_diff($owned_urls,$urls);			//需要删除的
+						} else {
+							$add_permission = $urls;
+						}
+						if(!empty($add_permission) && is_array($add_permission)){
+							$data['position_id'] = $position_id;
+							foreach ($add_permission as $k => $v){
+								$data['url'] = $v;
+								if(0>=$permission->add($data)){
+									$this->ajaxReturn(L('PART_OF_THE_AUTHORIZATION_FAILED'),'info',1);
+								}
+							}
+						}
+						if(!empty($delete_permission) && is_array($delete_permission)){
+							$map['url'] = array('in',$delete_permission);
+							$a = $permission->where('position_id = %d', $position_id)->where($map)->delete();
+								
+							//改变首页widget权限
+							$user_list = D('RoleView')->where('position.position_id = %d', $position_id)->select();
+							
+							foreach($user_list as $v){
+								$dashboard = unserialize($v['dashboard'])['dashboard'];
+								$sort = unserialize($v['dashboard'])['sort'];
+								$sort_flip = array_flip($sort);
+								if(!empty($dashboard)){
+									foreach($dashboard as $kk=>$vv){
+										//如果没有获取相应权限，则去除对应权限的首页图表
+										//权限图表：销售漏斗、客户来源、财务月度统计、财务年度对比
+										if(in_array('business/index',$delete_permission) && $vv['widget'] == 'Salesfunnel'){
+											unset($dashboard[$kk]);
+											unset($sort_flip[$kk]);
+										}
+										if(in_array('customer/index',$delete_permission) && $vv['widget'] == 'Customerorigin'){
+											unset($dashboard[$kk]);
+											unset($sort_flip[$kk]);
+										}
+										if(in_array('finance/index',$delete_permission) && ($vv['widget'] == 'Receivemonthly' || $vv['widget'] == 'Receiveyearcomparison')){
+											unset($dashboard[$kk]);
+											unset($sort_flip[$kk]);
+										}
+									}
+									$sort = array_flip($sort_flip);
+									$newDashboard = serialize(array('dashboard'=>$dashboard,'sort'=>$sort));
+									M('user')->where('user_id = %d', $v['user_id'])->setField('dashboard',$newDashboard);
+								}
+							}
+								
+							if($a<=0){
+								$this->ajaxReturn(L('PART_OF_THE_AUTHORIZATION_FAILED'),'info',1);
+							}
+						}
+						$this->ajaxReturn(L('PERMISSION_EXTENDS_FROM_CHANGED',array($parent_name)),'info',1);
+					}
+					
+				}
+				
+			}
+		}
+	}
 	public function user_authorize(){
 		if($this->isAjax() && $this->isPost()){			
 			$position_id = isset($_POST['position_id']) ? $_POST['position_id'] : 0;
@@ -326,22 +401,28 @@ class PermissionAction extends Action{
 					//改变首页widget权限
 					$user_list = D('RoleView')->where('position.position_id = %d', $position_id)->select();
 					foreach($user_list as $v){
-						$dashboard = unserialize($v['dashboard']);
+						$dashboard = unserialize($v['dashboard'])['dashboard'];
+						$sort = unserialize($v['dashboard'])['sort'];
+						$sort_flip = array_flip($sort);
 						if(!empty($dashboard)){
 							foreach($dashboard as $kk=>$vv){
 								//如果没有获取相应权限，则去除对应权限的首页图表
 								//权限图表：销售漏斗、客户来源、财务月度统计、财务年度对比
 								if(in_array('business/index',$delete_permission) && $vv['widget'] == 'Salesfunnel'){
 									unset($dashboard[$kk]);
+									unset($sort_flip[$kk]);
 								}
 								if(in_array('customer/index',$delete_permission) && $vv['widget'] == 'Customerorigin'){
 									unset($dashboard[$kk]);
+									unset($sort_flip[$kk]);
 								}
 								if(in_array('finance/index',$delete_permission) && ($vv['widget'] == 'Receivemonthly' || $vv['widget'] == 'Receiveyearcomparison')){
 									unset($dashboard[$kk]);
+									unset($sort_flip[$kk]);
 								}
 							}
-							$newDashboard = serialize($dashboard);
+							$sort = array_flip($sort_flip);
+							$newDashboard = serialize(array('dashboard'=>$dashboard,'sort'=>$sort));
 							M('user')->where('user_id = %d', $v['user_id'])->setField('dashboard',$newDashboard);
 						}
 					}

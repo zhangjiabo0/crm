@@ -173,6 +173,16 @@
 			id = $(this).attr('rel');
 			$('#dialog-authorize').load('{:U("permission/user_authorize","position_id=")}'+id);
 		});
+		$(".allow_permission").click(function(){
+			//$('#dialog-authorize').dialog('open');
+			id = $(this).attr('rel');
+			$.post('{:U("permission/extends_authorize")}',{position_id:id}, function(data){
+				alert(data.data);
+				//$('#dialog-authorize').dialog('close');
+			}, 'json');
+			
+			//$('#dialog-authorize').load('{:U("permission/user_authorize","position_id=")}'+id);
+		});
 		$(".position_edit").click(function(){
 			$('#dialog-message6').dialog('open');
 			id = $(this).attr('rel');
