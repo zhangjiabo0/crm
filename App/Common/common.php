@@ -1891,3 +1891,13 @@ function getLastedImg(){
 	}
 	
 }
+function ToNumberSystem26($n){
+	$s = '';
+    while ($n > 0){
+        $m = $n % 26;
+        if ($m == 0) $m = 26;
+        $s = chr($m + 64) . $s;
+        $n = ($n - $m) / 26;
+    }
+    return $s;
+}

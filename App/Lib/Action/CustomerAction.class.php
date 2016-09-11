@@ -1561,8 +1561,9 @@ class CustomerAction extends Action {
 					$data['creator_role_id'] = session('role_id');
 					$data['create_time'] = time();
 					$data['update_time'] = time();
-                    $ascii = 65;
-                    $cv = '';
+//                     $ascii = 65;
+//                     $cv = '';
+                    $i=1;
                     foreach($field_list as $field){
                         //$info = (String)$currentSheet->getCell($cv.chr($ascii).$currentRow)->getValue();
                         // if ($field['is_main'] == 1){
@@ -1571,7 +1572,8 @@ class CustomerAction extends Action {
                             // $data_date[$field['field']] = ($field['form_type'] == 'datetime' && $info != null) ? intval(PHPExcel_Shared_Date::ExcelToPHP($info))-8*60*60 : $info;
                         // }
                         
-						$cell =$currentSheet->getCell($cv.chr($ascii).$currentRow);
+                    	//把$cv.chr($ascii)换成ToNumberSystem26($i)
+						$cell =$currentSheet->getCell(ToNumberSystem26($i).$currentRow);
 						$info = $cell->getValue();
 						if($cell->getDataType()==PHPExcel_Cell_DataType::TYPE_NUMERIC){
 							$cellstyleformat=$cell->getParent()->getStyle( $cell->getCoordinate() )->getNumberFormat();
@@ -1591,12 +1593,12 @@ class CustomerAction extends Action {
                         }else{
                             $data_date[$field['field']] = ($field['form_type'] == 'datetime' && $info != null) ? strtotime($info) : $info;
                         }
-						
-                        $ascii++;
-                        if($ascii == 91){
-                            $ascii = 65;
-                            $cv .= chr(strlen($cv)+65);
-                        }
+						$i++;
+//                         $ascii++;
+//                         if($ascii == 91){
+//                             $ascii = 65;
+//                             $cv .= chr(strlen($cv)+65);
+//                         }
                     }
 					//联系人字段
 					$contacts_fields_list = array();
@@ -1611,14 +1613,15 @@ class CustomerAction extends Action {
 					$contacts_fields_list[8]['field'] = 'description';
 					
 					foreach($contacts_fields_list as $field){
-						$info = (String)$currentSheet->getCell($cv.chr($ascii).$currentRow)->getValue();
+						//把$cv.chr($ascii)换成ToNumberSystem26($i)
+						$info = (String)$currentSheet->getCell(ToNumberSystem26($i).$currentRow)->getValue();
 						$contacts_data[$field['field']] = $info;
-						
-						$ascii++;
-                        if($ascii == 91){
-                            $ascii = 65;
-                            $cv .= chr(strlen($cv)+65);
-                        }
+						$i++;
+// 						$ascii++;
+//                         if($ascii == 91){
+//                             $ascii = 65;
+//                             $cv .= chr(strlen($cv)+65);
+//                         }
 					}
                     if ($m_customer->create($data) && $m_customer_data->create($data_date)) {
                         $customer_id = $m_customer->add();

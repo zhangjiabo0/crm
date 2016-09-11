@@ -22,16 +22,23 @@
 </body>
 </html>
 <script type="text/javascript">
-	// 默认河南省郑州市
+	var address = "{$Think.get.map|urlencode}";//客户联系地址
 	var map = new BMap.Map("allmap");
-	var point = new BMap.Point(113.669766,34.749492);
-	map.centerAndZoom(point,12);
-	// 根据聚焦点缩放
-	map.enableScrollWheelZoom(true);
+	var myGeo = new BMap.Geocoder();
+	// 将地址解析结果显示在地图上,并调整地图视野
+	myGeo.getPoint(address, function(point){
+		if (point) {
+			map.centerAndZoom(point,12);
+			// 根据聚焦点缩放
+			map.enableScrollWheelZoom(true);
+		}else{
+			alert("您选择地址没有解析到结果!");
+		}
+	});
+	
 	// 将地址解析结果显示在地图上
 	var local = new BMap.LocalSearch(map, {
 		renderOptions:{map: map}
 	});
-	var address = "{$Think.get.map|urlencode}";
 	local.search(address);
 </script>
