@@ -112,9 +112,33 @@
 							</td>
 						</tr>
 						<tr>
+							<td class="tdleft">{:L('CUSTOMERB_POOL_RECOVERY_CYCLE')}</td>
+							<td>
+								<input class="input-small" type="text" id="customerB_outdays" name="customerB_outdays" value="{$customerB_outdays}" size="5"/>{:L('DAY')}
+							</td>
+						</tr>
+						<tr>
+							<td class="tdleft">{:L('CUSTOMERSB_RECEIVE_CYCLE')}</td>
+							<td>
+								<select name="customerB_limit_condition" class="input-small">
+									<option value="day" <if condition="'day' eq $customerB_limit_condition">selected="selected"</if>>{:L('TODAY')}</option>
+									<option value="week" <if condition="'week' eq $customerB_limit_condition">selected="selected"</if>>{:L('THIS_WEEK')}</option>
+									<option value="month" <if condition="'month' eq $customerB_limit_condition">selected="selected"</if>>{:L('THIS_MONTH')}</option>
+								</select>
+								{:L('WITHIN_LIMITS_TO_RECEIVE')}
+								<input class="input-small" type="text" id="customerB_limit_counts" name="customerB_limit_counts" value="{$customerB_limit_counts}" size="5"/>{:L('CI')}
+							</td>
+						</tr>
+						<tr>
 							<td class="tdleft">{:L('LEADS_POOL_RECOVERY_CYCLE')}</td>
 							<td>
 								<input class="input-small" type="text" id="leads_outdays" name="leads_outdays" value="{$leads_outdays}" size="5"/>{:L('DAY')}
+							</td>
+						</tr>
+						<tr>
+							<td class="tdleft">{:L('LEADSB_POOL_RECOVERY_CYCLE')}</td>
+							<td>
+								<input class="input-small" type="text" id="leadsB_outdays" name="leadsB_outdays" value="{$leadsB_outdays}" size="5"/>{:L('DAY')}
 							</td>
 						</tr>
 						<tr>

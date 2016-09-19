@@ -31,6 +31,7 @@ return array(
     'DESCRIPTION' 		=>	'描述',
     'SELECT_CONTACTS' 	=>	'选择联系人',
     'SELECT_LEADS' 		=>	'选择线索',
+	'SELECT_LEADSB' 	=>	'选择服务商意向',
     'SELECT_CUSTOMER' 	=>	'选择客户',
     'SELECT_BUSINESS' 	=>	'选择商机',
     'SELECT_PRODUCT' 	=>	'选择产品',
