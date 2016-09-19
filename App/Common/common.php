@@ -1901,3 +1901,21 @@ function ToNumberSystem26($n){
     }
     return $s;
 }
+//驼峰命名法转下划线风格
+function toUnderScore($str){
+
+	$array = array();
+	for($i=0;$i<strlen($str);$i++){
+		if($str[$i] == strtolower($str[$i])){
+			$array[] = $str[$i];
+		}else{
+			if($i>0){
+				$array[] = '_';
+			}
+			$array[] = strtolower($str[$i]);
+		}
+	}
+
+	$result = implode('',$array);
+	return $result;
+}

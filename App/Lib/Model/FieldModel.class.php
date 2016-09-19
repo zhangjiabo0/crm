@@ -23,7 +23,7 @@
         //修改字段
         public function add($data = false){
             if(!$this->autoValidation($data)) return false;
-            $this->tableName = $data['is_main']?$data['model']:$data['model'].'_data';
+            $this->tableName = $data['is_main']?$data['model']:toUnderScore($data['model']).'_data';
             $maxlength = (intval($data['max_length']) != 0)? intval($data['max_length']): 255;
             switch($data['form_type']) {
 				case 'address':

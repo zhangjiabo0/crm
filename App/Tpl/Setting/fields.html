@@ -24,9 +24,11 @@ table tbody tr{cursor:move;}
 					<a href="javascript:void(0);" onclick="color_box()">{:L('CUSTOMIZING_FIELDS_SETTING')}</a>
 				</li>
 				<li><a <if condition="$_GET['model'] eq 'customer' || $_GET['model'] eq ''">class="active"</if> href="{:U('setting/fields', 'model=customer')}"><i class="icon-chevron-right"></i>{:L('CUSTOMER_FIELDS_SETTING')}</a></li>
+				<li><a <if condition="$_GET['model'] eq 'customerB'">class="active"</if> href="{:U('setting/fields', 'model=customerB')}"><i class="icon-chevron-right"></i>{:L('CUSTOMERB_FIELDS_SETTING')}</a></li>
 				<li><a <if condition="$_GET['model'] eq 'business'">class="active"</if>  href="{:U('setting/fields', 'model=business')}"><i class="icon-chevron-right"></i>{:L('BUSINESS_FIELDS_SETTING')}</a></li>
 				<li><a <if condition="$_GET['model'] eq 'product'">class="active"</if>  href="{:U('setting/fields', 'model=product')}"><i class="icon-chevron-right"></i>{:L('PRODUCT_FIELDS_SETTING')}</a></li>
 				<li><a <if condition="$_GET['model'] eq 'leads'">class="active"</if>  href="{:U('setting/fields', 'model=leads')}"><i class="icon-chevron-right"></i>{:L('CLUES_TO_THE_FIELDS')}</a></li>
+				<li><a <if condition="$_GET['model'] eq 'leadsB'">class="active"</if>  href="{:U('setting/fields', 'model=leadsB')}"><i class="icon-chevron-right"></i>{:L('CLUESB_TO_THE_FIELDS')}</a></li>
 				<li><a href="{:U('knowledge/category')}"><i class="icon-chevron-right"></i>{:L('KNOWLEDGE_CATEGORY')}</a></li>
 			</ul>
 		</div>

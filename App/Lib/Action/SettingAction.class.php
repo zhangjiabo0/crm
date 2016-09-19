@@ -660,6 +660,8 @@ class SettingAction extends Action{
 			$this->defaultinfo = unserialize($defaultinfo);
 			$leads_outdays = M('config') -> where('name="leads_outdays"')->getField('value');
 			$this->assign('leads_outdays', $leads_outdays);
+			$leadsB_outdays = M('config') -> where('name="leadsB_outdays"')->getField('value');
+			$this->assign('leadsB_outdays', $leadsB_outdays);
 			$contract_custom = M('config') -> where('name="contract_custom"')->getField('value');
 			$this->assign('contract_custom', $contract_custom);
 			$customer_outdays = M('config') -> where('name="customer_outdays"')->getField('value');
@@ -668,6 +670,12 @@ class SettingAction extends Action{
 			$this->assign('customer_limit_condition', $customer_limit_condition);
 			$customer_limit_counts = M('config') -> where('name="customer_limit_counts"')->getField('value');
 			$this->assign('customer_limit_counts', $customer_limit_counts);
+			$customerB_outdays = M('config') -> where('name="customerB_outdays"')->getField('value');
+			$this->assign('customerB_outdays', $customerB_outdays);
+			$customerB_limit_condition = M('config') -> where('name="customerB_limit_condition"')->getField('value');
+			$this->assign('customerB_limit_condition', $customerB_limit_condition);
+			$customerB_limit_counts = M('config') -> where('name="customerB_limit_counts"')->getField('value');
+			$this->assign('customerB_limit_counts', $customerB_limit_counts);
 			$this->alert = parseAlert();
 			$this->display();
 		}elseif($this->isPost()){
@@ -736,10 +744,14 @@ class SettingAction extends Action{
 				$contract_custom = $m_config -> where('name="contract_custom"') -> setField('value',$_POST['contract_custom']);
 			}
 			$leads_outdays = M('config') -> where('name="leads_outdays"') -> setField('value',$_POST['leads_outdays']);
+			$leadsB_outdays = M('config') -> where('name="leadsB_outdays"') -> setField('value',$_POST['leadsB_outdays']);
 			$result_customer_outdays = $m_config->where('name = "customer_outdays"')->setField('value', $_POST['customer_outdays']);
 			$result_customer_limit_condition = $m_config->where('name = "customer_limit_condition"')->setField('value', $_POST['customer_limit_condition']);
 			$result_customer_limit_counts = $m_config->where('name = "customer_limit_counts"')->setField('value', $_POST['customer_limit_counts']);
-			if($result_defaultinfo || $contract_custom  || $leads_outdays || $result_customer_outdays || $result_customer_limit_condition || $result_customer_limit_counts){
+			$result_customerB_outdays = $m_config->where('name = "customerB_outdays"')->setField('value', $_POST['customerB_outdays']);
+			$result_customerB_limit_condition = $m_config->where('name = "customerB_limit_condition"')->setField('value', $_POST['customerB_limit_condition']);
+			$result_customerB_limit_counts = $m_config->where('name = "customerB_limit_counts"')->setField('value', $_POST['customerB_limit_counts']);
+			if($result_defaultinfo || $contract_custom  || $leads_outdays || $leadsB_outdays || $result_customer_outdays || $result_customer_limit_condition || $result_customer_limit_counts || $result_customerB_outdays || $result_customerB_limit_condition || $result_customerB_limit_counts){
 				alert('success',L('SUCCESSFULLY SET AND SAVED'),U('setting/defaultinfo'));
 			} else {
 				alert('error',L('DATA UNCHANGED'),U('setting/defaultinfo'));
