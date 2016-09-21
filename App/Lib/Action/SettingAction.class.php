@@ -41,6 +41,62 @@ class SettingAction extends Action{
 		deldir(RUNTIME_PATH);
 		return true;
 	}
+	public function importFromOa(){
+// 		备份数据
+		$table = array('crm_role_department','crm_position','crm_role','crm_user');
+		$struct=bakStruct($table);
+		$record=bakRecord($table);
+		
+		$sqls=$struct.$record;
+		$dir="./Public/sql/department_position_user_".date('Y-m-d-H-i-s').".sql";
+		file_put_contents($dir,$sqls);
+		if(file_exists($dir))
+		{
+			//清空数据
+			foreach ($table as $v){
+				M()->query($sql = 'TRUNCATE table '.$v);
+			}
+			$dept = D('OADept')->where(array('is_del'=>0,'is_real_dept'=>1))->select();
+			foreach ($dept as $v){
+				M('RoleDepartment')->add(array('department_id'=>$v['id'],'parent_id'=>$v['pid'],'name'=>$v['name'],'description'=>$v['short']));
+				M('Position')->add(array('position_id'=>$v['id'],'parent_id'=>$v['pid'],'name'=>$v['name'].'老大','department_id'=>$v['id'],'description'=>$v['short']));
+			}
+			$pos = D('OADept')->where(array('is_del'=>0,'is_real_dept'=>0))->select();
+			foreach ($pos as $v){
+				$user_p = D('OAUser')->field('dept_id')->where(array('pos_id'=>$v['id']))->select();
+				foreach ($user_p as $vv){
+					M('Position')->add(array('position_id'=>$v['id'],'parent_id'=>$v['pid'],'name'=>$v['name'],'department_id'=>$vv['dept_id'],'description'=>$v['short']));
+				}
+			}
+			$user = D('OAUser')->select();
+			foreach ($user as $v){
+				$role_id = M('Role')->add(array('position_id'=>$v['pos_id'],'user_id'=>$v['id']));
+				//为用户设置默认导航（根据系统菜单设置中的位置）
+				$m_navigation = M('navigation');
+				$navigation_list = $m_navigation->order('listorder asc')->select();
+				$menu = array();
+				foreach($navigation_list as $val){
+					if($val['postion'] == 'top'){
+						$menu['top'][] = $val['id'];
+					}elseif($val['postion'] == 'user'){
+						$menu['user'][] = $val['id'];
+					}else{
+						$menu['more'][] = $val['id'];
+					}
+				}
+				$navigation = serialize($menu);
+				$time = time();
+				$salt = substr(md5($time),0,4);
+				$category_id = $v['emp_no'] == 'admin'?1:2;
+				M('User')->add(array('user_id'=>$v['id'],'role_id'=>$role_id,'category_id'=>$category_id,'status'=>$v['is_del']+1,'name'=>$v['emp_no'],'true_name'=>$v['name'],'password'=>md5($v['password'].$salt),'salt'=>$salt,'navigation'=>$navigation,'reg_time'=>$time));
+			}
+			$this->ajaxReturn(1,'',1);
+		}else
+		{
+			$this->ajaxReturn(1,'',0);
+		}
+		
+	}
 
 	public function smtp(){
 		if ($this->isAjax()) {
