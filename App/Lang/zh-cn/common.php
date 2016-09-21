@@ -27,6 +27,7 @@
         'PLEASE_SELECT'=>'请选择%s',
         'CARES'     =>'客户关怀',
         'CUSTOMER'  =>'客户',
+    	'CUSTOMERB' =>'服务商合作',
         'CONTRACT'  =>'合同',
         'BUSINESS'  =>'商机',
         'LEADS'     =>'线索',

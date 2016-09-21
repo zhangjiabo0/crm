@@ -1919,3 +1919,92 @@ function toUnderScore($str){
 	$result = implode('',$array);
 	return $result;
 }
+function bakStruct($array)
+{
+	foreach ($array as $v){
+		$tbName=$v;
+		$result=M()->query('show columns from '.$tbName);
+		$sql.="--\r\n";
+		$sql.="-- 数据表结构: `$tbName`\r\n";
+		$sql.="--\r\n\r\n";
+		$sql.="DROP TABLE IF EXISTS `$tbName`;\r\n";
+		$sql.="create table `$tbName` (\r\n";
+		$rsCount=count($result);
+		foreach ($result as $k=>$v){
+			$field  =       $v['Field'];
+			$type   =       $v['Type'];
+			$default=       $v['Default'];
+			$extra  =       $v['Extra'];
+			$null   =       $v['Null'];
+			if(!($default=='')){
+				$default='default '.$default;
+			}
+			if($null=='NO'){
+				$null='not null';
+			}else{
+				$null="null";
+			}
+			if($v['Key']=='PRI'){
+				$key    =       'primary key';
+			}else{
+				$key    =       '';
+			}
+			if($k<($rsCount-1)){
+				$sql.="`$field` $type $null $default $key $extra ,\r\n";
+			}else{
+				//最后一条不需要","号
+				$sql.="`$field` $type $null $default $key $extra \r\n";
+			}
+
+
+		}
+		$sql.=") ENGINE=MyISAM DEFAULT CHARSET=utf8;\r\n\r\n";
+	}
+	return str_replace(',)',')',$sql);
+}
+
+function bakRecord($array)
+{
+
+	foreach ($array as $v){
+
+		$tbName=$v;
+
+		$rs=M()->query('select * from '.$tbName);
+
+		if(count($rs)<=0){
+			continue;
+		}
+
+		$sql.="--\r\n";
+		$sql.="-- 数据表中的数据: `$tbName`\r\n";
+		$sql.="--\r\n\r\n";
+
+		foreach ($rs as $k=>$v){
+
+			$sql.="INSERT INTO `$tbName` VALUES (";
+			foreach ($v as $key=>$value){
+				if($value==''){
+					$value='null';
+				}
+				$type=gettype($value);
+				if($type=='string'){
+					$value="'".addslashes($value)."'";
+				}
+				$sql.="$value," ;
+			}
+			$sql.=");\r\n\r\n";
+		}
+	}
+	return str_replace(',)',')',$sql);
+}
+function get1Dept($dept_id){
+	$dept = D('OADept')->where(array('is_del'=>0))->find($dept_id);
+	while ($dept){
+		if($dept['dept_grade_id'] == '18' && $dept['is_real_dept'] == '1'){
+			return $dept['id'];
+		}
+		$dept = D('OADept')->where(array('is_del'=>0))->find($dept['pid']);
+	}
+	return false;
+}

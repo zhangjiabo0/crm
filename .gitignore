@@ -1,9 +1,8 @@
 Runtime
-/Runtime/
-Runtime/
-/Runtime
-/App/Runtime/
-App/Runtime/
-/App/Runtime
-App/Runtime
-/App/Runtime/*
+Cache
+Logs
+*.settings
+*.project
+db.php
+Data/Files
+Public/sql

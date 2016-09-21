@@ -72,6 +72,12 @@
 							</td>
 						</tr>
 						<tr>
+							<td class="tdleft">{:L('IMPORT_DATA')}</td>  
+							<td>
+								<input type="button" class="btn" id="import" value="{:L('IMPORT_FROM_OA')}"/>
+							</td>
+						</tr>
+						<tr>
 							<th colspan="2">{:L('OTHER_SETTING')}</th>
 						</tr>
 						<tr>
@@ -163,6 +169,17 @@ $(function(){
 					alert('{:L('HAVE_TO_EMPTY_THE_CACHE')}');
 				}else{
 					alert('{:L('EMPTY_THE_CACHE_FAUILRE')}');
+				}
+			});
+		}
+	});
+	$('#import').click(function(){
+		if(confirm('{:L('SURE_YOU_WANT_TO_IMPORT_FROM_OA')}')){
+			$.get("{:U('setting/importfromoa')}", function(result){
+				if(result.status == 1){
+					alert('{:L('IMPORT_FROM_OA_SUCCESS')}');
+				}else{
+					alert('{:L('IMPORT_FROM_OA_FAUILRE')}');
 				}
 			});
 		}
