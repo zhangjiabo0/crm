@@ -59,7 +59,7 @@
                             <td class="tdleft" width="15%">{:L('CREATION_TIME')}</td>
                             <td><if condition="$customer['create_time'] neq 0">{$customer.create_time|date='Y-m-d H:i:s',###}</if></td>
                             <td class="tdleft">{:L('FOUNDER')}</td>
-                            <td><a class="role_info" href="javascript:void(0)" rel="{$customer.create.role_id}">{$customer.create.user_name}</if></a></td>
+                            <td><a class="role_info" href="javascript:void(0)" rel="{$customer.create.role_id}">{$customer.create.user_name}_{$customer.create.true_name}</if></a></td>
                         </tr>
                         <if condition="$customer['is_deleted'] eq 1">
                         <tr>
@@ -71,7 +71,7 @@
                         </if>
                         <tr>
                             <td class="tdleft">{:L('PRINCIPAL')}</td>
-                            <td><a class="role_info" href="javascript:void(0)" rel="{$customer.owner.role_id}">{$customer.owner.user_name}</if></a> &nbsp;  &nbsp; <a href="{:U('customer/customerlock','customer_id='.$customer['customer_id'])}"><if condition="$customer['is_locked'] and $customer['owner_role_id']"><img title="{:L('UNLOCK_TITLE')}" src="__PUBLIC__/img/customer_locking.png"/><elseif condition="$customer['owner_role_id']"/><img title="{:L('LOCK_TITLE')}" src="__PUBLIC__/img/customer_unlocking.png"/></if></a></td>
+                            <td><a class="role_info" href="javascript:void(0)" rel="{$customer.owner.role_id}">{$customer.owner.user_name}_{$customer.owner.true_name}</if></a> &nbsp;  &nbsp; <a href="{:U('customer/customerlock','customer_id='.$customer['customer_id'])}"><if condition="$customer['is_locked'] and $customer['owner_role_id']"><img title="{:L('UNLOCK_TITLE')}" src="__PUBLIC__/img/customer_locking.png"/><elseif condition="$customer['owner_role_id']"/><img title="{:L('LOCK_TITLE')}" src="__PUBLIC__/img/customer_unlocking.png"/></if></a></td>
                             <td class="tdleft" width="15%">{:L('THE_LAST_MODIFICATION_TIME')}</td>
                             <td><if condition="$customer['update_time'] gt 0">{$customer.update_time|date='Y-m-d H:i:s',###}</if></td>
                         </tr>

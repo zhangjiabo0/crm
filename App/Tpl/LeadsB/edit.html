@@ -25,7 +25,7 @@
 						<tr><th colspan="4">{:L('MIAN_INFO')}</th></tr>
 						<tr>
 							<td class="tdleft">{:L('LEADSB_OWNER')}</td>
-							<td><input type="hidden" id="owner_id" name="owner_role_id" value="{$leadsB.owner_role_id}"/><input type="text" id="owner_name" value="{$leadsB.owner.user_name}" name="owner_name"/> &nbsp;&nbsp;<input class="btn btn-mini" id="remove"  type="button" value="{:L('PUT_LEADSB_INTO_THE_POOL')}"/> &nbsp;</td>
+							<td><input type="hidden" id="owner_id" name="owner_role_id" value="{$leadsB.owner_role_id}"/><input type="text" id="owner_name" value="{$leadsB.owner.user_name}_{$leadsB.owner.true_name}" name="owner_name"/> &nbsp;&nbsp;<input class="btn btn-mini" id="remove"  type="button" value="{:L('PUT_LEADSB_INTO_THE_POOL')}"/> &nbsp;</td>
 						<php>$j=0;</php>
 						<volist name="field_list['main']" id="vo">
                         <php>$j++;</php>

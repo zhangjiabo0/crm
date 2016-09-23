@@ -76,12 +76,14 @@ class SettingAction extends Action{
 				$navigation_list = $m_navigation->order('listorder asc')->select();
 				$menu = array();
 				foreach($navigation_list as $val){
-					if($val['postion'] == 'top'){
-						$menu['top'][] = $val['id'];
-					}elseif($val['postion'] == 'user'){
-						$menu['user'][] = $val['id'];
-					}else{
-						$menu['more'][] = $val['id'];
+					if($val['module'] != 'Finance'){
+						if($val['postion'] == 'top'){
+							$menu['top'][] = $val['id'];
+						}elseif($val['postion'] == 'user'){
+							$menu['user'][] = $val['id'];
+						}else{
+							$menu['more'][] = $val['id'];
+						}
 					}
 				}
 				$navigation = serialize($menu);
@@ -89,6 +91,10 @@ class SettingAction extends Action{
 				$salt = substr(md5($time),0,4);
 				$category_id = $v['emp_no'] == 'admin'?1:2;
 				M('User')->add(array('user_id'=>$v['id'],'role_id'=>$role_id,'category_id'=>$category_id,'status'=>$v['is_del']+1,'name'=>$v['emp_no'],'true_name'=>$v['name'],'password'=>md5($v['password'].$salt),'salt'=>$salt,'navigation'=>$navigation,'reg_time'=>$time));
+				
+				//权限继承，
+				$P = A('Permission');
+				$P -> extends_authorize($v['pos_id']);
 			}
 			$this->ajaxReturn(1,'',1);
 		}else
@@ -926,7 +932,7 @@ class SettingAction extends Action{
 			$data['default_value'] = $this->_post('default_value');  //默认值
 			$data['max_length']    = $this->_post('max_length');
 			$data['is_main']       = $field_info['is_main'];
-			
+			$data['is_main_new']   = $this->_post('is_main');
 			
 			
 			if($field->where(array('field'=>$data['field'],'model'=>array(array('eq',$data['model']),array('eq',''),'OR'),'field_id'=>array('neq',$field_id)))->find()){

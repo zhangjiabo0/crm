@@ -74,51 +74,102 @@
         
         public function save($data = false){
             if(!$this->autoValidation($data)) return false;
-            $this->tableName = $data['is_main']?toUnderScore($data['model']):toUnderScore($data['model']).'_data';
+            $this->tableName = $data['is_main_new']?toUnderScore($data['model']):toUnderScore($data['model']).'_data';
             $maxlength = ($data['max_length'] && intval($data['max_length']) != 0)? intval($data['max_length']): 255;
+            $fields=M($this->tableName)->getDbFields();
+            $has_old = array_search($data['field_old'],$fields);
+            $has_new = array_search($data['field'],$fields);
             switch($data['form_type']) {
 				case 'address':
-					$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ";
+					if($has_new !== false){
+						$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ";
+					}elseif ($has_old == false){
+						$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` VARCHAR(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+					}else{
+						$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` VARCHAR(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+					}
                     return $this->execute($this->queryStr);
                 break;
 				
                 case 'box':
-                    $this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+                	if($has_new !== false){
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+                	}elseif ($has_old == false){
+						$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+					}else{
+						$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+					}
                     return $this->execute($this->queryStr);
                 break;
                 
                 case 'textarea':
-                    $this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	if($has_new !== false){
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	}elseif ($has_old == false){
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	}else{
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	}
                     return $this->execute($this->queryStr);
                 break;
                 
                 case 'editor':
-                    $this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	if($has_new !== false){
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	}elseif ($has_old == false){
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	}else{
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL";
+                	}
                     return $this->execute($this->queryStr);
                 break;
                 
                 case 'number':
                     $defaultvalue = abs(intval($data['default_value'])) > 2147483647 ? 2147483647 : intval($data['default_value']);
                     $maxlength = intval($maxlength) > 11 ? 9:(intval($maxlength)-2);
-                    $this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    if($has_new !== false){
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    }elseif ($has_old == false){
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    }else{
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    }
                     return $this->db->execute($this->queryStr);
                 break;
 				
 				case 'floatnumber':
                     $defaultvalue = abs(intval($data['default_value'])) > 32767.99 ? 32767.99 : intval($data['default_value']);
                     $maxlength = $maxlength > 11 ? 11:$maxlength;
-                    $this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    if($has_new !== false){
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    }elseif ($has_old == false){
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    }else{
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` int ($maxlength) NOT NULL DEFAULT '$defaultvalue'";
+                    }
                     return $this->db->execute($this->queryStr);
                 break;
                 
                 case 'datetime':
-                    $this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` int (10) NOT NULL ";
+                	if($has_new !== false){
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` int (10) NOT NULL ";
+                	}elseif ($has_old == false){
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` int (10) NOT NULL ";
+                	}else{
+                		$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` int (10) NOT NULL ";
+                	}
                     return $this->db->execute($this->queryStr);
                 break;
 				
 				default:
                     $maxlength = $maxlength < 20774 ? $maxlength : 333;
-                    $this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+                    if($has_new !== false){
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field]` `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+                    }elseif ($has_old == false){
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` ADD `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+                    }else{
+                    	$this->queryStr = "ALTER TABLE `" . $this->tablePrefix . $this->tableName . "` CHANGE `$data[field_old]` `$data[field]` VARCHAR( $maxlength ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '$data[default_value]'";
+                    }
                     return $this->execute($this->queryStr);
                 break;
             }

@@ -59,19 +59,19 @@
                             <td class="tdleft" width="15%">{:L('CREATION_TIME')}</td>
                             <td><if condition="$customerB['create_time'] neq 0">{$customerB.create_time|date='Y-m-d H:i:s',###}</if></td>
                             <td class="tdleft">{:L('FOUNDER')}</td>
-                            <td><a class="role_info" href="javascript:void(0)" rel="{$customerB.create.role_id}">{$customerB.create.user_name}</if></a></td>
+                            <td><a class="role_info" href="javascript:void(0)" rel="{$customerB.create.role_id}">{$customerB.create.user_name}_{$customerB.create.true_name}</if></a></td>
                         </tr>
                         <if condition="$customerB['is_deleted'] eq 1">
                         <tr>
                             <td class="tdleft">{:L('DELETE_THE_PEOPLE')}</td>
-                            <td><a class="role_info" href="javascript:void(0)" rel="{$customerB.deleted.role_id}">{$customerB.deleted.user_name}</a></td>
+                            <td><a class="role_info" href="javascript:void(0)" rel="{$customerB.deleted.role_id}">{$customerB.deleted.user_name}_{$customerB.deleted.true_name}</a></td>
                             <td class="tdleft" width="15%">{:L('DELETE_THE_TIME')}</td>
                             <td>{$customerB.delete_time|date='Y-m-d H:i:s',###}</td>
                         </tr>
                         </if>
                         <tr>
                             <td class="tdleft">{:L('PRINCIPAL')}</td>
-                            <td><a class="role_info" href="javascript:void(0)" rel="{$customerB.owner.role_id}">{$customerB.owner.user_name}</if></a> &nbsp;  &nbsp; <a href="{:U('customerB/customerBlock','customerB_id='.$customerB['customerB_id'])}"><if condition="$customerB['is_locked'] and $customerB['owner_role_id']"><img title="{:L('UNLOCK_TITLE')}" src="__PUBLIC__/img/customerB_locking.png"/><elseif condition="$customerB['owner_role_id']"/><img title="{:L('LOCK_TITLE')}" src="__PUBLIC__/img/customerB_unlocking.png"/></if></a></td>
+                            <td><a class="role_info" href="javascript:void(0)" rel="{$customerB.owner.role_id}">{$customerB.owner.user_name}_{$customerB.owner.true_name}</if></a> &nbsp;  &nbsp; <a href="{:U('customerB/customerBlock','customerB_id='.$customerB['customerB_id'])}"><if condition="$customerB['is_locked'] and $customerB['owner_role_id']"><img title="{:L('UNLOCK_TITLE')}" src="__PUBLIC__/img/customerB_locking.png"/><elseif condition="$customerB['owner_role_id']"/><img title="{:L('LOCK_TITLE')}" src="__PUBLIC__/img/customerB_unlocking.png"/></if></a></td>
                             <td class="tdleft" width="15%">{:L('THE_LAST_MODIFICATION_TIME')}</td>
                             <td><if condition="$customerB['update_time'] gt 0">{$customerB.update_time|date='Y-m-d H:i:s',###}</if></td>
                         </tr>

@@ -17,6 +17,7 @@ return array(
     'EMAIL_INVITATION'		=>	'邮箱邀请',
     'EMAIL_INVITATION_TIP'	=>	'*邮箱邀请：输入用户邮箱等信息后，添加者需要邮箱验证激活后才可以登录',
 	'USER_NAME'				=>	'用户名',
+	'TRUE_NAME'				=>	'姓名',
 	'STAFF'					=>	'员工',
 	'EMAIL'					=>	'邮箱',
 	'RESET_PASSWORD_EMAIL'	=>	'邮 &nbsp;&nbsp; 箱：',

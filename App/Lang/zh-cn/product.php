@@ -142,7 +142,7 @@
 	'SITE'=>'地点',	
 	'THE_START_TIME'=>'开始时间',	
 	'THE_END_TIME'=>'结束时间',	
-	'PRINCIPAL'=>'负责人',
+	'PRINCIPAL'=>'业务员',
 	'EDIT_LOG'=>'编辑日志',	
 	'EMPLOYEE_INFORMATION'=>'员工信息',	
 	'RESEARCH_AND_DEVELOPMENT_TIME'=>'研发时间',	

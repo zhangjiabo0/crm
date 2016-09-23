@@ -30,11 +30,11 @@
 								<td class="tdleft" width="15%">{:L('CREATE_TIME')}</td>
 								<td><if condition="$leads['create_time'] neq 0">{$leads.create_time|date='Y-m-d H:i:s',###}</if></td>
 								<td class="tdleft">{:L('CREATOR_ROLE')}</td>
-								<td><a class="role_info" href="javascript:void(0)" rel="{$leads.creator.role_id}">{$leads.creator.user_name}</if></a></td>
+								<td><a class="role_info" href="javascript:void(0)" rel="{$leads.creator.role_id}">{$leads.creator.user_name}_{$leads.creator.true_name}</if></a></td>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('OWNER_ROLE')}</td>
-								<td><a class="role_info" href="javascript:void(0)" rel="{$leads.owner.role_id}">{$leads.owner.user_name}</if></a></td>
+								<td><a class="role_info" href="javascript:void(0)" rel="{$leads.owner.role_id}">{$leads.owner.user_name}_{$leads.owner.true_name}</if></a></td>
 								<td class="tdleft" width="15%">{:L('LAST_MODIFIED_TIME')}</td>
 								<td><if condition="$leads['update_time'] gt 0">{$leads.update_time|date='Y-m-d H:i:s',###}</if></td>
 							</tr>
