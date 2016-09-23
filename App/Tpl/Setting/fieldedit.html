@@ -12,10 +12,28 @@
 		<tr>
         <tr>
 			<td width="30%" class="tdleft">{:L('FIELDS_TYPE')}：</td>
-			<td>{$fields.form_type_name}</td>
+			<td>
+				<select name="form_type" id="form_type" onchange="changeContent()">
+					<option value="text"<if condition="$fields.form_type == 'text'">selected</if>>{:L('SINGLE_LINE_TEXT')}</option>
+					<option value="textarea"<if condition="$fields.form_type == 'textarea'">selected</if>>{:L('MULTILINE_TEXT')}</option>
+					<option value="editor"<if condition="$fields.form_type == 'editor'">selected</if>>{:L('THE_EDITOR')}</option>	
+					<option value="box"<if condition="$fields.form_type == 'box'">selected</if>>{:L('SELECTED')}</option>	
+					<option value="datetime"<if condition="$fields.form_type == 'datetime'">selected</if>>{:L('DATE')}</option>	
+					<option value="number"<if condition="$fields.form_type == 'number'">selected</if>>{:L('NUMBER')}</option>
+					<option value="floatnumber"<if condition="$fields.form_type == 'floatnumber'">selected</if>>{:L('DECIMALS')}</option>
+					<option value="mobile"<if condition="$fields.form_type == 'mobile'">selected</if>>{:L('PHONE')}</option>
+					<option value="phone"<if condition="$fields.form_type == 'phone'">selected</if>>{:L('TELEPHONE')}</option>
+					<option value="email"<if condition="$fields.form_type == 'email'">selected</if>>{:L('EMAIL')}</option>
+					<option value="address"<if condition="$fields.form_type == 'address'">selected</if>>{:L('ADDRESS')}</option>
+				</select>
+			</td>
+			<!-- <td>{$fields.form_type_name}</td> -->
 		<tr>
 			<td width="30%" class="tdleft">{:L('WEATHER_INFORMATION')}</td>
-			<td class="span3"><if condition="$fields.is_main eq 1">{:L('MIAN_INFO')}<else/>{:L('EXTRA_INFO')}</if></td>
+			<td>
+				<input type="radio" name="is_main" value="1" <if condition="$fields.is_main eq 1">checked="checked"</if>/>{:L('MAIN_INFORMATION_SEARCH')}</br>
+				<input type="radio" name="is_main" value="0" <if condition="$fields.is_main eq 0">checked="checked"</if>/>{:L('ADDITIONAL_INFORMATION_REDUCE')}
+			</td>
 		</tr>
 		<if condition="$fields['form_type'] == 'box'">
 		<tr id="box_type_td" style="">

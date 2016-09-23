@@ -46,6 +46,10 @@
 							<td><if condition="session('?admin')"><input type="text" name="name" value="{$user['user_name']}"><else />{$user.user_name}</if></td>
 						</tr>
 						<tr>
+							<td class="tdleft">{:L('TRUE_NAME')}</td>
+							<td><if condition="session('?admin')"><input type="text" name="true_name" value="{$user['true_name']}"><else />{$user.true_name}</if></td>
+						</tr>
+						<tr>
 							<td class="tdleft">{:L('MODIFY_PASSWORD')}</td>
 							<td><input class="text-input small-input" type="password" name="password" id="password" value=""/></td>
 						</tr>

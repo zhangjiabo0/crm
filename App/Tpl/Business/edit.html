@@ -23,7 +23,7 @@
 					</tfoot> 
 					<tbody>
 						<tr><th colspan="4">{:L('BASIC_INFORMATION')}</th></tr>
-						<tr><td class="tdleft" width="15%">{:L('PRINCIPAL')}</td><td><input type="hidden" id="owner_id" name="owner_role_id" value="{$business.owner_role_id}"/><input type="text" id="owner_name" value="{$business.owner.user_name}" /></td>
+						<tr><td class="tdleft" width="15%">{:L('PRINCIPAL')}</td><td><input type="hidden" id="owner_id" name="owner_role_id" value="{$business.owner_role_id}"/><input type="text" id="owner_name" value="{$business.owner.user_name}_{$business.owner.true_name}" /></td>
 						<php>$j=0;</php>
 						<volist name="field_list['main']" id="vo">
                         <php>$j++;</php>

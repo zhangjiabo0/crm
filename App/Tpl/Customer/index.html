@@ -241,11 +241,11 @@
                                
                                 </volist>
 								<if condition="$Think.get.content neq 'resource'">
-									<td><notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}</a></notempty></td>
+									<td><notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}_{$vo.owner.true_name}</a></notempty></td>
 								</if>	
 								<if condition="C('ismobile') neq 1">
 									<td>
-										<notempty name="vo.creator.user_name"><a class="role_info" rel="{$vo.creator.role_id}" href="javascript:void(0)">{$vo.creator.user_name}</a></notempty>
+										<notempty name="vo.creator.user_name"><a class="role_info" rel="{$vo.creator.role_id}" href="javascript:void(0)">{$vo.creator.user_name}_{$vo.creator.true_name}</a></notempty>
 									</td>
 								</if>
 								<if condition="(C('ismobile') neq 1) and ($Think.get.by eq 'deleted')">

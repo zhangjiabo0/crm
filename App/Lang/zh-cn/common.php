@@ -75,7 +75,7 @@
         'BACK_TO_INDEX'  =>'返回列表页',
         'BACK_TO_PRE_PAGE'  =>'返回上一页',
         'STATUS'  =>'状态',
-        'EXECUTOR'  =>'负责人',
+        'EXECUTOR'  =>'业务员',
         'START_TIME'  =>'开始时间',
         'END_TIME'  =>'结束时间',
         'ADD_TIME'  =>'添加时间',
@@ -132,7 +132,7 @@
         'RETURN'=>'返回',
 		//模块视图部分
 		'ALL'=>'全部',
-		'OWNER_ROLE'=>'负责人',
+		'OWNER_ROLE'=>'业务员',
 		'CREATOR_ROLE'=>'创建人',
 		'DELETE_ROLE'=>	'删除人',
 		'MY_RESPONSIBLE'=>'我负责的',
@@ -359,7 +359,7 @@
 		'SUBJECT_CAN_NOT_EMPTY'			=>	'主题不能为空！',
 		'TITLE_CAN_NOT_EMPTY'			=>	'标题不能为空！',
 		'CONTENT_CAN_NOT_EMPTY'			=>	'内容不能为空！',
-		'OWNER_ROLE_CAN_NOT_EMPTY'		=>	'负责人不能为空！',
+		'OWNER_ROLE_CAN_NOT_EMPTY'		=>	'业务员不能为空！',
 		'ARE_YOU_SRUE_DELETE'			=>  '你确定删除吗？',
 		'PLEASE SELECT DELETE ITEMS'	=>  '请先选择删除项！',
 		

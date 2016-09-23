@@ -53,7 +53,7 @@
 		<volist name="role_list" id="vo">
 		<tr>
 			<td><input name="owner" type="radio" value="{$vo.role_id}" /></td>
-			<td>{$vo.user_name}</td>
+			<td>{$vo.user_name}_{$vo.true_name}</td>
 			<td>{$vo.department_name}</td>
 			<td>{$vo.role_name}</td>	
 			<if condition="C('ismobile') neq 1">
@@ -96,7 +96,7 @@
 				temp = '';
 				if(data.data.list != null){
 					$.each(data.data.list, function(k, v){
-						temp += "<tr><td><input name='owner' type='radio' value='"+v.role_id+"' /></td><td>"+v.user_name+"</td><td>"+v.department_name+"</td><td>"+v.role_name+"</td>";
+						temp += "<tr><td><input name='owner' type='radio' value='"+v.role_id+"' /></td><td>"+v.user_name+"_"+v.true_name+"</td><td>"+v.department_name+"</td><td>"+v.role_name+"</td>";
 						<if condition="C('ismobile') neq 1">
 							if(v.sex == 1){
 								temp += "<td>{:L('MALE')}</td>";

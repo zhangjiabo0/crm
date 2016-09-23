@@ -91,6 +91,7 @@ class UserAction extends Action {
 							session(array('expire'=>259200));
 							cookie('user_id',$user['user_id'],259200);
 							cookie('name',$user['name'],259200);
+							cookie('true_name',$user['true_name'],259200);
 							cookie('salt_code',md5(md5($user['user_id'] . $user['name']).$user['salt']),259200);
 						}else{
 							session(array('expire'=>3600));
@@ -110,6 +111,7 @@ class UserAction extends Action {
 							session('role_name', $role['role_name']);
 							session('department_id', $role['department_id']);
 							session('name', $user['name']);
+							session('true_name', $user['true_name']);
 							session('user_id', $user['user_id']);
 							$username = $user['name'];
 							$upload = $user['img'];

@@ -71,7 +71,7 @@ return array(
 	'VIEW_THIS_CATEGORY' => '查看本类',
 	'ADD_ARTICLE_CATEGORY' => '添加文章类别',
 	'EDIT_CATEGORY_INFO' => '编辑分类信息',
-	'SELECT_CLUES_HEAD' => '选择线索负责人',
+	'SELECT_CLUES_HEAD' => '选择线索业务员',
 	'ANY_FIELD' => '任意字段',
 	'AUTHORS' => '作者',
     'CREATOR_TIME' => '创建时间',

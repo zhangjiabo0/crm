@@ -296,11 +296,13 @@ class PermissionAction extends Action{
 			}
 		}
 	}
-	public function extends_authorize(){
-		if($this->isAjax() && $this->isPost()){
-			$position_id = isset($_POST['position_id']) ? $_POST['position_id'] : 0;
+	public function extends_authorize($position_id){
+		if($position_id || ($this->isAjax() && $this->isPost())){
+			if(!isset($position_id)){
+				$position_id = isset($_POST['position_id']) ? $_POST['position_id'] : 0;
+			}
 			if($position_id != 0){
-				if($position_id == 1){
+				if($position_id == 1 && ($this->isAjax() && $this->isPost())){
 					$this->ajaxReturn(L('PERMISSION_EXTENDS_FAILED'),'info',1);
 				}
 				else{
@@ -321,7 +323,7 @@ class PermissionAction extends Action{
 							$data['position_id'] = $position_id;
 							foreach ($add_permission as $k => $v){
 								$data['url'] = $v;
-								if(0>=$permission->add($data)){
+								if(0>=$permission->add($data) && ($this->isAjax() && $this->isPost())){
 									$this->ajaxReturn(L('PART_OF_THE_AUTHORIZATION_FAILED'),'info',1);
 								}
 							}
@@ -360,11 +362,13 @@ class PermissionAction extends Action{
 								}
 							}
 								
-							if($a<=0){
+							if($a<=0 && ($this->isAjax() && $this->isPost())){
 								$this->ajaxReturn(L('PART_OF_THE_AUTHORIZATION_FAILED'),'info',1);
 							}
 						}
-						$this->ajaxReturn(L('PERMISSION_EXTENDS_FROM_CHANGED',array($parent_name)),'info',1);
+						if($this->isAjax() && $this->isPost()){
+							$this->ajaxReturn(L('PERMISSION_EXTENDS_FROM_CHANGED',array($parent_name)),'info',1);
+						}
 					}
 					
 				}

@@ -3,7 +3,7 @@
 	<div class="row " >
 		<div class="span2 bs-docs-sidebar mar-left3" >
 			<ul class="nav nav-list bs-docs-sidenav span2 widths" id="left_list" style="min-height:380px;">
-				<li class="first-li"><span class="spans1" ><img src="__PUBLIC__/img/house.png"/>线索详情</span></li>
+				<li class="first-li"><span class="spans1" ><img src="__PUBLIC__/img/house.png"/>服务商意向详情</span></li>
 				<li class="active"><a href="#tab1">{:L('BASIC_INFO')}</a></li>
 				<li><a href="#tab2">{:L('COMMUNICATION_LOG')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$leadsB['log_count']">{$leadsB['log_count']}</if></span></a></li>
 				<li><a href="#tab6">{:L('OWNER_LOG')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$leadsB['record_count']">{$leadsB['record_count']}</if></span></a></li>
@@ -15,7 +15,7 @@
 		<div class="tab-content span8 mar-lefts" >
 			<div class="tab-pane fade in active" id="tab1">
 				<div class="container2 top-pad" >
-					<a class="basic_information" name="tab">线索详情</a>
+					<a class="basic_information" name="tab">服务商意向详情</a>
 					<div class="pull-right"style="margin:-3px 15px 0 0;">
 						<a href="{:U('leadsB/edit','id='.$leadsB['leadsB_id'])}" class="btn btn-primary">{:L('EDIT')}</a>
 						<a href="{:U('leadsB/delete','id='.$leadsB['leadsB_id'])}" class="btn btn-primary del_confirm">{:L('DELETE')}</a>
@@ -30,11 +30,11 @@
 								<td class="tdleft" width="15%">{:L('CREATE_TIME')}</td>
 								<td><if condition="$leadsB['create_time'] neq 0">{$leadsB.create_time|date='Y-m-d H:i:s',###}</if></td>
 								<td class="tdleft">{:L('CREATOR_ROLE')}</td>
-								<td><a class="role_info" href="javascript:void(0)" rel="{$leadsB.creator.role_id}">{$leadsB.creator.user_name}</if></a></td>
+								<td><a class="role_info" href="javascript:void(0)" rel="{$leadsB.creator.role_id}">{$leadsB.creator.user_name}_{$leadsB.creator.true_name}</if></a></td>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('OWNER_ROLE')}</td>
-								<td><a class="role_info" href="javascript:void(0)" rel="{$leadsB.owner.role_id}">{$leadsB.owner.user_name}</if></a></td>
+								<td><a class="role_info" href="javascript:void(0)" rel="{$leadsB.owner.role_id}">{$leadsB.owner.user_name}_{$leadsB.owner.true_name}</if></a></td>
 								<td class="tdleft" width="15%">{:L('LAST_MODIFIED_TIME')}</td>
 								<td><if condition="$leadsB['update_time'] gt 0">{$leadsB.update_time|date='Y-m-d H:i:s',###}</if></td>
 							</tr>
@@ -119,7 +119,7 @@
 							<div class="editors">
 								<if condition="$leadsB['is_deleted'] neq 1"><a href="javascript:void(0)" rel="{$vo.log_id}" class="edit_log">{:L('EDIT')}</a>&nbsp;<a href="{:U('log/delete','r=RLeadsBLog&id='.$vo['log_id'])}" class="del_confirm">{:L('DELETE')}</a></if>&nbsp;&nbsp;&nbsp;&nbsp;
 							
-								<notempty name="vo.owner.user_name"><img style="margin-top:-3px;" src="__PUBLIC__/img/user.png">&nbsp;<a class="role_info name-colors" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}</a>&nbsp;</notempty> &nbsp;<img src="__PUBLIC__/img/time_annoce.png"/>
+								<notempty name="vo.owner.user_name"><img style="margin-top:-3px;" src="__PUBLIC__/img/user.png">&nbsp;<a class="role_info name-colors" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}_{$vo.owner.true_name}</a>&nbsp;</notempty> &nbsp;<img src="__PUBLIC__/img/time_annoce.png"/>
 								{$vo.create_date|date="Y-m-d  g:i ",###} &nbsp; 
 								<notempty name="vo.create_date"> &nbsp; </notempty>
 								<if condition="C('ismobile') eq 1"><br/></if>
