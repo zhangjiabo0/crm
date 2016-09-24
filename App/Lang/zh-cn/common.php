@@ -26,6 +26,7 @@
         
         'PLEASE_SELECT'=>'请选择%s',
         'CARES'     =>'客户关怀',
+    	'CARESB'    =>'服务商合作关怀',
         'CUSTOMER'  =>'客户',
     	'CUSTOMERB' =>'服务商合作',
         'CONTRACT'  =>'合同',
@@ -34,6 +35,7 @@
     	'LEADSB'    =>'服务商意向',
         'PRODUCT'   =>'产品',
         'CONTACTS'  =>'联系人',
+    	'CONTACTSB'  =>'联系人',
         'TASK'      =>'任务',
         'EVENT'     =>'活动',
         'USER'      =>'员工',
@@ -246,6 +248,7 @@
 		'SMS'		=>	'短信',
 		'EMAIL'		=>	'邮件',
 		'SELECT_CONTACTS_OWMER'=>	'选择联系人所有人',
+    	'SELECT_CONTACTSB_OWMER'=>	'选择联系人所有人',
 		//import template
 		'FILE_REQUIRES'		   =>	'文件要求:',
 		'SELECT_FILES'		   =>	'选择文件:',
