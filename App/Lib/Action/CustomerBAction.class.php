@@ -2099,7 +2099,7 @@ class CustomerBAction extends Action {
 		
 		//来源统计图
 		$source_count_array = array();
-		$setting = M('Fields')->where("model = 'customerB' and field = 'origin'")->getField('setting');
+		$setting = M('Fields')->where("model = 'customerB' and field = 'source'")->getField('setting');
 		$setting_str = '$sourceList='.$setting.';';
 		eval($setting_str);
 		$source_total_count = 0;
@@ -2117,7 +2117,7 @@ class CustomerBAction extends Action {
 		
 		//客户行业统计图
 		$industry_count_array = array();
-		$setting = M('Fields')->where("model = 'customerB' and field = 'industry'")->getField('setting');
+		$setting = M('Fields')->where("model = 'customerB' and field = 'leixing'")->getField('setting');
 		$setting_str = '$industryList='.$setting.';';
 		eval($setting_str);
 		$where_industry['is_deleted'] = 0;
@@ -2148,21 +2148,21 @@ class CustomerBAction extends Action {
 		$employees_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$no_total_count).']';
 		$this->employees_count = implode(',', $employees_count_array);	
 		//客户营业额统计
-		$revenue_count_array = array();
-		$setting = M('Fields')->where("model = 'customerB' and field = 'annual_revenue'")->getField('setting');
-		$setting_str = '$revenueList='.$setting.';';
-		eval($setting_str);
-		$where_renenue['is_deleted'] = 0;
-		$revenue_total_count = 0; 
-		foreach($revenueList['data'] as $v){
-			unset($where_renenue['annual_revenue']);
-			$where_renenue['annual_revenue'] = $v;
-			$target_count = $m_customerB ->where($where_renenue)->count();
-			$revenue_count_array[] = '['.'"'.$v.'",'.$target_count.']';
-			$revenue_total_count+=$target_count;
-		}
-		$revenue_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$target_count).']';
-		$this->revenue_count = implode(',', $revenue_count_array);
+// 		$revenue_count_array = array();
+// 		$setting = M('Fields')->where("model = 'customerB' and field = 'annual_revenue'")->getField('setting');
+// 		$setting_str = '$revenueList='.$setting.';';
+// 		eval($setting_str);
+// 		$where_renenue['is_deleted'] = 0;
+// 		$revenue_total_count = 0; 
+// 		foreach($revenueList['data'] as $v){
+// 			unset($where_renenue['annual_revenue']);
+// 			$where_renenue['annual_revenue'] = $v;
+// 			$target_count = $m_customerB ->where($where_renenue)->count();
+// 			$revenue_count_array[] = '['.'"'.$v.'",'.$target_count.']';
+// 			$revenue_total_count+=$target_count;
+// 		}
+// 		$revenue_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$target_count).']';
+// 		$this->revenue_count = implode(',', $revenue_count_array);
 		
 		
 		

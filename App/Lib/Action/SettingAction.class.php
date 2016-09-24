@@ -90,7 +90,8 @@ class SettingAction extends Action{
 				$time = time();
 				$salt = substr(md5($time),0,4);
 				$category_id = $v['emp_no'] == 'admin'?1:2;
-				M('User')->add(array('user_id'=>$v['id'],'role_id'=>$role_id,'category_id'=>$category_id,'status'=>$v['is_del']+1,'name'=>$v['emp_no'],'true_name'=>$v['name'],'password'=>md5($v['password'].$salt),'salt'=>$salt,'navigation'=>$navigation,'reg_time'=>$time));
+				$sex = $v['sex'] == 'male'?1:2;
+				M('User')->add(array('user_id'=>$v['id'],'role_id'=>$role_id,'category_id'=>$category_id,'status'=>$v['is_del']+1,'name'=>$v['emp_no'],'true_name'=>$v['name'],'password'=>md5($v['password'].$salt),'salt'=>$salt,'sex'=>$sex,'navigation'=>$navigation,'reg_time'=>$time));
 				
 				//权限继承，
 				$P = A('Permission');

@@ -155,6 +155,7 @@
 	'NOTE'=>'短信',
 	'EMAIL'=>'邮件',
 	'SELECT_ALL_OF_THE_CONTACTS'=>'选择联系人所有人',
+ 	'SELECT_ALL_OF_THE_CONTACTSB'=>'选择联系人所有人',
 	'EDIT_BUSINESS_OPPORTUNITIES'=>'编辑商机',
 	'SELECT_THE_OWNER'=>'选择所有者',
 	'SELECT_A_PRODUCT'=>'选择产品',
