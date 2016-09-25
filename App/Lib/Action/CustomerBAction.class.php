@@ -120,9 +120,9 @@ class CustomerBAction extends Action {
 			$customerB_limit_counts = $m_config->where('name = "customerB_limit_counts"')->getField('value');
 			$customerB_record_count = $this->check_customerB_limit(session('user_id'), 1);
 			if($customerB_record_count < $customerB_limit_counts){
-				$contacts = M('rContactsCustomerB')->where('customerB_id = %d', $customerB_id)->select();
-				foreach($contacts as $k=>$v ){
-					M('contacts')->where('contacts_id = %d', $v['contacts_id'])->setField('owner_role_id',$owner_role_id);
+				$contactsB = M('rContactsBCustomerB')->where('customerB_id = %d', $customerB_id)->select();
+				foreach($contactsB as $k=>$v ){
+					M('contactsB')->where('contactsB_id = %d', $v['contactsB_id'])->setField('owner_role_id',$owner_role_id);
 				}
 				if($m_customerB->where('customerB_id = %d', $customerB_id)->save($data)){
 					$info['customerB_id'] = $customerB_id;
@@ -161,9 +161,9 @@ class CustomerBAction extends Action {
 				$where['update_time'] = array('lt',(time()-86400));
 				$where['customerB_id'] = array('in',implode(',',$customerB_ids));
 				$where['owner_role_id'] = array('gt',0);
-				$contacts = M('rContactsCustomerB')->where('customerB_id in (%s)', implode(',',$customerB_ids))->select();
-				foreach($contacts as $k=>$v ){
-					M('contacts')->where('contacts_id = %d', $v['contacts_id'])->setField('owner_role_id',$owner_role_id);
+				$contactsB = M('rContactsBCustomerB')->where('customerB_id in (%s)', implode(',',$customerB_ids))->select();
+				foreach($contactsB as $k=>$v ){
+					M('contactsB')->where('contactsB_id = %d', $v['contactsB_id'])->setField('owner_role_id',$owner_role_id);
 				}
 				$updated_owner = $m_customerB->where($where)->save($data);
 				unset($where['update_time']);
@@ -207,9 +207,9 @@ class CustomerBAction extends Action {
 				$where['update_time'] = array('lt',(time()-86400));
 				$where['customerB_id'] = intval($customerB_ids);
 				$where['owner_role_id'] = array('gt',0);
-				$contacts = M('rContactsCustomerB')->where('customerB_id = %d', $customerB_ids)->select();
-				foreach($contacts as $k=>$v ){
-					M('contacts')->where('contacts_id = %d', $v['contacts_id'])->setField('owner_role_id',$owner_role_id);
+				$contactsB = M('rContactsBCustomerB')->where('customerB_id = %d', $customerB_ids)->select();
+				foreach($contactsB as $k=>$v ){
+					M('contactsB')->where('contactsB_id = %d', $v['contactsB_id'])->setField('owner_role_id',$owner_role_id);
 				}
 				$updated_owner = $m_customerB->where($where)->save($data);
 				
@@ -366,10 +366,10 @@ class CustomerBAction extends Action {
 		}
 		if(trim($_GET['act'] == 'sms')){
 			$customerB_ids = $d_v_customerB->where($where)->getField('customerB_id', true);
-			$contacts_ids = M('RContactsCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contacts_id', true);
-			$contacts_ids = implode(',', $contacts_ids);
-			$contacts = D('ContactsView')->where('contacts.contacts_id in (%s)', $contacts_ids)->select();
-			$this->contacts = $contacts;
+			$contactsB_ids = M('RContactsBCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contactsB_id', true);
+			$contactsB_ids = implode(',', $contactsB_ids);
+			$contactsB = D('ContactsBView')->where('contactsB.contactsB_id in (%s)', $contactsB_ids)->select();
+			$this->contactsB = $contactsB;
 			$this->display('Setting:sendsms');	
 		}elseif(trim($_GET['act']) == 'excel'){
 			if(vali_permission('customerB', 'export')){
@@ -466,7 +466,7 @@ class CustomerBAction extends Action {
 			$p = !$_REQUEST['p']||$_REQUEST['p']<=0 ? 1 : intval($_REQUEST['p']);
 			$list = $m_customerB->where($where)->order('create_time desc')->page($p.',10')->select();
 			foreach($list as $k => $v){
-				$list[$k]['contacts_name'] = M('contacts')->where('contacts_id = %d',$v['contacts_id'])->getField('name');
+				$list[$k]['contactsB_name'] = M('contactsB')->where('contactsB_id = %d',$v['contactsB_id'])->getField('name');
 			}
 			$count = $m_customerB->where($where)->count();
 			$data['list'] = $list;
@@ -503,27 +503,27 @@ class CustomerBAction extends Action {
 			if($m_customerB->create()){
 				if($m_customerB_data->create()!==false){
 					if($_POST['con_name']){
-						$contacts = array();
-						if($_POST['con_name']) $contacts['name'] = $_POST['con_name'];
-						if($_POST['owner_role_id']) $contacts['owner_role_id'] = $_POST['owner_role_id'];
-						if($_POST['saltname']) $contacts['saltname'] = $_POST['saltname'];
-						if($_POST['con_email']) $contacts['email'] = $_POST['con_email'];
-						if($_POST['con_post']) $contacts['post'] = $_POST['con_post'];
-						if($_POST['con_qq']) $contacts['qq'] = $_POST['con_qq'];
-						if($_POST['con_telephone']) $contacts['telephone'] = $_POST['con_telephone'];
-						if($_POST['con_description']) $contacts['description'] = $_POST['con_description'];
-						if(!empty($contacts)){
-							$contacts['creator_role_id'] = session('role_id');
-							$contacts['create_time'] = time();
-							$contacts['update_time'] = time();
-							if(!$contacts_id = M('Contacts')->add($contacts)){
+						$contactsB = array();
+						if($_POST['con_name']) $contactsB['name'] = $_POST['con_name'];
+						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
+						if($_POST['saltname']) $contactsB['saltname'] = $_POST['saltname'];
+						if($_POST['con_email']) $contactsB['email'] = $_POST['con_email'];
+						if($_POST['con_post']) $contactsB['post'] = $_POST['con_post'];
+						if($_POST['con_qq']) $contactsB['qq'] = $_POST['con_qq'];
+						if($_POST['con_telephone']) $contactsB['telephone'] = $_POST['con_telephone'];
+						if($_POST['con_description']) $contactsB['description'] = $_POST['con_description'];
+						if(!empty($contactsB)){
+							$contactsB['creator_role_id'] = session('role_id');
+							$contactsB['create_time'] = time();
+							$contactsB['update_time'] = time();
+							if(!$contactsB_id = M('ContactsB')->add($contactsB)){
 								alert('error', L('ADD_THE_PRIMARY_CONTACT_FAILURE'), U('customerB/add'));
 							}
 						}
 					}
 					$m_customerB->create_time = time();
 					$m_customerB->update_time = time();
-					if($contacts_id) $m_customerB->contacts_id = $contacts_id;
+					if($contactsB_id) $m_customerB->contactsB_id = $contactsB_id;
 					$m_customerB->creator_role_id = session('role_id');
 					if(!$customerB_id = $m_customerB->add()){
 						alert('error', L('ADD_CUSTOMERB_FAILS_CONTACT_ADMIN'), U('customerB/add'));
@@ -552,17 +552,17 @@ class CustomerBAction extends Action {
 						$leadsB_data['is_transformed'] = 1;
 						$leadsB_data['update_time'] = time();
 						$leadsB_data['customerB_id'] = $customerB_id;
-						$leadsB_data['contacts_id'] = $contacts_id;
+						$leadsB_data['contactsB_id'] = $contactsB_id;
 						$leadsB_data['transform_role_id'] = session('role_id');
 						M('LeadsB')->where('leadsB_id = %d', $leadsB_id)->save($leadsB_data);
 					}
 					
 					//记录操作记录
 					actionLog($customerB_id);
-					if ($contacts_id && $customerB_id) {
-						$rcc['contacts_id'] = $contacts_id;
+					if ($contactsB_id && $customerB_id) {
+						$rcc['contactsB_id'] = $contactsB_id;
 						$rcc['customerB_id'] = $customerB_id;
-						M('RContactsCustomerB')->add($rcc);
+						M('RContactsBCustomerB')->add($rcc);
 					}
 					if(intval($_POST['create_business1']) == 1 || intval($_POST['create_business1']) == 1){
 						alert('success', L('ADD_CUSTOMERB_SUCCESS'), U('business/add','customerB_id='.$customerB_id));
@@ -654,7 +654,7 @@ class CustomerBAction extends Action {
 	
 	public function completeDelete() {
 		$m_customerB = M('CustomerB');
-		$r_module = array('Log'=>'RCustomerBLog', 'File'=>'RCustomerBFile', 'Event'=>'RCustomerBEvent', 'Task'=>'RCustomerBTask', 'RContactsCustomerB');
+		$r_module = array('Log'=>'RCustomerBLog', 'File'=>'RCustomerBFile', 'Event'=>'RCustomerBEvent', 'Task'=>'RCustomerBTask', 'RContactsBCustomerB');
 		if (!session('?admin')) {
 			alert('error', L('HAVE_NO_RIGHT_TO_DELETE_OPERATION'), $_SERVER['HTTP_REFERER']);
 		}
@@ -726,7 +726,7 @@ class CustomerBAction extends Action {
             alert('error', L('CUSTOMERB_DOES_NOT_EXIST!'),$_SERVER['HTTP_REFERER']);
         }
         $customerB['owner'] = D('RoleView')->where('role.role_id = %d', $customerB['owner_role_id'])->find();
-        $customerB['contacts_name'] = M('contacts')->where('contacts_id = %d', $customerB['contacts_id'])->getField('name');
+        $customerB['contactsB_name'] = M('contactsB')->where('contactsB_id = %d', $customerB['contactsB_id'])->getField('name');
 		
         $field_list = M('Fields')->where('model = "customerB"')->order('order_id')->select();
 		
@@ -756,11 +756,11 @@ class CustomerBAction extends Action {
 					$a = $m_customerB->where('customerB_id =%s ', $customerB['customerB_id'])->save();
 					$b = $m_customerB_data->where('customerB_id =%s', $customerB['customerB_id'])->save();
 					if($a !== false && $b !== false){
-						if($_POST['contacts_id'] && ($_POST['contacts_id'] != $customerB['contacts_id'])){
-							$rcc['contacts_id'] = intval($_POST['contacts_id']);
+						if($_POST['contactsB_id'] && ($_POST['contactsB_id'] != $customerB['contactsB_id'])){
+							$rcc['contactsB_id'] = intval($_POST['contactsB_id']);
 							$rcc['customerB_id'] = $customerB['customerB_id'];
-							if(!M('RContactsCustomerB')->where($rcc)->find()){ 
-								M('RContactsCustomerB')->add($rcc);
+							if(!M('RContactsBCustomerB')->where($rcc)->find()){ 
+								M('RContactsBCustomerB')->add($rcc);
 							}
 						}
 						actionLog($customerB['customerB_id']);
@@ -914,10 +914,10 @@ class CustomerBAction extends Action {
       
 		if(trim($_GET['act'] == 'sms')){
 			$customerB_ids = $d_v_customerB->where($where)->getField('customerB_id', true);
-			$contacts_ids = M('RContactsCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contacts_id', true);
-			$contacts_ids = implode(',', $contacts_ids);
-			$contacts = D('ContactsView')->where('contacts.contacts_id in (%s)', $contacts_ids)->select();
-			$this->contacts = $contacts;
+			$contactsB_ids = M('RContactsBCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contactsB_id', true);
+			$contactsB_ids = implode(',', $contactsB_ids);
+			$contactsB = D('ContactsBView')->where('contactsB.contactsB_id in (%s)', $contactsB_ids)->select();
+			$this->contactsB = $contactsB;
 			$this->display('Setting:sendsms');
 		}elseif(trim($_GET['act']) == 'excel'){		
 			if(vali_permission('customerB', 'export')){
@@ -1116,11 +1116,11 @@ class CustomerBAction extends Action {
 	
 		if(trim($_GET['act'] == 'sms')){
 			$customerB_ids = $d_v_customerB->where($where)->getField('customerB_id', true);
-			$contacts_ids = M('RContactsCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contacts_id', true);
-			$contacts_ids = implode(',', $contacts_ids);
-			$contacts = D('ContactsView')->where('contacts.contacts_id in (%s)', $contacts_ids)->select();
-			$this->ajaxReturn(array('list'=>$contacts,'count'=>count($contacts)), '', 1);
-// 			$this->contacts = $contacts;
+			$contactsB_ids = M('RContactsBCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contactsB_id', true);
+			$contactsB_ids = implode(',', $contactsB_ids);
+			$contactsB = D('ContactsBView')->where('contactsB.contactsB_id in (%s)', $contactsB_ids)->select();
+			$this->ajaxReturn(array('list'=>$contactsB,'count'=>count($contactsB)), '', 1);
+// 			$this->contactsB = $contactsB;
 // 			$this->display('Setting:sendsms');
 		}elseif(trim($_GET['act']) == 'excel'){
 			if(vali_permission('customerB', 'export')){
@@ -1196,8 +1196,8 @@ class CustomerBAction extends Action {
 
 	public function listDialog(){
 		$m_customerB = M('CustomerB');
-		$m_contacts = M('Contacts');
-		$m_r_contacts_customerB = M('RContactsCustomerB');
+		$m_contactsB = M('ContactsB');
+		$m_r_contactsB_customerB = M('RContactsBCustomerB');
 		$underling_ids = getSubRoleId();
 		$business_id = intval($_GET['bid']);
 		if(!empty($business_id)){
@@ -1208,14 +1208,14 @@ class CustomerBAction extends Action {
 		}
 		foreach($customerB as $k=>$v){
 			//如果存在首要联系人，则查出首要联系人。否则查出联系人中第一个。
-			if(!empty($v['contacts_id'])){
-				$contacts = $m_contacts->where('is_deleted = 0 and contacts_id = %d',$v['contacts_id'])->find();
-				$customerB[$k]['contacts_name'] = $contacts['name'];
+			if(!empty($v['contactsB_id'])){
+				$contactsB = $m_contactsB->where('is_deleted = 0 and contactsB_id = %d',$v['contactsB_id'])->find();
+				$customerB[$k]['contactsB_name'] = $contactsB['name'];
 			}else{
-				$contacts_customerB = $m_r_contacts_customerB->where('customerB_id = %d',$v['customerB_id'])->limit(1)->order('id desc')->select();
-				$contacts = $m_contacts->where('is_deleted = 0 and contacts_id = %d',$contacts_customerB[0]['contacts_id'])->find();
-				$customerB[$k]['contacts_id'] = $contacts['contacts_id'];
-				$customerB[$k]['contacts_name'] = $contacts['name'];
+				$contactsB_customerB = $m_r_contactsB_customerB->where('customerB_id = %d',$v['customerB_id'])->limit(1)->order('id desc')->select();
+				$contactsB = $m_contactsB->where('is_deleted = 0 and contactsB_id = %d',$contactsB_customerB[0]['contactsB_id'])->find();
+				$customerB[$k]['contactsB_id'] = $contactsB['contactsB_id'];
+				$customerB[$k]['contactsB_name'] = $contactsB['name'];
 			}
 		}
 		
@@ -1245,7 +1245,7 @@ class CustomerBAction extends Action {
             //查询固定信息
 			$customerB['owner'] = D('RoleView')->where('role.role_id = %d', $customerB['owner_role_id'])->find();
 			$customerB['create'] = D('RoleView')->where('role.role_id = %d', $customerB['creator_role_id'])->find();
-			if($customerB['contacts_id']) $customerB['contacts_name'] = M('contacts')->where('contacts_id = %d', $customerB['contacts_id'])->getField('name');
+			if($customerB['contactsB_id']) $customerB['contactsB_name'] = M('contactsB')->where('contactsB_id = %d', $customerB['contactsB_id'])->getField('name');
             
             if($customerB['is_deleted'] == 1){
                 $customerB['deleted'] = D('RoleView')->where('role.role_id = %d', $customerB['delete_role_id'])->find();
@@ -1254,9 +1254,9 @@ class CustomerBAction extends Action {
 			//合并客户、联系人附件
 			$customerB_file_ids = M('rCustomerBFile')->where('customerB_id = %d', $customerB_id)->getField('file_id', true);
 			$customerB_file_ids = $customerB_file_ids ? $customerB_file_ids : array();
-			$contacts_file_ids = M('rContactsFile')->where('contacts_id = %d', $customerB['contacts_id'])->getField('file_id', true);
-			$contacts_file_ids = $contacts_file_ids ? $contacts_file_ids : array();
-			$customerB['file'] = M('file')->where('file_id in (%s)',  implode(',', array_merge($customerB_file_ids,$contacts_file_ids)))->select();
+			$contactsB_file_ids = M('rContactsBFile')->where('contactsB_id = %d', $customerB['contactsB_id'])->getField('file_id', true);
+			$contactsB_file_ids = $contactsB_file_ids ? $contactsB_file_ids : array();
+			$customerB['file'] = M('file')->where('file_id in (%s)',  implode(',', array_merge($customerB_file_ids,$contactsB_file_ids)))->select();
 			$file_count = 0;
 			foreach ($customerB['file'] as $key=>$value) {
 				$customerB['file'][$key]['owner'] = D('RoleView')->where('role.role_id = %d', $value['role_id'])->find();
@@ -1297,9 +1297,9 @@ class CustomerBAction extends Action {
 			$business_log_ids = M('rBusinessLog')->where('business_id in (%s)', implode(',', $business_id))->getField('log_id', true);
 			$business_log_ids = $business_log_ids ? $business_log_ids : array();
 			//联系人日志
-			$contacts_log_ids = M('rContactsLog')->where('contacts_id = %d', $customerB['contacts_id'])->getField('log_id', true);
-			$contacts_log_ids = $contacts_log_ids ? $contacts_log_ids : array();
-			$customerB['log'] = M('log')->where('log_id in (%s)', implode(',', array_merge($customerB_log_ids,$business_log_ids,$contacts_log_ids)))->select();
+			$contactsB_log_ids = M('rContactsBLog')->where('contactsB_id = %d', $customerB['contactsB_id'])->getField('log_id', true);
+			$contactsB_log_ids = $contactsB_log_ids ? $contactsB_log_ids : array();
+			$customerB['log'] = M('log')->where('log_id in (%s)', implode(',', array_merge($customerB_log_ids,$business_log_ids,$contactsB_log_ids)))->select();
 			$log_count = 0;
 			foreach ($customerB['log'] as $key=>$value) {
 				$customerB['log'][$key]['owner'] = D('RoleView')->where('role.role_id = %d', $value['role_id'])->find();
@@ -1332,21 +1332,37 @@ class CustomerBAction extends Action {
 			$customerB['product'] = D('BusinessProductView')->where('r_business_product.business_id in (%s)', implode(',', $business_id))->select();
 			$customerB['product_count'] = $customerB['product'] ? sizeof($customerB['product']) : 0;
 			
-			$contacts_ids = M('rContactsCustomerB')->where('customerB_id = %d', $customerB_id)->getField('contacts_id', true);
-			$customerB['contacts'] = M('contacts')->where('contacts_id in (%s) and is_deleted=0', implode(',', $contacts_ids))->select();
-			foreach($customerB['contacts'] as $k=>$v){
-				if(M('CustomerB')->where('contacts_id = %d',$v['contacts_id'])->select()){
-					$customerB['contacts'][$k]['is_firstContact'] = 'true';
+			$contactsB_ids = M('rContactsBCustomerB')->where('customerB_id = %d', $customerB_id)->getField('contactsB_id', true);
+			$customerB['contactsB'] = M('contactsB')->where('contactsB_id in (%s) and is_deleted=0', implode(',', $contactsB_ids))->select();
+			foreach($customerB['contactsB'] as $k=>$v){
+				if(M('CustomerB')->where('contactsB_id = %d',$v['contactsB_id'])->select()){
+					$customerB['contactsB'][$k]['is_firstContact'] = 'true';
 				}else{
-					$customerB['contacts'][$k]['is_firstContact'] = 'false';
+					$customerB['contactsB'][$k]['is_firstContact'] = 'false';
 				}
 			}
 
-			$contacts_count = M('contacts')->where('contacts_id in (%s) and is_deleted=0', implode(',', $contacts_ids))->count();
-			$customerB['contacts_count'] = empty($contacts_count)?0:$contacts_count;
+			$contactsB_count = M('contactsB')->where('contactsB_id in (%s) and is_deleted=0', implode(',', $contactsB_ids))->count();
+			$customerB['contactsB_count'] = empty($contactsB_count)?0:$contactsB_count;
+			
+			//服务记录
+			$service_ids = M('rServiceCustomerB')->where('customerB_id = %d', $customerB_id)->getField('service_id', true);
+			$customerB['service'] = M('service')->where('service_id in (%s) and is_deleted=0', implode(',', $service_ids))->select();
+			foreach($customerB['service'] as $k=>$v){
+				if(M('CustomerB')->where('service_id = %d',$v['service_id'])->select()){
+					$customerB['service'][$k]['is_firstContact'] = 'true';
+				}else{
+					$customerB['service'][$k]['is_firstContact'] = 'false';
+				}
+			}
+			
+			$service_count = M('service')->where('service_id in (%s) and is_deleted=0', implode(',', $service_ids))->count();
+			$customerB['service_count'] = empty($service_count)?0:$service_count;
+			
 			$customerB_len = strlen($customerB['name']);
 			$this ->customerB_len =$customerB_len;
-			$this->customerB = $customerB;		
+			$this->customerB = $customerB;
+			
             $this->field_list = $field_list;
 			$this->alert = parseAlert();
 			$this->display();
@@ -1387,27 +1403,27 @@ class CustomerBAction extends Action {
 		$mark_customerB_ascii = $ascii;
 		$mark_customerB_cv = $cv;
 		//联系人字段
-		$contacts_fields_list = array();
-		$contacts_fields_list[0]['field'] = 'name';
-		$contacts_fields_list[0]['name'] = '联系人姓名';
-		$contacts_fields_list[1]['field'] = 'saltname';
-		$contacts_fields_list[1]['name'] = '尊称';
-		$contacts_fields_list[2]['field'] = 'post';
-		$contacts_fields_list[2]['name'] = '职位';
-		$contacts_fields_list[3]['field'] = 'telephone';
-		$contacts_fields_list[3]['name'] = '电话';
-		$contacts_fields_list[4]['field'] = 'email';
-		$contacts_fields_list[4]['name'] = '邮件';
-		$contacts_fields_list[5]['field'] = 'qq';
-		$contacts_fields_list[5]['name'] = 'qq';
-		$contacts_fields_list[6]['field'] = 'zip_code';
-		$contacts_fields_list[6]['name'] = '邮编';
-		$contacts_fields_list[7]['field'] = 'address';
-		$contacts_fields_list[7]['name'] = '联系地址';
-		$contacts_fields_list[8]['field'] = 'description';
-		$contacts_fields_list[8]['name'] = '备注';
+		$contactsB_fields_list = array();
+		$contactsB_fields_list[0]['field'] = 'name';
+		$contactsB_fields_list[0]['name'] = '联系人姓名';
+		$contactsB_fields_list[1]['field'] = 'saltname';
+		$contactsB_fields_list[1]['name'] = '尊称';
+		$contactsB_fields_list[2]['field'] = 'post';
+		$contactsB_fields_list[2]['name'] = '职位';
+		$contactsB_fields_list[3]['field'] = 'telephone';
+		$contactsB_fields_list[3]['name'] = '电话';
+		$contactsB_fields_list[4]['field'] = 'email';
+		$contactsB_fields_list[4]['name'] = '邮件';
+		$contactsB_fields_list[5]['field'] = 'qq';
+		$contactsB_fields_list[5]['name'] = 'qq';
+		$contactsB_fields_list[6]['field'] = 'zip_code';
+		$contactsB_fields_list[6]['name'] = '邮编';
+		$contactsB_fields_list[7]['field'] = 'address';
+		$contactsB_fields_list[7]['name'] = '联系地址';
+		$contactsB_fields_list[8]['field'] = 'description';
+		$contactsB_fields_list[8]['name'] = '备注';
 		
-		foreach($contacts_fields_list as $field){
+		foreach($contactsB_fields_list as $field){
 			$objActSheet->setCellValue($cv.chr($ascii).'2', $field['name']);
             $ascii++;
             if($ascii == 91){
@@ -1415,8 +1431,8 @@ class CustomerBAction extends Action {
                 $cv .= chr(strlen($cv)+65);
             }
 		}
-		$mark_contacts_ascii = $ascii;
-		$mark_contacts_cv = $cv;
+		$mark_contactsB_ascii = $ascii;
+		$mark_contactsB_cv = $cv;
 		
 		if(is_array($customerBList)){
 			$list = $customerBList;
@@ -1454,13 +1470,13 @@ class CustomerBAction extends Action {
 			//联系人
 			$mark_ascii = $ascii;
 			$mark_cv = $cv;
-			$m_contacts = M('contacts');
-			$m_rContactsCustomerB = M('rContactsCustomerB');
-			$contactsIdArr = $m_rContactsCustomerB->where('customerB_id = %d', $v['customerB_id'])->getField('contacts_id',true);
-			$contacts_list = $m_contacts->field('name,saltname,post,telephone,email,qq,zip_code,address,description')->where(array('contacts_id'=>array('in',$contactsIdArr)))->select();
-			if($contacts_list){
-				foreach($contacts_list as $val){
-					foreach($contacts_fields_list as $valu){
+			$m_contactsB = M('contactsB');
+			$m_rContactsBCustomerB = M('rContactsBCustomerB');
+			$contactsBIdArr = $m_rContactsBCustomerB->where('customerB_id = %d', $v['customerB_id'])->getField('contactsB_id',true);
+			$contactsB_list = $m_contactsB->field('name,saltname,post,telephone,email,qq,zip_code,address,description')->where(array('contactsB_id'=>array('in',$contactsBIdArr)))->select();
+			if($contactsB_list){
+				foreach($contactsB_list as $val){
+					foreach($contactsB_fields_list as $valu){
 						//防止使用科学计数法，在数据前加空格
 						if($valu['field'] == 'telephone' || $valu['field'] =='qq'){
 							$objActSheet->setCellValue($cv.chr($ascii).$i, ' '.$val[$valu['field']]);
@@ -1483,13 +1499,13 @@ class CustomerBAction extends Action {
 			}
 		}
 		$objActSheet->mergeCells('A1:'.$mark_customerB_cv.chr($mark_customerB_ascii-1).'1');
-		$objActSheet->mergeCells($mark_customerB_cv.chr($mark_customerB_ascii).'1'.':'.$mark_contacts_cv.chr($mark_contacts_ascii).'1');
+		$objActSheet->mergeCells($mark_customerB_cv.chr($mark_customerB_ascii).'1'.':'.$mark_contactsB_cv.chr($mark_contactsB_ascii).'1');
 		$objActSheet->getStyle('A1')->getFont()->getColor()->setARGB('FFFF0000');
 		$objActSheet->getStyle('A1')->getAlignment()->setWrapText(true);
 		$objActSheet->getStyle($mark_customerB_cv.chr($mark_customerB_ascii).'1')->getFont()->getColor()->setARGB('FFFF0000');
 		$objActSheet->getStyle($mark_customerB_cv.chr($mark_customerB_ascii).'1')->getAlignment()->setWrapText(true);
         $objActSheet->setCellValue('A1', L('CUSTOMERB_INFO'));
-        $objActSheet->setCellValue($mark_customerB_cv.chr($mark_customerB_ascii).'1', L('CONTACTS_INFO'));
+        $objActSheet->setCellValue($mark_customerB_cv.chr($mark_customerB_ascii).'1', L('CONTACTSB_INFO'));
 		//设置背景色
 		$objActSheet->getStyle('A1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
 		$objActSheet->getStyle('A1')->getFill()->getStartColor()->setARGB('F5DEB3');
@@ -1601,21 +1617,21 @@ class CustomerBAction extends Action {
 //                         }
                     }
 					//联系人字段
-					$contacts_fields_list = array();
-					$contacts_fields_list[0]['field'] = 'name';
-					$contacts_fields_list[1]['field'] = 'saltname';
-					$contacts_fields_list[2]['field'] = 'post';
-					$contacts_fields_list[3]['field'] = 'telephone';
-					$contacts_fields_list[4]['field'] = 'email';
-					$contacts_fields_list[5]['field'] = 'qq';
-					$contacts_fields_list[6]['field'] = 'zip_code';
-					$contacts_fields_list[7]['field'] = 'address';
-					$contacts_fields_list[8]['field'] = 'description';
+					$contactsB_fields_list = array();
+					$contactsB_fields_list[0]['field'] = 'name';
+					$contactsB_fields_list[1]['field'] = 'saltname';
+					$contactsB_fields_list[2]['field'] = 'post';
+					$contactsB_fields_list[3]['field'] = 'telephone';
+					$contactsB_fields_list[4]['field'] = 'email';
+					$contactsB_fields_list[5]['field'] = 'qq';
+					$contactsB_fields_list[6]['field'] = 'zip_code';
+					$contactsB_fields_list[7]['field'] = 'address';
+					$contactsB_fields_list[8]['field'] = 'description';
 					
-					foreach($contacts_fields_list as $field){
+					foreach($contactsB_fields_list as $field){
 						//把$cv.chr($ascii)换成ToNumberSystem26($i)
 						$info = (String)$currentSheet->getCell(ToNumberSystem26($i).$currentRow)->getValue();
-						$contacts_data[$field['field']] = $info;
+						$contactsB_data[$field['field']] = $info;
 						$i++;
 // 						$ascii++;
 //                         if($ascii == 91){
@@ -1628,15 +1644,15 @@ class CustomerBAction extends Action {
                         $m_customerB_data->customerB_id = $customerB_id;
                         $m_customerB_data->add();
 						//添加联系人
-						$m_contacts = M('contacts');
-						$contacts_data['creator_role_id'] = intval($_POST['owner_role_id']);
-						$contacts_data['create_time'] = time();
-						$contacts_id = $m_contacts->add($contacts_data);
+						$m_contactsB = M('contactsB');
+						$contactsB_data['creator_role_id'] = intval($_POST['owner_role_id']);
+						$contactsB_data['create_time'] = time();
+						$contactsB_id = $m_contactsB->add($contactsB_data);
 						//添加客户联系人（客户联系人关系表）
-						$m_rContactsCustomerB = M('rContactsCustomerB');
-						$m_rContactsCustomerB->add(array('contacts_id'=>$contacts_id, 'customerB_id'=>$customerB_id));
+						$m_rContactsBCustomerB = M('rContactsBCustomerB');
+						$m_rContactsBCustomerB->add(array('contactsB_id'=>$contactsB_id, 'customerB_id'=>$customerB_id));
 						//设置首要联系人
-						$m_customerB->where('customerB_id = %d', $customerB_id)->setField('contacts_id', $contacts_id);
+						$m_customerB->where('customerB_id = %d', $customerB_id)->setField('contactsB_id', $contactsB_id);
 						
 					}else{
 						if($this->_post('error_handing','intval',0) == 0){
@@ -1679,16 +1695,16 @@ class CustomerBAction extends Action {
         $ascii = 65;
         $cv = '';
         $field_list = M('Fields')->where('model = \'customerB\' ')->order('order_id')->select();
-        $contacts_fields_list = array();
-		$contacts_fields_list[0]['name'] = '姓名';
-		$contacts_fields_list[1]['name'] = '尊称';
-		$contacts_fields_list[2]['name'] = '职位';
-		$contacts_fields_list[3]['name'] = '电话';
-		$contacts_fields_list[4]['name'] = '邮件';
-		$contacts_fields_list[5]['name'] = 'QQ';
-		$contacts_fields_list[6]['name'] = '邮编';
-		$contacts_fields_list[7]['name'] = '联系地址(长文本)';
-		$contacts_fields_list[8]['name'] = '备注';
+        $contactsB_fields_list = array();
+		$contactsB_fields_list[0]['name'] = '姓名';
+		$contactsB_fields_list[1]['name'] = '尊称';
+		$contactsB_fields_list[2]['name'] = '职位';
+		$contactsB_fields_list[3]['name'] = '电话';
+		$contactsB_fields_list[4]['name'] = '邮件';
+		$contactsB_fields_list[5]['name'] = 'QQ';
+		$contactsB_fields_list[6]['name'] = '邮编';
+		$contactsB_fields_list[7]['name'] = '联系地址(长文本)';
+		$contactsB_fields_list[8]['name'] = '备注';
 		
         foreach($field_list as $field){
             $objActSheet->setCellValue($cv.chr($ascii).'2', $field['name']);
@@ -1700,18 +1716,18 @@ class CustomerBAction extends Action {
 			$mark_customerB_cv = $cv;
 			$mark_customerB_ascii = $ascii;
         }
-		foreach($contacts_fields_list as $field){
+		foreach($contactsB_fields_list as $field){
             $objActSheet->setCellValue($cv.chr($ascii).'2', $field['name']);
             $ascii++;
             if($ascii == 91){
                 $ascii = 65;
                 $cv .= chr(strlen($cv)+65);
             }
-			$mark_contacts_cv = $cv;
-			$mark_contacts_ascii = $ascii;
+			$mark_contactsB_cv = $cv;
+			$mark_contactsB_ascii = $ascii;
         }
         $objActSheet->mergeCells('A1:'.$mark_customerB_cv.chr($mark_customerB_ascii-1).'1');
-		$objActSheet->mergeCells($mark_customerB_cv.chr($mark_customerB_ascii).'1'.':'.$mark_contacts_cv.chr($mark_contacts_ascii).'1');
+		$objActSheet->mergeCells($mark_customerB_cv.chr($mark_customerB_ascii).'1'.':'.$mark_contactsB_cv.chr($mark_contactsB_ascii).'1');
 		$objActSheet->getRowDimension('1')->setRowHeight(50);
 		$objActSheet->getStyle('A1')->getFont()->getColor()->setARGB('FFFF0000');
 		$objActSheet->getStyle('A1')->getAlignment()->setWrapText(true);
@@ -1719,7 +1735,7 @@ class CustomerBAction extends Action {
 		$objActSheet->getStyle($mark_customerB_cv.chr($mark_customerB_ascii).'1')->getAlignment()->setWrapText(true);
         $content = L('ADRESS');
         $objActSheet->setCellValue('A1', $content);
-		$objActSheet->setCellValue($mark_customerB_cv.chr($mark_customerB_ascii).'1', L('FIRST_CONTACTS_INFO'));
+		$objActSheet->setCellValue($mark_customerB_cv.chr($mark_customerB_ascii).'1', L('FIRST_CONTACTSB_INFO'));
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		ob_end_clean();
 		header("Content-Type: application/vnd.ms-excel;");
@@ -1870,8 +1886,8 @@ class CustomerBAction extends Action {
 	}
 	public function caresAdd(){
 		$m_customerB = M('CustomerB');
-		$m_contacts = M('Contacts');
-		$m_r_contacts_customerB = M('RContactsCustomerB');
+		$m_contactsB = M('ContactsB');
+		$m_r_contactsB_customerB = M('RContactsBCustomerB');
 		if($this->isPost()){
 			$m_cares = M('CustomerBCares');
 			if($m_cares->create()){
@@ -1901,14 +1917,14 @@ class CustomerBAction extends Action {
 			$customerB_id = $_GET['customerB_id'];
 			$m_customerB = M('CustomerB');
 			$customerB = $m_customerB->where('customerB_id = %d',$customerB_id)->find();
-			if(!empty($customerB['contacts_id'])){
-				$contacts = $m_contacts->where('is_deleted = 0 and contacts_id = %d',$customerB['contacts_id'])->find();
-				$customerB['contacts_name'] = $contacts['name'];
+			if(!empty($customerB['contactsB_id'])){
+				$contactsB = $m_contactsB->where('is_deleted = 0 and contactsB_id = %d',$customerB['contactsB_id'])->find();
+				$customerB['contactsB_name'] = $contactsB['name'];
 			}else{
-				$contacts_customerB = $m_r_contacts_customerB->where('customerB_id = %d',$customerB['customerB_id'])->limit(1)->order('id desc')->select();
-				$contacts = $m_contacts->where('is_deleted = 0 and contacts_id = %d',$contacts_customerB[0]['contacts_id'])->find();
-				$customerB['contacts_id'] = $contacts['contacts_id'];
-				$customerB['contacts_name'] = $contacts['name'];
+				$contactsB_customerB = $m_r_contactsB_customerB->where('customerB_id = %d',$customerB['customerB_id'])->limit(1)->order('id desc')->select();
+				$contactsB = $m_contactsB->where('is_deleted = 0 and contactsB_id = %d',$contactsB_customerB[0]['contactsB_id'])->find();
+				$customerB['contactsB_id'] = $contactsB['contactsB_id'];
+				$customerB['contactsB_name'] = $contactsB['name'];
 			}
 			$this->customerB = $customerB;
 			$this->refer_url=$_SERVER['HTTP_REFERER'];
@@ -1940,7 +1956,7 @@ class CustomerBAction extends Action {
 				$care = $m_care->where('care_id = %d', $care_id)->find();
 				$care['owner'] = getUserByRoleId($care['owner_role_id']);
 				$care['customerB'] = M('customerB')->where('customerB_id = %d', $care['customerB_id'])->find();
-				$care['contacts'] = M('contacts')->where('contacts_id = %d', $care['contacts_id'])->find();
+				$care['contactsB'] = M('contactsB')->where('contactsB_id = %d', $care['contactsB_id'])->find();
 				$this->care = $care;
 				$this->alert = parseAlert();
 				$this->display();
@@ -1962,7 +1978,7 @@ class CustomerBAction extends Action {
 				$care = $m_care->where('care_id = %d', $care_id)->find();
 				$care['owner'] = getUserByRoleId($care['owner_role_id']);
 				$care['customerB'] = M('customerB')->where('customerB_id = %d', $care['customerB_id'])->find();
-				$care['contacts'] = M('contacts')->where('contacts_id = %d', $care['contacts_id'])->find();
+				$care['contactsB'] = M('contactsB')->where('contactsB_id = %d', $care['contactsB_id'])->find();
 				$this->care = $care;
 				$this->alert = parseAlert();
 				$this->display();

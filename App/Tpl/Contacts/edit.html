@@ -1,4 +1,6 @@
 <include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
 	<div class="container">
 		<div class="page-header">
 			<h4>{:L('EDIT_THE_CONTACT')}</h4>
@@ -6,7 +8,7 @@
 		<div class="row">
 			<div class="span12">
 				<include file="Public:alert" />
-				<form action="{:U('contacts/edit')}" method="post" onsubmit="return editConfirm()">
+				<form action="{:U('contacts/edit')}" id="form1" method="post" onsubmit="return editConfirm()">
 			<!-- 		<input type="hidden" name="redirect" value="{$redirect}"/>
 					<input type="hidden" name="redirect_id" value="{$redirect_id}"/>
 					<input type="hidden" name="contacts_id" value="{$contacts.contacts_id}"/>  -->
@@ -40,17 +42,17 @@
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('PHONE')}</td>
-								<td><input class="text-input large-input" name="telephone" type="text" value="{$contacts.telephone}"/></td>
+								<td><input class="text-input large-input" id="tel" name="telephone" type="text" value="{$contacts.telephone}"/><span id="telTip" style="color:red;"></span></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('EMAIL')}</td>
-								<td><input class="text-input large-input" name="email" type="text" value="{$contacts.email}"/></td>
+								<td><input class="text-input large-input" id="email" name="email" type="text" value="{$contacts.email}"/><span id="emailTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft" >QQ</td>
 								<td><input class="text-input large-input" name="qq" type="text" value="{$contacts.qq}"/></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('POSTCODE')}</td>
-								<td><input class="text-input large-input" name="zip_code" type="text" value="{$contacts.zip_code}"/></td>
+								<td><input class="text-input large-input" id="zip_code" name="zip_code" type="text" value="{$contacts.zip_code}"/><span id="zip_codeTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('CONTACT_ADDRESS')}</td>
@@ -101,5 +103,76 @@ $(function(){
 		}
 	);
 });
+
+$(function(){
+    $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
+        onError:function(msg,obj,errorlist){
+       		alert(msg);
+    	},
+    	submitAfterAjaxPrompt : "{:L('AJAX_VALIDATING_PLEASE_WAIT')}"
+	});
+    $("#email").formValidator({
+        tipID:"emailTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"邮件{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"邮件{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#email").regexValidator({
+        regExp:"email",
+        dataType:"enum",
+        onError:"邮件{:L('INCORRECT_FORMAT')}"
+    });
+    
+    $("#mobile").formValidator({
+        tipID:"mobileTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"手机{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"手机{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#mobile").regexValidator({
+        regExp:"mobile",
+        dataType:"enum",
+        onError:"手机{:L('INCORRECT_FORMAT')}"
+    });
+    
+    $("#tel").formValidator({
+        tipID:"telTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"电话{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"电话{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#tel").regexValidator({
+        regExp:"tel",
+        dataType:"enum",
+        onError:"电话{:L('INCORRECT_FORMAT')}"
+    });
+    
+    $("#zip_code").formValidator({
+        tipID:"zip_codeTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:6,max:6,
+        onErrorMin:"邮编为6位数字",
+        onErrorMax:"邮编为6位数字"
+    });
+})
 </script>
 <include file="Public:footer" />	
