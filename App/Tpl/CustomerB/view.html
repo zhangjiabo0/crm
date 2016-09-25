@@ -77,7 +77,7 @@
                         </tr>
                         <tr>
                             <td class="tdleft" width="15%">{:L('THE_PRIMARY_CONTACT')}</td>
-                            <td><a href="{:U('contacts/view','id='.$customerB[contacts_id])}">{$customerB[contacts_name]}</td>
+                            <td><a href="{:U('contactsB/view','id='.$customerB[contactsB_id])}">{$customerB[contactsB_name]}</td>
                         <php>$j=0;</php>
                         <volist name="field_list" id="vo">
                         <php>$j++;</php>
@@ -128,11 +128,11 @@
 			<div class="back_box" style="margin-top: 10px;">
 				<div class="header1">
 					<div class="pull-left two-title" >{:L('LINKMAN')}</div>
-					<div class="pull-right"> <if condition="$customerB['is_deleted'] == 0"><a href="{:U('contacts/add','redirect=customerB&customerB_id='.$customerB['customerB_id'])}" class=" btn btn-primary">{:L('ADD')}</a></if></div>
+					<div class="pull-right"> <if condition="$customerB['is_deleted'] == 0"><a href="{:U('contactsB/add','redirect=customerB&customerB_id='.$customerB['customerB_id'])}" class=" btn btn-primary">{:L('ADD')}</a></if></div>
 					<div style="clear:both;"></div>
 				</div>
 				<table class="table table-hover">
-					<if condition="$customerB.contacts eq null">
+					<if condition="$customerB.contactsB eq null">
 						<tr>
 							<td <if condition="C('ismobile') neq 1">colspan="6"<else/>colspan="4"</if>>{:L('THERE_IS_NO_DATA')} </td>
 						</tr>
@@ -145,12 +145,12 @@
 							<td width="10%">QQ</td>
 							<td width="16%">email</td>
 						</tr>
-						<volist name="customerB['contacts']" id="vo">
+						<volist name="customerB['contactsB']" id="vo">
 							<tr>
 								<td class="tdleft" >
-									<if condition="$customerB['is_deleted'] == 0"><a href="{:U('contacts/view', 'id='.$vo['contacts_id'])}">{:L('CHECK')}</a> &nbsp;<a href="{:U('contacts/edit', 'id='.$vo['contacts_id'].'&redirect=customerB&redirect_id='.$customerB['customerB_id'])}">{:L('COMPILE')}</a>&nbsp;
-									<a href="{:U('contacts/mdelete', 'id='.$vo['contacts_id'].'&r=rContactsCustomerB&module_id='.$customerB['customerB_id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;
-									<a href="{:U('contacts/changeToFirstContact', 'id='.$vo['contacts_id'].'&customerB_id='.$customerB['customerB_id'])}">{:L('SET_AS_PRIMARY')}</a>
+									<if condition="$customerB['is_deleted'] == 0"><a href="{:U('contactsB/view', 'id='.$vo['contactsB_id'])}">{:L('CHECK')}</a> &nbsp;<a href="{:U('contactsB/edit', 'id='.$vo['contactsB_id'].'&redirect=customerB&redirect_id='.$customerB['customerB_id'])}">{:L('COMPILE')}</a>&nbsp;
+									<a href="{:U('contactsB/mdelete', 'id='.$vo['contactsB_id'].'&r=rContactsBCustomerB&module_id='.$customerB['customerB_id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;
+									<a href="{:U('contactsB/changeToFirstContact', 'id='.$vo['contactsB_id'].'&customerB_id='.$customerB['customerB_id'])}">{:L('SET_AS_PRIMARY')}</a>
 									</if>
 								</td>
 								<td>
@@ -173,6 +173,42 @@
 					</if>
 				</table>
 			</div>	
+			
+			<div class="back_box" style="margin-top: 10px;">
+				<div class="header1">
+					<div class="pull-left two-title" >{:L('SERVICE_RECORD')}</div>
+					<div class="pull-right"> <if condition="$customerB['is_deleted'] == 0"><a href="{:U('service/add','redirect=customerB&customerB_id='.$customerB['customerB_id'])}" class=" btn btn-primary">{:L('ADD')}</a></if></div>
+					<div style="clear:both;"></div>
+				</div>
+				<table class="table table-hover">
+					<if condition="$customerB.contactsB eq null">
+						<tr>
+							<td <if condition="C('ismobile') neq 1">colspan="6"<else/>colspan="4"</if>>{:L('THERE_IS_NO_DATA')} </td>
+						</tr>
+					<else /> 
+						<tr>
+							<td width="18%">&nbsp;</td>
+							<td width="20%">服务时间</td>
+							<td width="50%">服务内容</td>
+						</tr>
+						<volist name="customerB['service']" id="vo">
+							<tr>
+								<td class="tdleft" style="text-align:left;">
+									<if condition="$customerB['is_deleted'] == 0"><a href="{:U('service/view', 'id='.$vo['service_id'])}">{:L('CHECK')}</a> &nbsp;<a href="{:U('service/edit', 'id='.$vo['service_id'].'&redirect=customerB&redirect_id='.$customerB['customerB_id'])}">{:L('COMPILE')}</a>&nbsp;
+									<a href="{:U('service/mdelete', 'id='.$vo['service_id'].'&r=rServiceCustomerB&module_id='.$customerB['customerB_id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;
+									</if>
+								</td>
+								 <td>
+									{$vo.service_time}
+								</td>
+								<td>
+									{$vo.service_content}
+								</td>
+							</tr>
+						</volist>
+					</if>
+				</table>
+			</div>
         </div>
         <div class="tab-pane fade back_box" id="tab3">
 			<div class="header1">
@@ -735,7 +771,7 @@
 				<else/>
 				<li><a href="{:U('customerB/fenpei', 'by=put&customerB_id='.$customerB['customerB_id'])}"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('IN_THE_CUSTOMERB_POOL')}</a></li> 
             </if>
-            <li><a href="{:U('contacts/add','redirect=customerB&customerB_id='.$customerB['customerB_id'])}"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_A_CONTACT')}</a> </li>
+            <li><a href="{:U('contactsB/add','redirect=customerB&customerB_id='.$customerB['customerB_id'])}"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_A_CONTACT')}</a> </li>
             <li><a href="javascript:void(0);" class="add_log"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_THE_COMMUNICATION_LOG')}</a></li> 
             <li><a href="javascript:void(0);" class="add_task"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_TASKS')}</a></li> 
             <li><a href="javascript:void(0);" class="add_event"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_THE_SCHEDULE')}</a></li>

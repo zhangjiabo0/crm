@@ -1,4 +1,6 @@
 <include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
 	<div class="container">
 		<div class="page-header">
 			<h4>{:L('EDIT_THE_CONTACT')}</h4>
@@ -6,7 +8,7 @@
 		<div class="row">
 			<div class="span12">
 				<include file="Public:alert" />
-				<form action="{:U('contactsB/edit')}" method="post" onsubmit="return editConfirm()">
+				<form action="{:U('contactsB/edit')}" id="form1" method="post" onsubmit="return editConfirm()">
 			<!-- 		<input type="hidden" name="redirect" value="{$redirect}"/>
 					<input type="hidden" name="redirect_id" value="{$redirect_id}"/>
 					<input type="hidden" name="contactsB_id" value="{$contactsB.contactsB_id}"/>  -->
@@ -30,8 +32,8 @@
 								<td width="35%"><input class="text-input large-input" type="text" name="saltname" id="saltname" value="{$contactsB.saltname}"/></td>
 							</tr>
 							<tr>
-								<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMER_CLICK_TO_SELECT')}</td>
-								<td><input name="customer_name" id="customer_name" type="text" value="{$contactsB.customer_name}"/><input id="customer_id" name="customer_id" type="hidden" value="{$contactsB.customer_id}"/></td>
+								<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMERB_CLICK_TO_SELECT')}</td>
+								<td><input name="customerB_name" id="customerB_name" type="text" value="{$contactsB.customerB_name}"/><input id="customerB_id" name="customerB_id" type="hidden" value="{$contactsB.customerB_id}"/></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('POSITION')}</td>
 								<td>
@@ -40,17 +42,17 @@
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('PHONE')}</td>
-								<td><input class="text-input large-input" name="telephone" type="text" value="{$contactsB.telephone}"/></td>
+								<td><input class="text-input large-input" id="tel" name="telephone" type="text" value="{$contactsB.telephone}"/><span id="telTip" style="color:red;"></span></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('EMAIL')}</td>
-								<td><input class="text-input large-input" name="email" type="text" value="{$contactsB.email}"/></td>
+								<td><input class="text-input large-input" id="email" name="email" type="text" value="{$contactsB.email}"/><span id="emailTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft" >QQ</td>
 								<td><input class="text-input large-input" name="qq" type="text" value="{$contactsB.qq}"/></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('POSTCODE')}</td>
-								<td><input class="text-input large-input" name="zip_code" type="text" value="{$contactsB.zip_code}"/></td>
+								<td><input class="text-input large-input" id="zip_code" name="zip_code" type="text" value="{$contactsB.zip_code}"/><span id="zip_codeTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('CONTACT_ADDRESS')}</td>
@@ -68,7 +70,7 @@
 	</div> <!-- End .content-box-content -->			
 </div> <!-- End .content-box -->			
 
-<div id="dialog-message2" title="{:L('SELECT_THE_CONTACT_BELONGS_TO_THE_CUSTOMER')}">loading...</div>
+<div id="dialog-message2" title="{:L('SELECT_THE_CONTACT_BELONGS_TO_THE_CUSTOMERB')}">loading...</div>
 <script type="text/javascript">
 <if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
 $("#dialog-message2").dialog({
@@ -78,11 +80,11 @@ $("#dialog-message2").dialog({
 	maxHeight: 400,
 	buttons: {
 		"{:L('AFFIRM')}": function () {
-			var item = $('input:radio[name="customer"]:checked').val();
-			var name = $('input:radio[name="customer"]:checked').parent().next().html();
+			var item = $('input:radio[name="customerB"]:checked').val();
+			var name = $('input:radio[name="customerB"]:checked').parent().next().html();
 			if(item){
-				$('#customer_name').val(name);
-				$('#customer_id').val(item);
+				$('#customerB_name').val(name);
+				$('#customerB_id').val(item);
 			}
 			$(this).dialog("close");
 		},
@@ -94,12 +96,82 @@ $("#dialog-message2").dialog({
 });
 <if condition="$contactsB.saltname">$("#saltname option[value='{$leads.saltname}']").prop("selected", true);</if>
 $(function(){
-	$("#customer_name").click(
+	$("#customerB_name").click(
 		function(){
 			$('#dialog-message2').dialog('open');
-			$('#dialog-message2').load('{:U("customer/listDialog")}');
+			$('#dialog-message2').load('{:U("customerB/listDialog")}');
 		}
 	);
 });
+$(function(){
+    $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
+        onError:function(msg,obj,errorlist){
+       		alert(msg);
+    	},
+    	submitAfterAjaxPrompt : "{:L('AJAX_VALIDATING_PLEASE_WAIT')}"
+	});
+    $("#email").formValidator({
+        tipID:"emailTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"邮件{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"邮件{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#email").regexValidator({
+        regExp:"email",
+        dataType:"enum",
+        onError:"邮件{:L('INCORRECT_FORMAT')}"
+    });
+    
+    $("#mobile").formValidator({
+        tipID:"mobileTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"手机{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"手机{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#mobile").regexValidator({
+        regExp:"mobile",
+        dataType:"enum",
+        onError:"手机{:L('INCORRECT_FORMAT')}"
+    });
+    
+    $("#tel").formValidator({
+        tipID:"telTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"电话{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"电话{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#tel").regexValidator({
+        regExp:"tel",
+        dataType:"enum",
+        onError:"电话{:L('INCORRECT_FORMAT')}"
+    });
+    
+    $("#zip_code").formValidator({
+        tipID:"zip_codeTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:6,max:6,
+        onErrorMin:"邮编为6位数字",
+        onErrorMax:"邮编为6位数字"
+    });
+})
 </script>
 <include file="Public:footer" />	

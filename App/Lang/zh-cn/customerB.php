@@ -102,6 +102,7 @@
 	'LEGITIMACY_CHECKING_PLEASE_WAIT'=>'正在对%s进行合法性校验，请稍候...',
 	'CUSTOMERB_POOL'=>'服务商合作池',	
 	'LINKMAN'=>'联系人',	
+ 	'SERVICE_RECORD'=>'服务记录',
 	'MAP'	 =>'百度地图',
 	'CUMTOMER_CARE'=>'服务商合作关怀',	
 	'CLIENT_STATISTICS'=>'服务商合作统计',	
