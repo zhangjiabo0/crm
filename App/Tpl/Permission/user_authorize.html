@@ -115,6 +115,26 @@
 			<td><input <php>if(in_array('contacts/export', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list5" type="checkbox" name="per[]" value="contacts/export"></td>
 		</tr>
 		<tr>
+			<td><input <php>if(in_array('contactsB/all', $owned_permission)){ echo 'checked="checked"';}</php>  type="checkbox" rel="16" class="check_all" name="check_contactsB" value="contactsB/all"/></td>
+			<td>{:L('CONTACTSB')}(服务商)</td>
+			<td><input <php>if(in_array('contactsB/index', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list16" type="checkbox" name="per[]" value="contactsB/index"></td>
+			<td><input <php>if(in_array('contactsB/view', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list16" type="checkbox" name="per[]" value="contactsB/view"></td>
+			<td><input <php>if(in_array('contactsB/add', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list16" type="checkbox" name="per[]" value="contactsB/add"></td>
+			<td><input <php>if(in_array('contactsB/edit', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list16" type="checkbox" name="per[]" value="contactsB/edit"></td>
+			<td><input <php>if(in_array('contactsB/delete', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list16" type="checkbox" name="per[]" value="contactsB/delete"></td>
+			<td><input <php>if(in_array('contactsB/export', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list16" type="checkbox" name="per[]" value="contactsB/export"></td>
+		</tr>
+		<tr>
+			<td><input <php>if(in_array('service/all', $owned_permission)){ echo 'checked="checked"';}</php>  type="checkbox" rel="17" class="check_all" name="check_service" value="service/all"/></td>
+			<td>{:L('SERVICE')}</td>
+			<td><input <php>if(in_array('service/index', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list17" type="checkbox" name="per[]" value="service/index"></td>
+			<td><input <php>if(in_array('service/view', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list17" type="checkbox" name="per[]" value="service/view"></td>
+			<td><input <php>if(in_array('service/add', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list17" type="checkbox" name="per[]" value="service/add"></td>
+			<td><input <php>if(in_array('service/edit', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list17" type="checkbox" name="per[]" value="service/edit"></td>
+			<td><input <php>if(in_array('service/delete', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list17" type="checkbox" name="per[]" value="service/delete"></td>
+			<td><input <php>if(in_array('service/export', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list17" type="checkbox" name="per[]" value="service/export"></td>
+		</tr>
+		<tr>
 			<td><input <php>if(in_array('task/all', $owned_permission)){ echo 'checked="checked"';}</php> type="checkbox" rel="6" class="check_all" name="check_task" value="task/all"/></td>
 			<td>{:L('TASK')}</td>
 			<td><input <php>if(in_array('task/index', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list6" type="checkbox" name="per[]" value="task/index"></td>
