@@ -10,7 +10,7 @@
 		  <li><a  href="{:U('customerB/index','content=resource')}"><img src="__PUBLIC__/img/customerB_source_icon.png"/>&nbsp; {:L('CUSTOMERB_POOL')}</a></li>
 		  <li><a href="{:U('contactsB/index')}"><img src="__PUBLIC__/img/contactsB_icon.png"/> &nbsp;{:L('LINKMAN')}</a></li>
 		  <li><a href="{:U('service/index')}"><img src="__PUBLIC__/img/service_icon.png"/> &nbsp;{:L('SERVICE')}</a></li>
-		  <li><a href="{:U('customerB/cares')}"><img src="__PUBLIC__/img/cares_icon.png"/> &nbsp;{:L('cumtomer_care')}</a></li>
+		  <!-- <li><a href="{:U('customerB/cares')}"><img src="__PUBLIC__/img/cares_icon.png"/> &nbsp;{:L('cumtomer_care')}</a></li> -->
 		  <li class="active"><a href="{:U('customerB/analytics')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp;{:L('CLIENT_STATISTICS')}</a></li>
 		</ul>
 	</div>
@@ -79,7 +79,7 @@
 					<tbody>
 						<volist name="reportList" id="vo">
 						<tr>
-							<td><a class="role_info" rel="{$vo.user.role_id}" href="javascript:void(0)">{$vo.user.user_name}</a></td>
+							<td><a class="role_info" rel="{$vo.user.role_id}" href="javascript:void(0)">{$vo.user.user_name}_{$vo.user.true_name}</a></td>
 							<td>{$vo.add_count}</td>
 							<td><a href="{:U('customerB/index')}&field=owner_role_id&search={$vo.user.role_id}">{$vo.own_count}</a></td>
 							<td>{$vo.success_count}</td>

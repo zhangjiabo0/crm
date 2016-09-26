@@ -1371,11 +1371,36 @@ class SettingAction extends Action{
 				}else{
 					alert('error',L('SELECT_CUSTOMER_TO_SEND_EMAIL'),$_SERVER['HTTP_REFERER']);
 				}
+			}elseif($model == 'customerB'){
+				$customerB_ids = trim($_GET['customerB_ids']);
+				if($customerB_ids){
+					if($customerB_ids == 'all'){
+						$all_ids = getSubRoleId();
+						$where['is_deleted'] = array('neq',1);
+						$where['owner_role_id'] = array('in', $all_ids);
+						$customerB_ids = D('CustomerBView')->where($where)->getField('customerB_id', true);
+						$contactsB_ids = M('RContactsBCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contactsB_id', true);
+						$contactsB_ids = implode(',', $contactsB_ids);
+						$contactsB = D('ContactsBView')->where('contactsB.contactsB_id in (%s)', $contactsB_ids)->select();
+					}else{
+						$contactsB_ids = M('RContactsBCustomerB')->where('customerB_id in (%s)', $customerB_ids)->getField('contactsB_id', true);
+						$contactsB_ids = implode(',', $contactsB_ids);
+						$contactsB = D('ContactsBView')->where('contactsB.contactsB_id in (%s)', $contactsB_ids)->select();
+					}
+					$this->contactsB = $contactsB;
+				}else{
+					alert('error',L('SELECT_CUSTOMER_TO_SEND_EMAIL'),$_SERVER['HTTP_REFERER']);
+				}
 			}elseif($model == 'contacts'){
 				$contacts_ids = trim($_GET['contacts_ids']);
 				if(!$contacts_ids) alert('error',L('SELECT_CONTACTS_TO_SEND_EMAIL'),$_SERVER['HTTP_REFERER']);
 				$contacts = D('ContactsView')->where('contacts.contacts_id in (%s)', $contacts_ids)->select();
 				$this->contacts = $contacts;
+			}elseif($model == 'contactsB'){
+				$contactsB_ids = trim($_GET['contactsB_ids']);
+				if(!$contactsB_ids) alert('error',L('SELECT_CONTACTS_TO_SEND_EMAIL'),$_SERVER['HTTP_REFERER']);
+				$contactsB = D('ContactsBView')->where('contactsB.contactsB_id in (%s)', $contactsB_ids)->select();
+				$this->contactsB = $contactsB;
 			}elseif($model == 'leads'){
 				$d_v_leads = D('LeadsView');
 				$leads_ids = trim($_GET['leads_ids']);
@@ -1386,6 +1411,16 @@ class SettingAction extends Action{
 					$contacts[] = array('name'=>$v['contacts_name'], 'customer_name'=>$v['name'], 'email'=>trim($v['email']));
 				}
 				$this->contacts = $contacts;
+			}elseif($model == 'leadsB'){
+				$d_v_leadsB = D('LeadsBView');
+				$leadsB_ids = trim($_GET['leadsB_ids']);
+				if('all' != $leadsB_ids){$where['leadsB_id'] = array('in',$leadsB_ids);}
+				$customerB_list = $d_v_leadsB->where($where)->select();
+				$contactsB = array();
+				foreach ($customerB_list as $k => $v) {
+					$contactsB[] = array('name'=>$v['contactsB_name'], 'customerB_name'=>$v['name'], 'email'=>trim($v['email']));
+				}
+				$this->contactsB = $contactsB;
 			}
 			$this->templateList = M('EmailTemplate')->order('order_id')->select();
 			$this->smtpList = M('UserSmtp')->select();
