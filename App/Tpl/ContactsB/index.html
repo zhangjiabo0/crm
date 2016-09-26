@@ -40,7 +40,8 @@
 								<option class="word" value="customerB_name">{:L('CUSTOMERB')}</option>
 								<option class="word" value="telephone">{:L('PHONE')}</option>
 								<option class="word" value="qq">QQ</option>
-								<option class="word" value="saltname">{:L('RESPECTFULLY')}</option>
+								<option class="word" value="weixin">微信</option>
+								<option class="word" value="sex">{:L('SEX')}</option>
 								<option class="word" value="email">{:L('EMAIL')}</option>
 								<option class="word" value="address">{:L('ADDRESS')}</option>
 								<option class="word" value="post">{:L('POSITION')}</option>
@@ -120,11 +121,12 @@
 							<tr>
 								<th><input class="check_all" id="check_all" type="checkbox" /> &nbsp;</th>
 								<th>{:L('CONTACT_NAME')}</th>
-								<if condition="C('ismobile') neq 1"><th>{:L('RESPECTFULLY')}</th></if>
+								<if condition="C('ismobile') neq 1"><th>{:L('SEX')}</th></if>
 								<th>{:L('BELONGS TO THE CUSTOMERB')}</th>
 								<th>{:L('PHONE')}</th>					
 								<if condition="C('ismobile') neq 1">
 								<th>QQ</th>
+								<th>微信</th>
 								<th>Email</th></a>
 								<th>{:L('CREATOR_ROLE')}</th>
 								</if>								
@@ -160,11 +162,12 @@
 								<td><input type="checkbox" class="check_list" name="contactsB_id[]" value="{$vo.contactsB_id}"/>&nbsp;
 								</td>
 								<td><a href="{:U('contactsB/view', 'id='.$vo['contactsB_id'])}">{$vo.name}</a></td>
-								<if condition="C('ismobile') neq 1"><td>{$vo.saltname}</td></if>
+								<if condition="C('ismobile') neq 1"><td>{$vo.sex}</td></if>
 								<td><a href="{:U('customerB/view', 'id='.$vo['customerB_id'])}">{$vo.customerB_name}</a></td>	
 								<td><if condition="C('ismobile') neq 1 ">{$vo.telephone}<else /><a href="tel://{$vo.telephone}">{$vo.telephone}</a></if></td>
 								<if condition="C('ismobile') neq 1">
 								<td>{$vo.qq}</td>
+								<td>{$vo.weixin}</td>
 								<td>{$vo.email}</td>
 								<td><notempty name="vo.creator.user_name"><a class="role_info" rel="{$vo.creator.role_id}" href="javascript:void(0)">{$vo.creator.user_name}</a></notempty></td>
 								<td>{$vo.create_time|date='Y-m-d H:i',###}</td>

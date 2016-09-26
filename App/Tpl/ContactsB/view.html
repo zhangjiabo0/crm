@@ -32,8 +32,8 @@
 								<td class="tdleft" width="15%">{:L('NAME')}</td>
 								<td width="35%">{$contactsB.name}</td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%">{:L('RESPECTFULLY')}</td>
-								<td with="35%">{$contactsB.saltname}</td>
+								<td class="tdleft" width="15%">{:L('SEX')}</td>
+								<td with="35%">{$contactsB.sex}</td>
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('BELONGS TO THE CUSTOMERB')}</td>
@@ -55,6 +55,10 @@
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('POSTCODE')}</td>
 								<td>{$contactsB.zip_code}</td>
+							</tr>
+							<tr>
+								<td class="tdleft" >微信：</td>
+								<td>{$contactsB.weixin}</td>
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('CREATE_TIME')}</td>

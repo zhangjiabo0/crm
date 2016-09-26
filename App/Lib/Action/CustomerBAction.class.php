@@ -506,10 +506,11 @@ class CustomerBAction extends Action {
 						$contactsB = array();
 						if($_POST['con_name']) $contactsB['name'] = $_POST['con_name'];
 						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
-						if($_POST['saltname']) $contactsB['saltname'] = $_POST['saltname'];
+						if($_POST['con_sex']) $contactsB['sex'] = $_POST['con_sex'];
 						if($_POST['con_email']) $contactsB['email'] = $_POST['con_email'];
 						if($_POST['con_post']) $contactsB['post'] = $_POST['con_post'];
 						if($_POST['con_qq']) $contactsB['qq'] = $_POST['con_qq'];
+						if($_POST['con_weixin']) $contactsB['weixin'] = $_POST['con_weixin'];
 						if($_POST['con_telephone']) $contactsB['telephone'] = $_POST['con_telephone'];
 						if($_POST['con_description']) $contactsB['description'] = $_POST['con_description'];
 						if(!empty($contactsB)){
@@ -597,6 +598,8 @@ class CustomerBAction extends Action {
 				$this->leadsB = $leadsB;
 			}
             $this->field_list = field_list_html("edit","customerB",$leadsB);
+//             dump(field_list_html("edit","customerB",$leadsB));
+//             die;
 			$this->refer_url=$_SERVER['HTTP_REFERER'];
             $alert = parseAlert();
             $this->alert = $alert;
