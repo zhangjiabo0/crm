@@ -2045,8 +2045,10 @@ class CustomerBAction extends Action {
 		}
 		if($_GET['start_time']) $start_time = strtotime(date('Y-m-d',strtotime($_GET['start_time'])));
 		$end_time = $_GET['end_time'] ?  strtotime(date('Y-m-d 23:59:59',strtotime($_GET['end_time']))) : strtotime(date('Y-m-d 23:59:59',time()));
+		
 		if($role_id == "all") {
-			$roleList = getRoleByDepartmentId($department_id);
+			$roleList = D('RoleView')->select();
+// 			$roleList = getRoleByDepartmentId($department_id);
 			$role_id_array = array();
 			foreach($roleList as $v2){
 				$role_id_array[] = $v2['role_id'];
@@ -2062,6 +2064,7 @@ class CustomerBAction extends Action {
 			$where_renenue['creator_role_id'] = $role_id;
 			$where_employees['creator_role_id'] = $role_id;
 		}
+		
 		if($start_time){
 			$where_create_time = array(array('elt',$end_time),array('egt',$start_time), 'and');
 			$where_source['create_time'] = $where_create_time;
@@ -2105,6 +2108,7 @@ class CustomerBAction extends Action {
 		$deal_count_total = 0;
 		$busi_customerB_array = M('Business')->getField('customerB_id', true);
 		$busi_customerB_id=implode(',', $busi_customerB_array);
+		
 		foreach($role_id_array as $v){
 			$user = getUserByRoleId($v);
 			$add_count = $m_customerB->where(array('is_deleted'=>0, 'creator_role_id'=>$v, 'create_time'=>$create_time))->count();
@@ -2123,8 +2127,8 @@ class CustomerBAction extends Action {
 		eval($setting_str);
 		$source_total_count = 0;
 		foreach($sourceList['data'] as $v){
-			unset($where_source['origin']);
-			$where_source['origin'] = $v;
+			unset($where_source['source']);
+			$where_source['source'] = $v;
 			$target_count = $m_customerB ->where($where_source)->count();
 			$source_count_array[] = '['.'"'.$v.'",'.$target_count.']';
 			$source_total_count += $target_count;
@@ -2132,8 +2136,6 @@ class CustomerBAction extends Action {
 		$source_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$source_total_count).']';
 		$this->source_count = implode(',', $source_count_array);
 
-		
-		
 		//客户行业统计图
 		$industry_count_array = array();
 		$setting = M('Fields')->where("model = 'customerB' and field = 'leixing'")->getField('setting');
@@ -2142,8 +2144,8 @@ class CustomerBAction extends Action {
 		$where_industry['is_deleted'] = 0;
 		$industry_total_count = 0;
 		foreach($industryList['data'] as $v){
-			unset($where_employees['industry']);
-			$where_industry['industry'] = $v;
+			unset($where_employees['leixing']);
+			$where_industry['leixing'] = $v;
 			$target_count = $m_customerB ->where($where_industry)->count();
 			$industry_total_count += $target_count;
 			$industry_count_array[] = '["'.$v.'",'.$target_count.']';
@@ -2166,6 +2168,7 @@ class CustomerBAction extends Action {
 		}
 		$employees_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$no_total_count).']';
 		$this->employees_count = implode(',', $employees_count_array);	
+		
 		//客户营业额统计
 // 		$revenue_count_array = array();
 // 		$setting = M('Fields')->where("model = 'customerB' and field = 'annual_revenue'")->getField('setting');

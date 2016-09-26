@@ -48,13 +48,23 @@
 				<div class="pull-left" style="margin-left:30px;">
 					<div class="alert-info alert" style="margin:0px;">{:L('EMAIL_TIPS_THREE_EXTRA')}
 					<br>{:L('EMAIL_TIPS_THREE_EXTRAS')}</div>
-					<div><textarea id="emails" name="emails" style="min-height: 375px;width:200px;"><notempty name="contacts">
+					<div>
+					<textarea id="emails" name="emails" style="min-height: 375px;width:200px;">
+					<notempty name="contacts">
 						<volist name="contacts" id="vo">
 							<if condition="is_email($vo['email'])">
 								{$vo['email']|trim},{$vo['name']},{$vo['customer_name']}<?php echo chr(10);?>
 							</if>
 						</volist>
-					</notempty></textarea></div>
+					</notempty>
+					<notempty name="contactsB">
+						<volist name="contactsB" id="vo">
+							<if condition="is_email($vo['email'])">
+								{$vo['email']|trim},{$vo['name']},{$vo['customerB_name']}<?php echo chr(10);?>
+							</if>
+						</volist>
+					</notempty>
+					</textarea></div>
 				</div>
 				<div class="pull-left" style="margin-left:30px;">
 					<p>
