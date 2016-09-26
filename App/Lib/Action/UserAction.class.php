@@ -549,13 +549,14 @@ class UserAction extends Action {
 				$departRoleIdArr[] = $v['role_id'];
 			}
 			$where['status'] = array('eq', 1);
+			$where['role_id'] = array('in', $departRoleIdArr);
 			if($this->_get('name','trim') == ''){
 				// $where['role_id'] = array('in', $departRoleIdArr);
 				$list = $d_role_view->where($where)->order('role_id')->page($p.',10')->select();
 				$data['list'] = $list;
 				$count = $d_role_view->where($where)->order('role_id')->count();
 			}else{
-				$where['user.name'] = array('like', '%'.trim($_GET['name']).'%');
+				$where['true_name'] = array('like', '%'.trim($_GET['name']).'%');
 				$list = $d_role_view->where($where)->order('role_id')->page($p.',10')->select();
 				$count = $d_role_view->where($where)->order('role_id')->count();
 				$data['list'] = $list;

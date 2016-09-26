@@ -2084,13 +2084,16 @@ class CustomerBAction extends Action {
 		if($role_id == "all"){
 			if($_GET['department'] != 'all'){
 				if(session('?admin')){
-					$roleList = M('role')->where('user_id <> 0')->getField('role_id',true);
+					$role_id_array = M('role')->where('user_id <> 0')->getField('role_id',true);
 				}else{
 					$roleList = getRoleByDepartmentId($department_id);
+					foreach ($roleList as $v){
+						$role_id_array[] = $v['role_id'];
+					}
 				}
-				foreach($roleList as $v){
-					$role_id_array[] = $v;
-				}
+// 				foreach($roleList as $v){
+// 					$role_id_array[] = $v;
+// 				}
 			}else{
 				$role_id_array = getSubRoleId();
 			}
