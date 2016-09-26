@@ -91,7 +91,7 @@
 						<thead>
 							<tr id="childNodes_num">
 								<th style="width:5%;"><input class="check_all" id="check_all" type="checkbox" /> &nbsp;</th>
-								<th style="width:10%;">图片</th>
+								<!-- <th style="width:10%;">图片</th> -->
 								<volist name="field_array" id="vo">
 								<th>{$vo.name}</th>
 								</volist>
@@ -114,7 +114,7 @@
 								<td>
 									<input name="product_id[]" class="check_list" type="checkbox" value="{$vo.product_id}"/>
 								</td>
-								<td>
+								<!-- <td>
 									<if condition="!empty($vo['path'])">
 										<a href="{$vo.path}" target="_self" class="litebox">
 											<img src="{$vo.path}" class="thumbnail thumb45">
@@ -122,7 +122,7 @@
 									<else/>
 										<img src="__PUBLIC__/img/default_img.png" class="thumbnail thumb45">
 									</if>
-								</td>
+								</td> -->
 								<volist name="field_array" id="v">
 								<td>
 									<if condition="$v['field'] eq 'category_id'">

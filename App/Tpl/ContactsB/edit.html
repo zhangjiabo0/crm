@@ -28,8 +28,9 @@
 								<td class="tdleft" width="15%" >{:L('NAME')}</td>
 								<td width="35%"><input class="text-input large-input" type="text" name="name" id="name" value="{$contactsB.name}"/></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%" >{:L('RESPECTFULLY')}</td>
-								<td width="35%"><input class="text-input large-input" type="text" name="saltname" id="saltname" value="{$contactsB.saltname}"/></td>
+								<td class="tdleft" width="15%" >{:L('SEX')}</td>
+								<td width="35%"><select id="sex" name="sex"><option value="">--请选择--</option><option value="男" <if condition="$contactsB.sex eq '男'">selected="selected"</if>>男</option><option value="女" <if condition="$contactsB.sex eq '女'">selected="selected"</if>>女</option></select></td>
+								<!-- <td width="35%"><input class="text-input large-input" type="text" name="saltname" id="saltname" value="{$contactsB.saltname}"/></td> -->
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMERB_CLICK_TO_SELECT')}</td>
@@ -42,7 +43,7 @@
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('PHONE')}</td>
-								<td><input class="text-input large-input" id="tel" name="telephone" type="text" value="{$contactsB.telephone}"/><span id="telTip" style="color:red;"></span></td>
+								<td><input class="text-input large-input" id="mobile" name="telephone" type="text" value="{$contactsB.telephone}"/><span id="mobileTip" style="color:red;"></span></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('EMAIL')}</td>
 								<td><input class="text-input large-input" id="email" name="email" type="text" value="{$contactsB.email}"/><span id="emailTip" style="color:red;"></span></td>
@@ -57,6 +58,8 @@
 							<tr>
 								<td class="tdleft" >{:L('CONTACT_ADDRESS')}</td>
 								<td><input class="text-input large-input" name="address" type="text" value="{$contactsB.address}"/></td>
+								<td class="tdleft" >微信</td>
+								<td><input class="text-input large-input" name="weixin" type="text" value="{$contactsB.weixin}"/></td>
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('REMARK')}</td>

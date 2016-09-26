@@ -81,6 +81,7 @@
 	'THE_PRIMARY_CONTACT_INFORMATION'=>'首要联系人信息',
 	'NAME'=>'姓名',
 	'NAMED'=>'称呼',
+ 	'SEX'=>'性别',
 	'MAILBOX'=>'邮箱',
 	'POSITION'=>'职位',
 	'CELLPHONE'=>'手机',
