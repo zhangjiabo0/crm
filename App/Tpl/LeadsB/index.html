@@ -145,6 +145,7 @@
 					<thead>						
 						<tr id="childNodes_num">
 							<th><input type="checkbox" id="check_all"/></th>
+							<th>服务商编码</th>
                             <volist name="field_array" id="vo">
 								<if condition="C('ismobile') eq 1 and $i  elt 1">
 									<th>{$vo.name}</th>
@@ -203,6 +204,9 @@
 							<tr>
 								<td>
 									<input name="leadsB_id[]" class="check_list" type="checkbox" value="{$vo.leadsB_id}"/> 
+								</td>
+								<td>
+									<span>{$vo['provide_id']}</span>
 								</td>
                                 <volist name="field_array" id="v">
 									<if condition="C('ismobile') eq 1 and $i  elt 1">

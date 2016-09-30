@@ -52,6 +52,10 @@
 								<td <if condition="C('ismobile') neq 1">colspan="3"</if>>{$service.service_content}</td>
 							</tr>
 							<tr>
+								<td class="tdleft" >服务评价</td>
+								<td>{$service.service_evaluate}</td>
+							</tr>
+							<tr>
 								<td class="tdleft">{:L('QR_CODE_CARD_INFORMATION')}</td>
 								<td <if condition="C('ismobile') neq 1">colspan="3"</if> style="color:#005580;">
 									<div class="pull-left"><img src="{:U('service/qrcode', 'service_id='.$service['service_id'])}"/></div><div class="pull-left">{:L('FUNCTION_DESCRIPTION')}</div>

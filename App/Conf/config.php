@@ -17,6 +17,7 @@ return array(
     'LANG_LIST' => 'en-us,zh-cn',
     'VAR_LANGUAGE' => '1',
     'COOKIE_PATH' => __ROOT__,
+	'SAVE_PATH'=>"Data/Files/",
     'SESSION_OPTIONS'=>array('cookie_path'=>__ROOT__),
     'APP_URL'=>'http://crm.yunyou.in',
 	'TOKEN_ON'=>false  // 是否开启令牌验证

@@ -27,6 +27,10 @@
 					<table class="table table-hover">
 						<tbody>
 							<tr>
+								<td class="tdleft" width="15%">服务商编码</td>
+								<td>{$leadsB.provide_id}</td>
+							</tr>
+							<tr>
 								<td class="tdleft" width="15%">{:L('CREATE_TIME')}</td>
 								<td><if condition="$leadsB['create_time'] neq 0">{$leadsB.create_time|date='Y-m-d H:i:s',###}</if></td>
 								<td class="tdleft">{:L('CREATOR_ROLE')}</td>
@@ -81,9 +85,62 @@
 								</if>
 							</if>
 							</volist>
+							<tr>
+	                        	<td class="tdleft" width="15%">附件:</td>
+	                            <td width="35%">{:W('File',array('add_file'=>$leadsB['add_file'],'mode'=>'show'))}</td>
+	                        </tr>
 						</tbody>
 					</table>
 				</div>
+				
+				<div class="back_box" style="margin-top: 10px;">
+					<div class="header1">
+						<div class="pull-left two-title" >{:L('LINKMAN')}</div>
+						<div class="pull-right"> <if condition="$leadsB['is_deleted'] == 0"><a href="{:U('contactsB/add','redirect=leadsB&leadsB_id='.$leadsB['leadsB_id'])}" class=" btn btn-primary">{:L('ADD')}</a></if></div>
+						<div style="clear:both;"></div>
+					</div>
+					<table class="table table-hover">
+						<if condition="$leadsB.contactsB eq null">
+							<tr>
+								<td <if condition="C('ismobile') neq 1">colspan="6"<else/>colspan="4"</if>>{:L('THERE_IS_NO_DATA')} </td>
+							</tr>
+						<else /> 
+							<tr>
+								<td width="18%">&nbsp;</td>
+								<td width="20%">{:L('NAME')}</td>
+								<td width="10%">职位</td>
+								<td width="10%">{:L('CELLPHONE')}</td>
+								<td width="10%">QQ</td>
+								<td width="16%">email</td>
+							</tr>
+							<volist name="leadsB['contactsB']" id="vo">
+								<tr>
+									<td class="tdleft" >
+										<if condition="$leadsB['is_deleted'] == 0"><a href="{:U('contactsB/view', 'id='.$vo['contactsB_id'])}">{:L('CHECK')}</a> &nbsp;<a href="{:U('contactsB/edit', 'id='.$vo['contactsB_id'].'&redirect=leadsB&redirect_id='.$leadsB['leadsB_id'])}">{:L('COMPILE')}</a>&nbsp;
+										<a href="{:U('contactsB/mdelete', 'id='.$vo['contactsB_id'].'&r=rContactsBLeadsB&module_id='.$leadsB['leadsB_id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;
+										<a href="{:U('contactsB/changeToFirstContact', 'id='.$vo['contactsB_id'].'&leadsB_id='.$leadsB['leadsB_id'])}">{:L('SET_AS_PRIMARY')}</a>
+										</if>
+									</td>
+									<td>
+										{$vo.name}<if condition="$vo['is_firstContact'] eq 'true'"> &nbsp;<span style="color:red;">( {:L('THE_PRIMARY_CONTACT')} )</span></if>{$vo.saltname}
+									</td>
+									<td>
+										<if condition="C('ismobile') eq 1"><a href="tel:{$vo.post}">{$vo.telephone}</a><else />{$vo.post}</if>
+									</td>
+									<td>
+										<if condition="C('ismobile') eq 1"><a href="tel:{$vo.telephone}">{$vo.telephone}</a><else />{$vo.telephone}</if>
+									</td>
+									 <td>
+										<if condition="C('ismobile') eq 1"><a href="qq:{$vo.qq}">{$vo.qq}</a><else />{$vo.qq}</if>
+									</td>
+									<td>
+										<if condition="C('ismobile') eq 1"><a href="mailto:{$vo.email}">{$vo.email}</a><else />{$vo.email}</if>
+									</td>
+								</tr>
+							</volist>
+						</if>
+					</table>
+				</div>	
 			</div>
 			<div class="tab-pane fade back_box" id="tab2">
 				<!-- 线索详情 -->
@@ -464,4 +521,24 @@ $(function(){
 	});
 });
 </script>
+<script type="text/javascript">
+	var upload_url = "{:U('upload')}";
+	var del_url = "{:U('del_file')}";
+	var app_path = "__ROOT__";
+	var cookie_prefix = "{:C('COOKIE_PREFIX')}";
+	var link_select = "{:U('Popup/link_select')}";
+	var _hmt = _hmt || [];
+	(function() {
+		var hm = document.createElement("script");
+		hm.src = "//hm.baidu.com/hm.js?2a935166b0c9b73fef3c8bae58b95fe4";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})(); 
+	
+	function is_mobile() {
+		return navigator.userAgent.match(/mobile/i);
+	}
+</script>
+<include file="Widget:css" />
+<include file="Widget:plugin" />
 <include file="Public:footer" />

@@ -36,8 +36,14 @@
 								<td with="35%">{$contactsB.sex}</td>
 							</tr>
 							<tr>
-								<td class="tdleft" >{:L('BELONGS TO THE CUSTOMERB')}</td>
-								<td><a href="{:U('Customer/view', 'id='.$contactsB['customer_id'])}">{$contactsB.customer_name}</a></td>
+								<if condition="$type eq 'customerB'">
+									<td class="tdleft" >{:L('BELONGS TO THE CUSTOMERB')}</td>
+									<td><a href="{:U('CustomerB/view', 'id='.$contactsB['customerB_id'])}">{$contactsB.customerB_name}</a></td>
+								<else/>
+									<td class="tdleft" >{:L('BELONGS TO THE LEADSB')}</td>
+									<td><a href="{:U('LeadsB/view', 'id='.$contactsB['leadsB_id'])}">{$contactsB.leadsB_name}</a></td>
+								</if>
+								
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('POSITION')}</td>
 								<td>{$contactsB.post}</td>

@@ -1,5 +1,5 @@
 <?php  
-class LeadsBAction extends Action{
+class LeadsBAction extends CommonAction{
 
 	public function _initialize(){
 		$action = array(
@@ -92,6 +92,11 @@ class LeadsBAction extends Action{
 	
 	
 	public function add(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		if($this->isPost()){
 			$m_leadsB = D('LeadsB');
 			$m_leadsB_data = D('LeadsBData');
@@ -116,6 +121,27 @@ class LeadsBAction extends Action{
 			}
 			if($m_leadsB->create()){
 				if($m_leadsB_data->create()!==false){
+					if($_POST['contactsB_name']){
+						$contactsB = array();
+						if($_POST['contactsB_name']) $contactsB['name'] = $_POST['contactsB_name'];
+						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
+						if($_POST['sex']) $contactsB['sex'] = $_POST['sex'];
+						if($_POST['email']) $contactsB['email'] = $_POST['email'];
+						if($_POST['position']) $contactsB['post'] = $_POST['position'];
+						if($_POST['qqnumber']) $contactsB['qq'] = $_POST['qqnumber'];
+						if($_POST['weixin']) $contactsB['weixin'] = $_POST['weixin'];
+						if($_POST['mobile']) $contactsB['telephone'] = $_POST['mobile'];
+						if(!empty($contactsB)){
+							$contactsB['creator_role_id'] = session('role_id');
+							$contactsB['create_time'] = time();
+							$contactsB['update_time'] = time();
+							if(!$contactsB_id = M('ContactsB')->add($contactsB)){
+								alert('error', L('ADD_THE_PRIMARY_CONTACT_FAILURE'), U('leadsB/add'));
+							}
+						}
+					}
+					
+					if($contactsB_id) $m_leadsB->contactsB_id = $contactsB_id;
 					if($_POST['nextstep_time']) $m_leadsB->nextstep_time = $_POST['nextstep_time'];
 					$m_leadsB->create_time = time();
 					$m_leadsB->update_time = time();
@@ -123,7 +149,13 @@ class LeadsBAction extends Action{
 					if ($leadsB_id = $m_leadsB->add()) {
 						$m_leadsB_data->leadsB_id = $leadsB_id;
 						$m_leadsB_data->add();
+						M('Provide')->add(array('provide_name'=>$_POST['name'],'leadsB_id'=>$leadsB_id));
 						actionLog($leadsB_id);
+						if ($contactsB_id && $leadsB_id) {
+							$rcc['contactsB_id'] = $contactsB_id;
+							$rcc['leadsB_id'] = $leadsB_id;
+							M('RContactsBLeadsB')->add($rcc);
+						}
 						if($_POST['submit'] == L('SAVE')) {
 							alert('success', L('LEADSB_ADD_SUCCESS'), U('leadsB/index'));
 						} else {
@@ -148,6 +180,11 @@ class LeadsBAction extends Action{
 	}
 	
 	public function edit(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$leadsB_id = $_POST['leadsB_id'] ? intval($_POST['leadsB_id']) : intval($_REQUEST['id']);
 		if(!check_permission($leadsB_id, 'leadsB')) $this->error(L('HAVE NOT PRIVILEGES'));
 		$field_list = M('Fields')->where('model = "leadsB"')->order('order_id')->select();
@@ -175,7 +212,8 @@ class LeadsBAction extends Action{
 					$m_leadsB->update_time = time();
 					$a = $m_leadsB->where('leadsB_id= %d',$_REQUEST['leadsB_id'])->save();
 					$b = $m_leadsB_data->where('leadsB_id=%d',$_REQUEST['leadsB_id'])->save();
-					if($a && $b!==false) {
+					$c = M('Provide')->where(array('leadsB_id'=>$_REQUEST['leadsB_id']))->save(array('provide_name'=>$_POST['name']));
+					if($a && $b!==false && $c!==false) {
 						actionLog($_REQUEST['leadsB_id']);
 						alert('success', L('LEADSB_MODIFIED_SUCCESSFULLY'), U('leadsB/index'));
 					} else {
@@ -216,7 +254,16 @@ class LeadsBAction extends Action{
 				if(!session('?admin')){
 					alert('error', L('HAVE NOT PRIVILEGES'), $_SERVER['HTTP_REFERER']);
 				}
+				
+				$add_files = $m_leadsB->where('leadsB_id in (%s)', $leadsB_ids)->getField('add_file',true);
+				$add_files_string = '';
+				foreach ($add_files as $v){
+					$add_files_string.=$v;
+				}
+				$add_files_arr = array_filter(explode(';',$add_files_string));
+				
 				if(($m_leadsB->where('leadsB_id in (%s)', $leadsB_ids)->delete()) && ($m_leadsB_data->where('leadsB_id in (%s)', $leadsB_ids)->delete())){	
+					M('Provide')->where(array('leadsB_id'=>array('in',$leadsB_ids)))->delete();
 					foreach ($_POST['leadsB_id'] as $value) {
 						actionLog($value);
 						foreach ($r_module as $key2=>$value2) {
@@ -226,6 +273,8 @@ class LeadsBAction extends Action{
 								M($key2)->where($key2 . '_id in (%s)', implode(',', $module_ids))->delete();
 							}
 						}
+						//删除附件
+						M('File')->where(array('sid'=>array('in',$add_files_arr)))->delete();
 					}
 					alert('success', L('DELETED SUCCESSFULLY'),U('leadsB/index','by=deleted'));
 				} else {
@@ -710,6 +759,11 @@ class LeadsBAction extends Action{
 		}
 	}
 	public function view(){		
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$leadsB_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 		if(!check_permission($leadsB_id, 'leadsB')) $this->error(L('HAVE NOT PRIVILEGES'));
 		if (0 == $leadsB_id) {
@@ -762,6 +816,20 @@ class LeadsBAction extends Action{
 				$record_count ++;
 			}
 			$leadsB['record_count'] = $record_count;
+			
+			$contactsB_ids = M('rContactsBLeadsB')->where('leadsB_id = %d', $leadsB_id)->getField('contactsB_id', true);
+			$leadsB['contactsB'] = M('contactsB')->where('contactsB_id in (%s) and is_deleted=0', implode(',', $contactsB_ids))->select();
+			foreach($leadsB['contactsB'] as $k=>$v){
+				if(M('LeadsB')->where('contactsB_id = %d',$v['contactsB_id'])->select()){
+					$leadsB['contactsB'][$k]['is_firstContact'] = 'true';
+				}else{
+					$leadsB['contactsB'][$k]['is_firstContact'] = 'false';
+				}
+			}
+			
+			$contactsB_count = M('contactsB')->where('contactsB_id in (%s) and is_deleted=0', implode(',', $contactsB_ids))->count();
+			$leadsB['contactsB_count'] = empty($contactsB_count)?0:$contactsB_count;
+			
 			$this->statusList = M('BusinessStatus')->order('order_id')->select();
 			$this->leadsB = $leadsB;
 			$this->field_list = $field_list;

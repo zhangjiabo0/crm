@@ -1,5 +1,5 @@
 <?php 
-class CustomerBAction extends Action {
+class CustomerBAction extends CommonAction {
 
 	public function _initialize(){
 		$action = array(
@@ -478,6 +478,11 @@ class CustomerBAction extends Action {
 	}
 	
 	public function add(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		if($this->isPost()){		
 			$m_customerB = D('CustomerB');
 			$m_customerB_data = D('CustomerBData');
@@ -556,6 +561,9 @@ class CustomerBAction extends Action {
 						$leadsB_data['contactsB_id'] = $contactsB_id;
 						$leadsB_data['transform_role_id'] = session('role_id');
 						M('LeadsB')->where('leadsB_id = %d', $leadsB_id)->save($leadsB_data);
+						M('Provide')->where(array('leadsB_id'=>$leadsB_id))->save(array('provide_name'=>$_POST['name'],'customerB_id'=>$customerB_id));
+					}else{
+						M('Provide')->add(array('customerB_id'=>$customerB_id,'provide_name'=>$_POST['name']));
 					}
 					
 					//记录操作记录
@@ -675,8 +683,17 @@ class CustomerBAction extends Action {
 						}
 					}
 				}
+				
+				$add_files = $m_customerB->where('customerB_id in (%s)', $customerB_ids)->getField('add_file',true);
+				$add_files_string = '';
+				foreach ($add_files as $v){
+					$add_files_string.=$v;
+				}
+				$add_files_arr = array_filter(explode(';',$add_files_string));
+				
 				if($m_customerB->where('customerB_id in (%s)', $customerB_ids)->delete()){	
                     M('CustomerBDate')->where('customerB_id in (%s)', $customerB_ids)->delete();
+                    M('Provide')->where(array('customerB_id'=>array('in',$customerB_ids)))->delete();
 					foreach ($_POST['customerB_id'] as $value) {
 						foreach ($r_module as $key2=>$value2) {
 							$module_ids = M($value2)->where('customerB_id = %d', $value)->getField($key2 . '_id', true);
@@ -685,6 +702,8 @@ class CustomerBAction extends Action {
 								M($key2)->where($key2 . '_id in (%s)', implode(',', $module_ids))->delete();
 							}
 						}
+						//删除附件
+						M('File')->where(array('sid'=>array('in',$add_files_arr)))->delete();
 					}
 					alert('success', L('DELETED_SUCCESSFULLY'), U('CustomerB/index','by=deleted'));
 				} else {
@@ -722,6 +741,11 @@ class CustomerBAction extends Action {
 	}
 
 	public function edit(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
         if(!check_permission(intval($this->_request('id')), 'customerB')) $this->error(L('HAVE NOT PRIVILEGES'));
 		$customerB = D('CustomerBView')->where('customerB.customerB_id = %d',$this->_request('id'))->find();
 		
@@ -758,7 +782,8 @@ class CustomerBAction extends Action {
 					$m_customerB->update_time = time();
 					$a = $m_customerB->where('customerB_id =%s ', $customerB['customerB_id'])->save();
 					$b = $m_customerB_data->where('customerB_id =%s', $customerB['customerB_id'])->save();
-					if($a !== false && $b !== false){
+					$c = M('Provide')->where(array('customerB_id'=>$customerB['customerB_id']))->save(array('provide_name'=>$_POST['name']));
+					if($a !== false && $b !== false && $c !== false){
 						if($_POST['contactsB_id'] && ($_POST['contactsB_id'] != $customerB['contactsB_id'])){
 							$rcc['contactsB_id'] = intval($_POST['contactsB_id']);
 							$rcc['customerB_id'] = $customerB['customerB_id'];
@@ -1234,6 +1259,11 @@ class CustomerBAction extends Action {
 
     
 	public function view(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$customerB_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 		if (0 == $customerB_id) {
 			alert('error', L('parameter_error'), U('customerB/index'));

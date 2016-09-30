@@ -16,6 +16,7 @@
 			<include file="Public:alert" />
 			<form id="form1" action="{:U(customer/add)}" method="post">
 			     <input type="hidden" name="refer_url" value="{$refer_url}">
+			     <input type="hidden" id="add_file" name="add_file" value="{$leads.add_file}">
                 <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
 					<tbody>
 						<tr><th colspan="4">{:L('KEY_MESSAGE')}</th></tr>
@@ -116,6 +117,14 @@
                         </if>
 						<php>}</php>
 						</volist>
+						<tr>
+                        	<td class="tdleft" width="15%">附件:</td>
+                        	<if condition="$leads['add_file'] eq ''">
+                            	<td width="35%">{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'add'))}</td>
+                            <else/>
+                            	<td width="35%">{:W('File',array('add_file'=>$leads['add_file'],'mode'=>'edit'))}</td>
+                            </if>
+                        </tr>
 					</tbody>
 					<tfoot>
 						<tr>
@@ -471,4 +480,24 @@ $("[data-type='nummber']").keyup(function(){
 	}
 });
 </script>
+<script type="text/javascript">
+	var upload_url = "{:U('upload')}";
+	var del_url = "{:U('del_file')}";
+	var app_path = "__ROOT__";
+	var cookie_prefix = "{:C('COOKIE_PREFIX')}";
+	var link_select = "{:U('Popup/link_select')}";
+	var _hmt = _hmt || [];
+	(function() {
+		var hm = document.createElement("script");
+		hm.src = "//hm.baidu.com/hm.js?2a935166b0c9b73fef3c8bae58b95fe4";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})(); 
+	
+	function is_mobile() {
+		return navigator.userAgent.match(/mobile/i);
+	}
+</script>
+<include file="Widget:css" />
+<include file="Widget:plugin" />
 <include file="Public:footer" />

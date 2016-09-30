@@ -16,6 +16,7 @@
 			<include file="Public:alert" />
 			<form id="form1" action="{:U(customerB/add)}" method="post">
 			     <input type="hidden" name="refer_url" value="{$refer_url}">
+			     <input type="hidden" id="add_file" name="add_file" value="{$leadsB.add_file}">
                 <table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
 					<tbody>
 						<tr><th colspan="4">{:L('KEY_MESSAGE')}</th></tr>
@@ -62,7 +63,7 @@
                         </tr>
                         <tr>
                             <td class="tdleft" >{:L('NAME')}</td>
-                            <td><input class="user_input" type="text" name="con_name" value="{$leadsB['contactsB_name']}"></td>
+                            <td><input class="user_input" type="text" name="con_name" id="con_name" value="{$leadsB['contactsB_name']}"><span id="con_nameTip" style="color:red;"></span></td>
                             <td class="tdleft" >{:L('SEX')}</td>
                             <td><input class="user_input" type="text" name="con_sex" value="{$leadsB['sex']}"></td>
                         </tr>
@@ -120,6 +121,14 @@
                         </if>
 						<php>}</php>
 						</volist>
+						<tr>
+                        	<td class="tdleft" width="15%">附件:</td>
+                        	<if condition="$leadsB['add_file'] eq ''">
+                        		<td width="35%">{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'add'))}</td>
+                        	<else/>
+                        		<td width="35%">{:W('File',array('add_file'=>$leadsB['add_file'],'mode'=>'edit'))}</td>
+                        	</if>
+                        </tr>
 					</tbody>
 					<tfoot>
 						<tr>
@@ -240,10 +249,23 @@ $(function(){
 $(function(){
     $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
         onError:function(msg,obj,errorlist){
-        alert(msg);
-    },
-    submitAfterAjaxPrompt : '{:L('THERE_ARE_DATA_ARE_ASYNCHRONOUS_VALIDATION')}'
-});
+	        alert(msg);
+	    },
+    	submitAfterAjaxPrompt : '{:L('THERE_ARE_DATA_ARE_ASYNCHRONOUS_VALIDATION')}'
+	});
+    
+    $("#con_name").formValidator({
+        tipID:"con_nameTip",
+        empty:false,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,max:255,
+        onErrorMin:"姓名必填",
+        onErrorMax:"姓名超出最大长度"
+    });
+    
 <volist name="field_list[main]" id="vo">
     <if condition="$vo['is_validate'] == 1">
         <if condition="$vo['form_type'] != 'box' || $vo['setting']['type'] == 'select'">
@@ -468,6 +490,7 @@ $(function(){
          </if>
      </if>
 </volist>
+
 });
 $("[data-type='nummber']").keyup(function(){
 	if(isNaN($(this).val())){
@@ -475,4 +498,24 @@ $("[data-type='nummber']").keyup(function(){
 	}
 });
 </script>
+<script type="text/javascript">
+	var upload_url = "{:U('upload')}";
+	var del_url = "{:U('del_file')}";
+	var app_path = "__ROOT__";
+	var cookie_prefix = "{:C('COOKIE_PREFIX')}";
+	var link_select = "{:U('Popup/link_select')}";
+	var _hmt = _hmt || [];
+	(function() {
+		var hm = document.createElement("script");
+		hm.src = "//hm.baidu.com/hm.js?2a935166b0c9b73fef3c8bae58b95fe4";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})(); 
+	
+	function is_mobile() {
+		return navigator.userAgent.match(/mobile/i);
+	}
+</script>
+<include file="Widget:css" />
+<include file="Widget:plugin" />
 <include file="Public:footer" />

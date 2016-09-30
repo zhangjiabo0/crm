@@ -1,5 +1,5 @@
 <?php 
-class CustomerAction extends Action {
+class CustomerAction extends CommonAction {
 
 	public function _initialize(){
 		$action = array(
@@ -478,6 +478,11 @@ class CustomerAction extends Action {
 	}
 	
 	public function add(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		if($this->isPost()){		
 			$m_customer = D('Customer');
 			$m_customer_data = D('CustomerData');
@@ -672,6 +677,14 @@ class CustomerAction extends Action {
 						}
 					}
 				}
+				
+				$add_files = $m_customer->where('customer_id in (%s)', $customer_ids)->getField('add_file',true);
+				$add_files_string = '';
+				foreach ($add_files as $v){
+					$add_files_string.=$v;
+				}
+				$add_files_arr = array_filter(explode(';',$add_files_string));
+				
 				if($m_customer->where('customer_id in (%s)', $customer_ids)->delete()){	
                     M('CustomerDate')->where('customer_id in (%s)', $customer_ids)->delete();
 					foreach ($_POST['customer_id'] as $value) {
@@ -682,6 +695,8 @@ class CustomerAction extends Action {
 								M($key2)->where($key2 . '_id in (%s)', implode(',', $module_ids))->delete();
 							}
 						}
+						//删除附件
+						M('File')->where(array('sid'=>array('in',$add_files_arr)))->delete();
 					}
 					alert('success', L('DELETED_SUCCESSFULLY'), U('Customer/index','by=deleted'));
 				} else {
@@ -719,6 +734,11 @@ class CustomerAction extends Action {
 	}
 
 	public function edit(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
         if(!check_permission(intval($this->_request('id')), 'customer')) $this->error(L('HAVE NOT PRIVILEGES'));
 		$customer = D('CustomerView')->where('customer.customer_id = %d',$this->_request('id'))->find();
 		
@@ -1231,6 +1251,11 @@ class CustomerAction extends Action {
 
     
 	public function view(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$customer_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 		if (0 == $customer_id) {
 			alert('error', L('parameter_error'), U('customer/index'));

@@ -36,6 +36,7 @@ class UploadFile {//类定义开始
         'zipImages'         =>  false,// 压缩图片文件上传
         'autoSub'           =>  false,// 启用子目录保存文件
         'subType'           =>  'hash',// 子目录创建方式 可以使用hash date
+    	'subFolder'			=>	'',
         'dateFormat'        =>  'Ymd',
         'hashLevel'         =>  1, // hash的目录层次
         'savePath'          =>  '',// 上传文件保存路径
@@ -378,6 +379,11 @@ class UploadFile {//类定义开始
                 }
                 break;
         }
+        
+        if(!empty($this->subFolder)){
+        	$dir=$this->subFolder."/".$dir;
+        }
+        
         if(!is_dir($file['savepath'].$dir)) {
             mkdir($file['savepath'].$dir,0777,true);
         }

@@ -19,10 +19,11 @@ class ContactsBAction extends Action {
 		}elseif($this->isPost()){
 			$name = trim($_POST['name']);
 			$customerB_id = trim($_POST['customerB_id']);
+			$leadsB_id = trim($_POST['leadsB_id']);
 			if ($name == '' || $name == null) {
 				$this -> error(L('CONTACT NAME CANNOT BE EMPTY'));
 			}
-			if ($customerB_id == '' || $customerB_id == null) {
+			if (($customerB_id == '' || $customerB_id == null) && ($leadsB_id == '' || $leadsB_id == null)) {
 				$this->error(L('CONTACTSB_CUSTOMERB_CANNOT_BE_EMPTY'));
 			}
 			$contactsB = M('contactsB');
@@ -57,6 +58,11 @@ class ContactsBAction extends Action {
 					$rContactsBCustomerB['customerB_id'] =  $_POST['customerB_id'];
 					M('rContactsBCustomerB') ->add($rContactsBCustomerB);
 				}
+				if($_POST['leadsB_id']){
+					$rContactsBLeadsB['contactsB_id'] =  $contactsB_id;
+					$rContactsBLeadsB['leadsB_id'] =  $_POST['leadsB_id'];
+					M('rContactsBLeadsB') ->add($rContactsBLeadsB);
+				}
 				
 				if($_POST['redirect'] == 'customerB'){
 					//alert('success','添加成功!',U('customerB/view','id='.intval($_POST['redirect_id'])));
@@ -64,6 +70,13 @@ class ContactsBAction extends Action {
 						alert('success', '添加联系人成功', $_POST['refer_url']);
 					}else{
 						alert('success',L('ADD A SUCCESS'),U('contactsB/view','id='.$contactsB_id));
+					}
+				}elseif($_POST['redirect'] == 'leadsB'){
+					//alert('success','添加成功!',U('customerB/view','id='.intval($_POST['redirect_id'])));
+					if($_POST['refer_url']){
+						alert('success', '添加联系人成功', $_POST['refer_url']);
+					}else{
+						alert('success',L('ADD A SUCCESS'),U('leadsB/view','id='.$leadsB_id));
 					}
 				}else{
 					if($_POST['submit'] == L('SAVE')){
@@ -82,10 +95,16 @@ class ContactsBAction extends Action {
 				$this->redirect = $_GET['redirect'];
 			}
 			$customerB = M('customerB');
+			$leadsB = M('leadsB');
 			$this->customerB_id =$customerB_id = $_GET['customerB_id'];
 			$this->customerB_name =$customerB->where('customerB_id =%s',$customerB_id)->getField('name');
+			
+			$this->leadsB_id =$leadsB_id = $_GET['leadsB_id'];
+			$this->leadsB_name =$leadsB->where('leadsB_id =%s',$leadsB_id)->getField('name');
+			
 			$this->refer_url=$_SERVER['HTTP_REFERER'];
 			$this->customerB = $customerB->where('customerB_id = %s', $_GET['redirect_id'])->find();
+			$this->leadsB = $leadsB->where('leadsB_id = %s', $_GET['redirect_id'])->find();
 			$this->alert = parseAlert();
 			$this->display();
 		}
@@ -94,15 +113,21 @@ class ContactsBAction extends Action {
 	public function edit(){
 		$m_contactsB = M('contactsB');
 		$rContactsBCustomerB = M('rContactsBCustomerB');
+		$rContactsBLeadsB = M('rContactsBLeadsB');
 		$contactsB_id = $_GET['id'] ? intval($_GET['id']) : intval($_POST['contactsB_id']);
 		if(empty($contactsB_id)){
 			alert('error',L('PARAMETER_ERROR'),$_SERVER['HTTP_REFERER']);
 		}
 		$contactsB = D('ContactsBView')->where(array('contactsB_id'=>$contactsB_id))->find();
+		if(empty($contactsB['customerB_id'])){
+			$contactsB = D('ContactsBLView')->where(array('contactsB_id'=>$contactsB_id))->find();
+		}
+		
 		if(empty($contactsB)) alert('error', L('RECORD_NOT_EXIST_OR_HAVE_BEEN_DELETED',array(L('CONTACTSB'))),U('contactsB/index'));
 		//检查权限(联系人编辑权限跟随客户，如果可以编辑客户即可编辑联系人)
 		$customerB_id = $rContactsBCustomerB->where('contactsB_id = %d', $contactsB_id)->getField('customerB_id');
-		if(!vali_permission('customerB','edit') || !check_permission($customerB_id, 'customerB')) $this->error(L('HAVE NOT PRIVILEGES'));
+		$leadsB_id = $rContactsBLeadsB->where('contactsB_id = %d', $contactsB_id)->getField('leadsB_id');
+		if((!vali_permission('customerB','edit') || !check_permission($customerB_id, 'customerB')) && (!vali_permission('leadsB','edit') || !check_permission($leadsB_id, 'leadsB'))) $this->error(L('HAVE NOT PRIVILEGES'));
 		
 		if ($this->isPost()) {
 			$m_contactsB->create();
@@ -119,6 +144,15 @@ class ContactsBAction extends Action {
 					$rContactsBCustomerB -> add($data);
 				}elseif ($_POST['customerB_id'] != $customerB_id) {
 					$rContactsBCustomerB -> where('contactsB_id = %d' , $_POST['contactsB_id']) -> setField('customerB_id',$_POST['customerB_id']);
+				}	
+			}elseif (!empty($_POST['leadsB_id'])) {
+				if (empty($leadsB_id)) {
+					$data['contactsB_id'] = $_POST['contactsB_id'];
+					$data['leadsB_id'] = $_POST['leadsB_id'];
+					$rContactsBLeadsB ->where('contactsB_id = %d', $_POST['contactsB_id'])->delete();
+					$rContactsBLeadsB -> add($data);
+				}elseif ($_POST['leadsB_id'] != $leadsB_id) {
+					$rContactsBLeadsB -> where('contactsB_id = %d' , $_POST['contactsB_id']) -> setField('leadsB_id',$_POST['leadsB_id']);
 				}	
 			}else{
 				alert('error', L('NOT NULL',array(L('CUSTOMERB'))), $_SERVER['HTTP_REFERER']);
@@ -138,16 +172,28 @@ class ContactsBAction extends Action {
 	public function view(){
 		$contactsB_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 		$rContactsBCustomerB = M('rContactsBCustomerB');
+		$rContactsBLeadsB = M('rContactsBLeadsB');
 		$d_contactsB = D('ContactsBView');
 		if (0 == $contactsB_id) {
 			alert('error', L('PARAMETER_ERROR'), U('contactsB/index'));
 		} else {
 			//检查权限(联系人查看权限跟随客户，如果可以查看客户即可查看联系人)
 			$customerB_id = $rContactsBCustomerB->where('contactsB_id = %d', $contactsB_id)->getField('customerB_id');
-			if(!vali_permission('customerB','view') || !check_permission($customerB_id, 'customerB')){
-				$this->error(L('HAVE NOT PRIVILEGES'));
+			if(!empty($customerB_id)){
+				if(!vali_permission('customerB','view') || !check_permission($customerB_id, 'customerB')){
+					$this->error(L('HAVE NOT PRIVILEGES'));
+				}
+				$contactsB = D('ContactsBView')->where('contactsB.contactsB_id = %d' , $contactsB_id)->find();
+				$this->type = 'customerB';
+			}else{
+				$leadsB_id = $rContactsBLeadsB->where('contactsB_id = %d', $contactsB_id)->getField('leadsB_id');
+				if(!vali_permission('leadsB','view') || !check_permission($leadsB_id, 'leadsB')){
+					$this->error(L('HAVE NOT PRIVILEGES'));
+				}
+				$contactsB = D('ContactsBLView')->where('contactsB.contactsB_id = %d' , $contactsB_id)->find();
+				$this->type = 'leadsB';
 			}
-			$contactsB = D('ContactsBView')->where('contactsB.contactsB_id = %d' , $contactsB_id)->find();
+			
 			if(empty($contactsB)){
 				alert('error',L('RECORD_NOT_EXIST_OR_HAVE_BEEN_DELETED',array(L('CONTACTSB'))),U('contactsB/index'));
 			}
@@ -621,10 +667,21 @@ class ContactsBAction extends Action {
 	public function changeToFirstContact(){
 		$id = $_GET['id'];
 		$customerB_id = $_GET['customerB_id'];
+		$leadsB_id = $_GET['leadsB_id'];
 		if(isset($id) && isset($customerB_id)){
 			$m_customerB = M('CustomerB');
 			$data['contactsB_id'] = $id;
 			if($m_customerB->where('customerB_id = %d',$customerB_id)->save($data)){
+				alert('success', L('SET THE FIRST CONTACT SUCCESS') ,$_SERVER['HTTP_REFERER']);
+			}else{
+				alert('error', L('NO CHANGE INFORMATION') ,$_SERVER['HTTP_REFERER']);
+			}
+		}elseif(isset($id) && isset($leadsB_id)){
+			$m_leadsB = M('LeadsB');
+			$data['contactsB_id'] = $id;
+			$contacts = M('ContactsB')->field('name')->find($id);
+			$data['contactsB_name'] = $contacts['name'];
+			if($m_leadsB->where('leadsB_id = %d',$leadsB_id)->save($data)){
 				alert('success', L('SET THE FIRST CONTACT SUCCESS') ,$_SERVER['HTTP_REFERER']);
 			}else{
 				alert('error', L('NO CHANGE INFORMATION') ,$_SERVER['HTTP_REFERER']);

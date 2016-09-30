@@ -155,6 +155,7 @@
 						<if condition="$Think.get.content neq 'resource' and $Think.get.by neq 'deleted'">
 							<th width="10px">&nbsp;</th>
 						</if>
+						<th>服务商编码</th>
                             <volist name="field_array" id="vo">
 								<if condition="C('ismobile') eq 1 and $i  elt 1">
 									<th>{$vo.name}</th>
@@ -213,6 +214,9 @@
 							<if condition="$Think.get.content neq 'resource' and $Think.get.by neq 'deleted'">
 								<td><if condition="$focus_id"><a href="{:U('customerB/batchclose', 'customerB_id='.$vo['customerB_id'])}"><span class="yes-gz" title="取消关注"></span></a><else/><a href="{:U('customerB/batchfocus', 'customerB_id='.$vo['customerB_id'])}"><span class="no-gz" title="关注"></span></if></td>
 							</if>
+							<td>
+								<span>{$vo['provide_id']}</span>
+							</td>
                                 <volist name="field_array" id="v">
 									<if condition="C('ismobile') eq 1 and $i  elt 1">
 										<td>

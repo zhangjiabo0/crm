@@ -1,4 +1,6 @@
 <include file="Public:header" />
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
 <div class="container">
 	<div class="page-header">
 		<h4>{:L('ADD_SERVICE')}</h4>
@@ -6,7 +8,7 @@
 	<div class="row">
 		<div class="span12">
 			<include file="Public:alert" />
-			<form action="{:U('service/add')}" method="post">
+			<form action="{:U('service/add')}" id="form1" method="post">
 				<input type="hidden" name="refer_url" value="{$refer_url}"/>
 				<input type="hidden" name="redirect" value="{$redirect}"/>
 				<input type="hidden" name="redirect_id" value="{$redirect_id}"/>  
@@ -31,18 +33,31 @@
 					
 						<tr>
 							<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMERB_CLICK_TO_SELECT')}</td>
-							<td><input type="hidden" name="customerB_id" id="customerB_id" <if condition="$customerB_id">value="{$customerB_id}"<else/>value="{$customerB['customerB_id']}"</if>/><input type="text" name="customerB_name" id="customerB_name" <if condition="$customerB_id">value="{$customerB_name}"<else/>value="{$customerB.name}"</if>/></td>
+							<td><input type="hidden" name="customerB_id" id="customerB_id" <if condition="$customerB_id">value="{$customerB_id}"<else/>value="{$customerB['customerB_id']}"</if>/><input type="text" name="customerB_name" id="customerB_name" <if condition="$customerB_id">value="{$customerB_name}"<else/>value="{$customerB.name}"</if>/><span id="customerB_nameTip" style="color:red;"></span></td>
 							<if condition="C('ismobile') eq 1"></tr><tr></if>
 							
 						</tr>
 						
 						<tr>
 							<td class="tdleft" >{:L('SERVICE_TIME')}</td>
-							<td><input onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" name="service_time" id="service_time" type="text" value=""></td>
+							<td><input onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" name="service_time" id="service_time" type="text" value=""><span id="service_timeTip" style="color:red;"></span></td>
 						</tr>
 						<tr>
 							<td class="tdleft" >{:L('SERVICE_CONTENT')}</td>
-							<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea rows="6" class="span8" name="service_content" ></textarea></td>
+							<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea rows="6" class="span8" name="service_content" id="service_content"></textarea><span id="service_contentTip" style="color:red;"></span></td>
+						</tr>
+						<tr>
+							<td class="tdleft">服务评价</td>
+							<td>
+								<select id="service_evaluate" name="service_evaluate">
+									<option value="">--请选择--</option>
+									<option value="非常满意" >非常满意</option>
+									<option value="满意" >满意</option>
+									<option value="一般" >一般</option>
+									<option value="不满意" >不满意</option>
+								</select>
+								<span id="service_evaluateTip" style="color:red;"></span>
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -89,5 +104,58 @@ $("[data-type='nummber']").keyup(function(){
 		$(this).val($(this).val().replace(/\D/g,''))
 	}
 });
+$(function(){
+    $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
+        onError:function(msg,obj,errorlist){
+       		alert(msg);
+    	},
+    	submitAfterAjaxPrompt : "{:L('AJAX_VALIDATING_PLEASE_WAIT')}"
+	});
+    $("#customerB_name").formValidator({
+        tipID:"customerB_nameTip",
+        empty:false,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,max:255,
+        onErrorMin:"所属服务商合作不能为空",
+        onErrorMax:"所属服务商合作超出最大长度"
+    });
+    
+    $("#service_time").formValidator({
+        tipID:"service_timeTip",
+        empty:false,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,max:255,
+        onErrorMin:"服务时间不能为空",
+        onErrorMax:"服务时间超出最大长度"
+    });
+    
+    $("#service_content").formValidator({
+        tipID:"service_contentTip",
+        empty:false,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,
+        onErrorMin:"服务内容不能为空"
+    });
+    
+    $("#service_evaluate").formValidator({
+        tipID:"service_evaluateTip",
+        empty:false,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,
+        onErrorMin:"服务评价不能为空"
+    });
+})
 </script>
 <include file="Public:footer" />
