@@ -33,8 +33,14 @@
 								<!-- <td width="35%"><input class="text-input large-input" type="text" name="saltname" id="saltname" value="{$contactsB.saltname}"/></td> -->
 							</tr>
 							<tr>
-								<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMERB_CLICK_TO_SELECT')}</td>
-								<td><input name="customerB_name" id="customerB_name" type="text" value="{$contactsB.customerB_name}"/><input id="customerB_id" name="customerB_id" type="hidden" value="{$contactsB.customerB_id}"/></td>
+								<if condition="$contactsB['customerB_id'] neq ''">
+									<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMERB_CLICK_TO_SELECT')}</td>
+									<td><input name="customerB_name" id="customerB_name" type="text" value="{$contactsB.customerB_name}"/><input id="customerB_id" name="customerB_id" type="hidden" value="{$contactsB.customerB_id}"/></td>
+								<else/>
+									<td class="tdleft" >{:L('BELONGS_TO_THE_LEADSB_CLICK_TO_SELECT')}</td>
+									<td><input name="leadsB_name" id="leadsB_name" type="text" value="{$contactsB.leadsB_name}"/><input id="leadsB_id" name="leadsB_id" type="hidden" value="{$contactsB.leadsB_id}"/></td>
+								</if>
+								
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" >{:L('POSITION')}</td>
 								<td>
@@ -74,6 +80,7 @@
 </div> <!-- End .content-box -->			
 
 <div id="dialog-message2" title="{:L('SELECT_THE_CONTACT_BELONGS_TO_THE_CUSTOMERB')}">loading...</div>
+<div id="dialog-message3" title="{:L('SELECT_THE_CONTACT_BELONGS_TO_THE_LEADSB')}">loading...</div>
 <script type="text/javascript">
 <if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
 $("#dialog-message2").dialog({
@@ -97,12 +104,39 @@ $("#dialog-message2").dialog({
 	},
 	position: ["center", 100]
 });
+$("#dialog-message3").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"{:L('AFFIRM')}": function () {
+			var item = $('input:radio[name="leadsB"]:checked').val();
+			var name = $('input:radio[name="leadsB"]:checked').parent().next().html();
+			if(item){
+				$('#leadsB_name').val(name);
+				$('#leadsB_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
 <if condition="$contactsB.saltname">$("#saltname option[value='{$leads.saltname}']").prop("selected", true);</if>
 $(function(){
 	$("#customerB_name").click(
 		function(){
 			$('#dialog-message2').dialog('open');
 			$('#dialog-message2').load('{:U("customerB/listDialog")}');
+		}
+	);
+	$("#leadsB_name").click(
+		function(){
+			$('#dialog-message3').dialog('open');
+			$('#dialog-message3').load('{:U("leadsB/listDialog")}');
 		}
 	);
 });

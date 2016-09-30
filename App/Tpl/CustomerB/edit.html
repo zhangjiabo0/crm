@@ -14,6 +14,7 @@
 				<include file="Public:alert" />
 				<form action="{:U('customerB/edit', 'id='.$customerB['customerB_id'])}" method="post" id="form1" >
                 <input type="hidden" name="customerB_id" value="{$customerB['customerB_id']}">
+                <input type="hidden" name="add_file" id="add_file" value="{$customerB.add_file}"/>
 					<table class="table table-hover" width="95%" border="0" cellspacing="1" cellpadding="0">
 						<tfoot>
 							<tr>
@@ -96,6 +97,10 @@
                                 </if>
                             </if>
                             </volist>
+                            <tr>
+	                        	<td class="tdleft" width="15%">附件:</td>
+	                            <td width="35%">{:W('File',array('add_file'=>$customerB['add_file'],'mode'=>'edit'))}</td>
+	                        </tr>
 						</tbody>
 					</table>
 				</form>
@@ -493,4 +498,25 @@ $(function(){
 </volist>
 });
 </script>
+<script type="text/javascript">
+	//var upload_url = '/php-oa/index.php?m=daily_report&a=upload';
+	var upload_url = "{:U('upload')}";
+	var del_url = "{:U('del_file')}";
+	var app_path = "__ROOT__";
+	var cookie_prefix = "{:C('COOKIE_PREFIX')}";
+	var link_select = "{:U('Popup/link_select')}";
+	var _hmt = _hmt || [];
+	(function() {
+		var hm = document.createElement("script");
+		hm.src = "//hm.baidu.com/hm.js?2a935166b0c9b73fef3c8bae58b95fe4";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})(); 
+	
+	function is_mobile() {
+		return navigator.userAgent.match(/mobile/i);
+	}
+</script>
+<include file="Widget:css" />
+<include file="Widget:plugin" />
 <include file="Public:footer" />

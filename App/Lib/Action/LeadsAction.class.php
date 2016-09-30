@@ -1,5 +1,5 @@
 <?php  
-class LeadsAction extends Action{
+class LeadsAction extends CommonAction{
 
 	public function _initialize(){
 		$action = array(
@@ -92,6 +92,11 @@ class LeadsAction extends Action{
 	
 	
 	public function add(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		if($this->isPost()){
 			$m_leads = D('Leads');
 			$m_leads_data = D('LeadsData');
@@ -148,6 +153,11 @@ class LeadsAction extends Action{
 	}
 	
 	public function edit(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$leads_id = $_POST['leads_id'] ? intval($_POST['leads_id']) : intval($_REQUEST['id']);
 		if(!check_permission($leads_id, 'leads')) $this->error(L('HAVE NOT PRIVILEGES'));
 		$field_list = M('Fields')->where('model = "leads"')->order('order_id')->select();
@@ -216,6 +226,14 @@ class LeadsAction extends Action{
 				if(!session('?admin')){
 					alert('error', L('HAVE NOT PRIVILEGES'), $_SERVER['HTTP_REFERER']);
 				}
+				
+				$add_files = $m_leads->where('leads_id in (%s)', $leads_ids)->getField('add_file',true);
+				$add_files_string = '';
+				foreach ($add_files as $v){
+					$add_files_string.=$v;
+				}
+				$add_files_arr = array_filter(explode(';',$add_files_string));
+				
 				if(($m_leads->where('leads_id in (%s)', $leads_ids)->delete()) && ($m_leads_data->where('leads_id in (%s)', $leads_ids)->delete())){	
 					foreach ($_POST['leads_id'] as $value) {
 						actionLog($value);
@@ -226,6 +244,8 @@ class LeadsAction extends Action{
 								M($key2)->where($key2 . '_id in (%s)', implode(',', $module_ids))->delete();
 							}
 						}
+						//删除附件
+						M('File')->where(array('sid'=>array('in',$add_files_arr)))->delete();
 					}
 					alert('success', L('DELETED SUCCESSFULLY'),U('leads/index','by=deleted'));
 				} else {
@@ -710,6 +730,11 @@ class LeadsAction extends Action{
 		}
 	}
 	public function view(){		
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$leads_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 		if(!check_permission($leads_id, 'leads')) $this->error(L('HAVE NOT PRIVILEGES'));
 		if (0 == $leads_id) {
@@ -1700,4 +1725,88 @@ class LeadsAction extends Action{
 			alert('error', L('PARAMETER_ERROR'), $_SERVER['HTTP_REFERER']);
 		} 
 	}
+	/*
+	function upload($flag = false) {
+		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+		header("Cache-Control: no-store, no-cache, must-revalidate");
+		header("Cache-Control: post-check=0, pre-check=0", false);
+		header("Pragma: no-cache");
+		if (!empty($_FILES)) {
+			import("@.ORG.Util.UploadFile");
+			$upload = new UploadFile();
+			$upload -> subFolder = strtolower(MODULE_NAME);
+			$upload -> savePath = get_save_path();
+			$upload -> saveRule = "uniqid";
+			$upload -> autoSub = true;
+			$upload -> subType = "date";
+			if($flag){$upload -> allowExts = array('xlsx','xls');}else{$upload -> allowExts = array_filter(explode(",", get_system_config('UPLOAD_FILE_TYPE')), 'upload_filter');}
+			if (!$upload -> upload()) {
+				$data['error'] = 1;
+				$data['message'] = $upload -> getErrorMsg();
+				$data['status'] = 0;
+				exit(json_encode($data));
+				//exit($upload -> getErrorMsg());
+			} else {
+				//取得成功上传的文件信息
+				$upload_list = $upload -> getUploadFileInfo();
+				$sid = get_sid();
+				$file_info = $upload_list[0];
+				$model = M("File");
+				$model -> create($upload_list[0]);
+				$model -> create_time = time();
+				$model -> user_id = get_user_id();
+				$model -> sid = $sid;
+				$model -> module = MODULE_NAME;
+				$file_id = $model -> add();
+				$file_info['sid'] = $sid;
+				$file_info['error'] = 0;
+				$file_info['url'] = "/" . $file_info['savepath'] . $file_info['savename'];
+				$file_info['status'] = 1;
+				if($flag){record_upload($file_info['savepath'] . $file_info['savename']);}
+				exit(json_encode($file_info));
+			}
+		}
+	}
+	public function del_file() {
+		$file_list = $_REQUEST['sid'];
+		$this -> _destory_file($file_list);
+	}
+	
+	protected function _destory_file($file_list) {
+		if (isset($file_list)) {
+			if (is_array($file_list)) {
+				$where["sid"] = array("in", $file_list);
+			} else {
+				$where["sid"] = array('in', array_filter(explode(',', $file_list)));
+			}
+		} else {
+			exit();
+		}
+	
+		$model = M("File");
+		$where['module'] = MODULE_NAME;
+		$admin = $this -> config['auth']['admin'];
+	
+		if ($admin) {
+			$where['user_id'] = array('eq', get_user_id());
+		};
+	
+		$list = $model -> where($where) -> select();
+		$save_path = get_save_path();
+	
+		foreach ($list as $file) {
+			if (file_exists($_SERVER["DOCUMENT_ROOT"] . "/" . $save_path . $file['savename'])) {
+				unlink($_SERVER["DOCUMENT_ROOT"] . "/" . $save_path . $file['savename']);
+			}
+		}
+	
+		$result = $model -> where($where) -> delete();
+		if ($result !== false) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	*/
 }

@@ -1,0 +1,115 @@
+<notempty name="widget.jquery-ui">
+	<script src="__PUBLIC__/js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="__PUBLIC__/js/jquery.ui.touch-punch.min.js"></script>
+</notempty>
+
+<notempty name="widget.date">
+	<script src="__PUBLIC__/js/date-time/bootstrap-datepicker.js"></script>
+	<script src="__PUBLIC__/js/date-time/locales/bootstrap-datepicker.zh-CN.js"></script>
+	<script src="__PUBLIC__/js/date-time/bootstrap-datetimepicker.js"></script>
+	<script src="__PUBLIC__/js/date-time/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+</notempty>
+
+<notempty name="widget.uploader">
+	<script type="text/javascript" src="__PUBLIC__/plupload/plupload.full.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/plupload/plupload.setting.js"></script>
+</notempty>
+<notempty name="widget.editor">
+	<script type="text/javascript" src="__PUBLIC__/editor/kindeditor.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/editor/lang/zh_CN.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/editor/kindeditor.setting.js"></script>
+</notempty>
+<script src="__PUBLIC__/js/jquery.gritter.min.js"></script>
+<script src="__PUBLIC__/js/bootbox.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		<notempty
+		name = "widget.date" > $('.input-date').datepicker({
+			language : "zh-CN",
+			autoclose : true
+		});
+		$(".input-daterange").datepicker({
+			format : "yyyy-mm-dd",
+			language : "zh-CN",
+			keyboardNavigation : false,
+			forceParse : false,
+			autoclose : true,
+		});
+		$(".input-daterange-m").datepicker({
+			format : "yyyy-mm",
+			language : "zh-CN",
+			keyboardNavigation : false,
+			forceParse : false,
+			autoclose : true,
+			startView : 3,
+			minView : 3
+		});
+		$(".input-date-time").datetimepicker({
+			format : "yyyy-mm-dd hh:ii",
+			language : "zh-CN",
+			weekStart : 1,
+			todayBtn : 1,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 1,
+			minuteStep:10
+		});
+		$(".input-date-time-h").datetimepicker({
+			format : "yyyy-mm-dd hh:ii",
+			language : "zh-CN",
+			weekStart : 1,
+			todayBtn : 0,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 1,
+			minuteStep:30
+		});
+		$(".input-time-h").datetimepicker({
+			format : "hh:ii",
+			language:  'zh-CN',
+			weekStart: 1,
+			todayBtn:  0,
+			autoclose: 1,
+			todayHighlight: 0,
+			startView: 1,
+			minView: 0,
+			maxView: 1,
+			forceParse: 0,
+			minuteStep:30
+		});
+		$(".input-date-times").datetimepicker({
+			format : "yyyy-mm-dd",
+			language : "zh-CN",
+			weekStart : 1,
+			todayBtn : 0,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 2,
+			forceParse : 0,
+			showMeridian : 1,
+			minView : 2
+		});
+		$(".input-date-m").datetimepicker({
+			format : "yyyy-mm",
+			language : "zh-CN",
+			weekStart : 1,
+			todayBtn : 0,
+			autoclose : 1,
+			todayHighlight : 1,
+			startView : 3,
+			forceParse : 0,
+			showMeridian : 1,
+			minView : 3
+		});
+		</notempty>
+
+		<notempty
+		name = "widget.editor" > editor_init();
+		</notempty>
+	}); 
+</script>

@@ -2008,3 +2008,101 @@ function get1Dept($dept_id){
 	}
 	return false;
 }
+function get_save_path() {
+	$app_path = __APP__;
+	$save_path = C('SAVE_PATH');
+	$app_path = str_replace("/index.php?s=", "", $app_path);
+	$app_path = str_replace("/index.php", "", $app_path);
+	return C('SAVE_PATH');
+}
+function upload_filter($val) {
+	$allow_type = array('doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'dwg', 'rar', 'zip', '7z', 'pdf', 'txt', 'rtf', 'jpg', 'jpeg', 'png', 'gif', 'tip', 'psd');
+	if (in_array($val, $allow_type)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+/**
+ +----------------------------------------------------------
+ * 产生随机字串，可用来自动生成密码
+ * 默认长度6位 字母和数字混合 支持中文
+ +----------------------------------------------------------
+ * @param string $len 长度
+ * @param string $type 字串类型
+ * 0 字母 1 数字 其它 混合
+ * @param string $addChars 额外字符
+ +----------------------------------------------------------
+ * @return string
+ +----------------------------------------------------------
+ */
+function rand_string($len = 6, $type = '', $addChars = '') {
+	$str = '';
+	switch ($type) {
+		case 0 :
+			$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' . $addChars;
+			break;
+		case 1 :
+			$chars = str_repeat('0123456789', 3);
+			break;
+		case 2 :
+			$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' . $addChars;
+			break;
+		case 3 :
+			$chars = 'abcdefghijklmnopqrstuvwxyz' . $addChars;
+			break;
+		default :
+			// 默认去掉了容易混淆的字符oOLl和数字01，要添加请使用addChars参数
+			$chars = 'ABCDEFGHIJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789' . $addChars;
+			break;
+	}
+	if ($len > 10) {//位数过长重复字符串一定次数
+		$chars = $type == 1 ? str_repeat($chars, $len) : str_repeat($chars, 5);
+	}
+	if ($type != 4) {
+		$chars = str_shuffle($chars);
+		$str = substr($chars, 0, $len);
+	} else {
+		// 中文随机字
+		for ($i = 0; $i < $len; $i++) {
+			$str .= msubstr($chars, floor(mt_rand(0, mb_strlen($chars, 'utf-8') - 1)), 1);
+		}
+	}
+	return $str;
+}
+
+function get_sid() {
+	return md5(bin2hex(time()) . rand_string());
+}
+function reunit($size) {
+	$unit = " B";
+	if ($size > 1024) {
+		$size = $size / 1024;
+		$unit = " KB";
+	}
+	if ($size > 1024) {
+		$size = $size / 1024;
+		$unit = " MB";
+	}
+	if ($size > 1024) {
+		$size = $size / 1024;
+		$unit = " GB";
+	}
+	return round($size, 2) . $unit;
+}
+function f_encode($str) {
+	$str = base64_encode($str);
+	$str = rand_string(10) . $str . rand_string(10);
+	$str = str_replace("+", "-", $str);
+	$str = str_replace("/", "_", $str);
+	$str = str_replace("==", "*", $str);
+	return $str;
+}
+function f_decode($str) {
+	$str = str_replace("-", "+", $str);
+	$str = str_replace("_", "/", $str);
+	$str = str_replace("*", "==", $str);
+	$str = substr($str, 10, strlen($str) - 20);
+	$str = base64_decode($str);
+	return $str;
+}

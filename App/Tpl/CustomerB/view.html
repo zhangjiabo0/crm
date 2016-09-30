@@ -55,6 +55,10 @@
                 <include file="Public:alert"/>
                 <table class="table table-hover">
                     <tbody>
+                    	<tr>
+							<td class="tdleft" width="15%">服务商编码</td>
+							<td>{$customerB.provide_id}</td>
+						</tr>
                         <tr>
                             <td class="tdleft" width="15%">{:L('CREATION_TIME')}</td>
                             <td><if condition="$customerB['create_time'] neq 0">{$customerB.create_time|date='Y-m-d H:i:s',###}</if></td>
@@ -121,6 +125,10 @@
                             </if>
                         </if>
                         </volist>
+                        <tr>
+                        	<td class="tdleft" width="15%">附件:</td>
+                            <td width="35%">{:W('File',array('add_file'=>$customerB['add_file'],'mode'=>'show'))}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -927,4 +935,25 @@ $(function(){
 	});
 });
 </script>
+<script type="text/javascript">
+	//var upload_url = '/php-oa/index.php?m=daily_report&a=upload';
+	var upload_url = "{:U('upload')}";
+	var del_url = "{:U('del_file')}";
+	var app_path = "__ROOT__";
+	var cookie_prefix = "{:C('COOKIE_PREFIX')}";
+	var link_select = "{:U('Popup/link_select')}";
+	var _hmt = _hmt || [];
+	(function() {
+		var hm = document.createElement("script");
+		hm.src = "//hm.baidu.com/hm.js?2a935166b0c9b73fef3c8bae58b95fe4";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})(); 
+	
+	function is_mobile() {
+		return navigator.userAgent.match(/mobile/i);
+	}
+</script>
+<include file="Widget:css" />
+<include file="Widget:plugin" />
 <include file="Public:footer" />

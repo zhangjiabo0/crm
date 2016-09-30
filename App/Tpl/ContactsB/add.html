@@ -38,8 +38,13 @@
 							<td width="35%"><select id="sex" name="sex"><option value="">--请选择--</option><option value="男" >男</option><option value="女" >女</option></select></td>
 						</tr>
 						<tr>
-							<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMERB_CLICK_TO_SELECT')}</td>
-							<td><input type="hidden" name="customerB_id" id="customerB_id" <if condition="$customerB_id">value="{$customerB_id}"<else/>value="{$customerB['customerB_id']}"</if>/><input type="text" name="customerB_name" id="customerB_name" <if condition="$customerB_id">value="{$customerB_name}"<else/>value="{$customerB.name}"</if>/></td>
+							<if condition="$Think.get.redirect eq 'leadsB'">
+								<td class="tdleft" >{:L('BELONGS_TO_THE_LEADSB_CLICK_TO_SELECT')}</td>
+								<td><input type="hidden" name="leadsB_id" id="leadsB_id" <if condition="$leadsB_id">value="{$leadsB_id}"<else/>value="{$leadsB['leadsB_id']}"</if>/><input type="text" name="leadsB_name" id="leadsB_name" <if condition="$leadsB_id">value="{$leadsB_name}"<else/>value="{$leadsB.name}"</if>/></td>
+							<else/>
+								<td class="tdleft" >{:L('BELONGS_TO_THE_CUSTOMERB_CLICK_TO_SELECT')}</td>
+								<td><input type="hidden" name="customerB_id" id="customerB_id" <if condition="$customerB_id">value="{$customerB_id}"<else/>value="{$customerB['customerB_id']}"</if>/><input type="text" name="customerB_name" id="customerB_name" <if condition="$customerB_id">value="{$customerB_name}"<else/>value="{$customerB.name}"</if>/></td>
+							</if>
 							<if condition="C('ismobile') eq 1"></tr><tr></if>
 							<td class="tdleft" >{:L('POSITION')}</td>
 							<td>
@@ -63,6 +68,8 @@
 						<tr>
 							<td class="tdleft" >{:L('CONTACT_ADDRESS')}</td>
 							<td><input class="text-input large-input" name="address" type="text"/></td>
+							<td class="tdleft" >微信</td>
+							<td><input class="text-input large-input" name="weixin" type="text"/></td>
 						</tr>
 						<tr>
 							<td class="tdleft" >{:L('REMARK')}</td>
@@ -75,6 +82,7 @@
 	</div>
 </div>
 <div id="dialog-message2" title="{:L('SELECT_THE_CONTACT_BELONGS_TO_THE_CUSTOMERB')}">loading...</div>
+<div id="dialog-message3" title="{:L('SELECT_THE_CONTACT_BELONGS_TO_THE_LEADSB')}">loading...</div>
 <script type="text/javascript">
 <if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
 $("#dialog-message2").dialog({
@@ -98,12 +106,39 @@ $("#dialog-message2").dialog({
 	},
 	position: ["center", 100]
 });
+$("#dialog-message3").dialog({
+	autoOpen: false,
+	modal: true,
+	width: width,
+	maxHeight: 400,
+	buttons: {
+		"{:L('AFFIRM')}": function () {
+			var item = $('input:radio[name="leadsB"]:checked').val();
+			var name = $('input:radio[name="leadsB"]:checked').parent().next().html();
+			if(item){
+				$('#leadsB_name').val(name);
+				$('#leadsB_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
 
 $(function(){
 	$("#customerB_name").click(
 		function(){
 			$('#dialog-message2').dialog('open');
 			$('#dialog-message2').load('{:U("customerB/listDialog")}');
+		}
+	);
+	$("#leadsB_name").click(
+		function(){
+			$('#dialog-message3').dialog('open');
+			$('#dialog-message3').load('{:U("leadsB/listDialog")}');
 		}
 	);
 	

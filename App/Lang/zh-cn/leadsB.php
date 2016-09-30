@@ -193,12 +193,13 @@ return array(
 	'SELECT_CONTACTSB_TO_SEND_EMAIL'		=>	'请选择要发送邮件的目标联系人',
 	'THE_DEFAULT_INFORMATION'			=>	'默认信息',
 	'MAP'								=>	 '百度地图',
-    
-	
-	
-	
-	
-	
+	'CHECK'=>'查看',
+	'COMPILE'=>'编辑',
+	'SET_AS_PRIMARY'=>'设为首要',
+	'THE_PRIMARY_CONTACT'=>'首要联系人',
+	'LINKMAN'=>'联系人',
+	'NAME'=>'姓名',
+	'CELLPHONE'=>'手机',
 	
 	
 
