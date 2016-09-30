@@ -511,7 +511,7 @@ class CustomerAction extends CommonAction {
 						$contacts = array();
 						if($_POST['con_name']) $contacts['name'] = $_POST['con_name'];
 						if($_POST['owner_role_id']) $contacts['owner_role_id'] = $_POST['owner_role_id'];
-						if($_POST['saltname']) $contacts['saltname'] = $_POST['saltname'];
+						if($_POST['con_sex']) $contacts['sex'] = $_POST['con_sex'];
 						if($_POST['con_email']) $contacts['email'] = $_POST['con_email'];
 						if($_POST['con_post']) $contacts['post'] = $_POST['con_post'];
 						if($_POST['con_qq']) $contacts['qq'] = $_POST['con_qq'];

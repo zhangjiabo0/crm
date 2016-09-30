@@ -2,7 +2,7 @@
 	class LeadsBViewModel extends ViewModel{
 		public $viewFields;
 		public function _initialize(){
-			$main_must_field = array('leadsB_id','creator_role_id','owner_role_id','create_time','update_time','contactsB_id','contactsB_name','customerB_id','is_deleted','add_file');
+			$main_must_field = array('leadsB_id','creator_role_id','owner_role_id','create_time','update_time','contactsB_id','contactsB_name','customerB_id','is_deleted','add_file','service');
             $main_list_part = M('Fields')->where(array('model'=>'leadsB','is_main'=>1))->getField('field', true);
 			$main_list = array_unique(array_merge($main_list_part?$main_list_part:array(),$main_must_field));
 			$main_list['_type'] = 'LEFT';
