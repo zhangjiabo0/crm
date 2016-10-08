@@ -1294,14 +1294,15 @@ class CustomerBAction extends CommonAction {
 	public function listDialog(){
 		$m_customerB = M('CustomerB');
 		$m_contactsB = M('ContactsB');
+		$d_v_customerB = D('CustomerBView');
 		$m_r_contactsB_customerB = M('RContactsBCustomerB');
 		$underling_ids = getSubRoleId();
 		$business_id = intval($_GET['bid']);
 		if(!empty($business_id)){
 			$customerB_id = M('business')->where('business_id = %d',$business_id)->getField('customerB_id');
-			$customerB = $m_customerB->where('customerB_id = %d and is_deleted = 0',$customerB_id)->order('create_time desc')->limit(10)->select();
+			$customerB = $d_v_customerB->where('customerB_id = %d and is_deleted = 0',$customerB_id)->order('create_time desc')->limit(10)->select();
 		}else{
-			$customerB = $m_customerB->where('owner_role_id in (%s) and is_deleted = 0',implode(',',$underling_ids))->order('create_time desc')->limit(10)->select();
+			$customerB = $d_v_customerB->where('owner_role_id in (%s) and is_deleted = 0',implode(',',$underling_ids))->order('create_time desc')->limit(10)->select();
 		}
 		foreach($customerB as $k=>$v){
 			//如果存在首要联系人，则查出首要联系人。否则查出联系人中第一个。
@@ -1317,7 +1318,7 @@ class CustomerBAction extends CommonAction {
 		}
 		
 		$this->customerBList = $customerB;
-		$count = $m_customerB->where('owner_role_id in (%s) and is_deleted = 0',implode(',',$underling_ids))->count();
+		$count = $d_v_customerB->where('owner_role_id in (%s) and is_deleted = 0',implode(',',$underling_ids))->count();
 		$this->total = $count%10 > 0 ? ceil($count/10) : $count/10;
 		$data = getIndexFields('customerB');
 		$this->count_num = $count;

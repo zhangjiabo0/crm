@@ -91,7 +91,7 @@ $("#dialog-message2").dialog({
 	buttons: {
 		"{:L('AFFIRM')}": function () {
 			var item = $('input:radio[name="customerB"]:checked').val();
-			var name = $('input:radio[name="customerB"]:checked').parent().next().html();
+			var name = $('input:radio[name="customerB"]:checked').parent().next().next().html();
 			if(item){
 				$('#customerB_name').val(name);
 				$('#customerB_id').val(item);
