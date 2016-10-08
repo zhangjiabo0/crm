@@ -147,7 +147,7 @@ class LeadsBAction extends CommonAction{
 					$m_leadsB->update_time = time();
 					$m_leadsB->have_time = time();
 					
-					$service = array_filter($_POST[service]);
+					$service = array_filter($_POST['service']);
 					$m_leadsB->service = !empty($service) ? implode(chr(10),$service) : '';
 					
 					if ($leadsB_id = $m_leadsB->add()) {
@@ -240,7 +240,7 @@ class LeadsBAction extends CommonAction{
 				if($m_leadsB_data->create()!==false){
 					$m_leadsB->update_time = time();
 					
-					$service = array_filter($_POST[service]);
+					$service = array_filter($_POST['service']);
 					$m_leadsB->service = !empty($service) ? implode(chr(10),$service) : '';
 					
 					$a = $m_leadsB->where('leadsB_id= %d',$_REQUEST['leadsB_id'])->save();
@@ -895,6 +895,11 @@ class LeadsBAction extends CommonAction{
 			
 			$this->statusList = M('BusinessStatus')->order('order_id')->select();
 			$this->leadsB = $leadsB;
+			
+			//服务字段设置
+			$service_array = explode(chr(10),$leadsB['service']);
+			$this->service_array = $service_array;
+
 			$this->field_list = $field_list;
 			$this->alert = parseAlert();
 			$this->display();

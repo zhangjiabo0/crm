@@ -531,6 +531,10 @@ class CustomerBAction extends CommonAction {
 					$m_customerB->update_time = time();
 					if($contactsB_id) $m_customerB->contactsB_id = $contactsB_id;
 					$m_customerB->creator_role_id = session('role_id');
+					
+					$service = array_filter($_POST['service']);
+					$m_customerB->service = !empty($service) ? implode(chr(10),$service) : '';
+					
 					if(!$customerB_id = $m_customerB->add()){
 						alert('error', L('ADD_CUSTOMERB_FAILS_CONTACT_ADMIN'), U('customerB/add'));
 					}
@@ -604,10 +608,40 @@ class CustomerBAction extends CommonAction {
 			if(intval($_GET['leadsB_id'])){
 				$leadsB = D('LeadsBView')->where('leadsB.leadsB_id = %d', intval($_GET['leadsB_id']))->find();
 				$this->leadsB = $leadsB;
+				
+				//服务字段设置
+				$service_array = explode(chr(10),$leadsB['service']);
+				$this->service_array = $service_array;
 			}
             $this->field_list = field_list_html("edit","customerB",$leadsB);
-//             dump(field_list_html("edit","customerB",$leadsB));
-//             die;
+            
+            //服务字段预选
+            $service_item_data = array();
+            $service_item_str = '';
+            $simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->select();
+            foreach ($simple_data_mapping as $k=>$v){
+            	$class_id = substr($v['data_code'],4,2);
+            	$item_id = substr($v['data_code'],-2,2);
+            	$class_name = $v['data_type'];
+            	$item_name = $v['data_name'];
+            	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+            	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+            }
+            foreach ($service_item_data as $k=>$v){
+            	$temp = explode('_',current($v));
+            	$service_item_str .= '#'.$temp[0];
+            	foreach ($v as $kk=>$vv){
+            		$temp = explode('_',$vv);
+            		if($kk == '01'){
+            			$service_item_str .= '$'.$temp[1];
+            		}else{
+            			$service_item_str .= '|'.$temp[1];
+            		}
+            	}
+            }
+            $service_item_str = substr($service_item_str,1);
+            $this->service_item_data = $service_item_str;
+            
 			$this->refer_url=$_SERVER['HTTP_REFERER'];
             $alert = parseAlert();
             $this->alert = $alert;
@@ -780,6 +814,10 @@ class CustomerBAction extends CommonAction {
 			if($m_customerB->create()){
 				if($m_customerB_data->create()!==false){
 					$m_customerB->update_time = time();
+					
+					$service = array_filter($_POST['service']);
+					$m_customerB->service = !empty($service) ? implode(chr(10),$service) : '';
+					
 					$a = $m_customerB->where('customerB_id =%s ', $customerB['customerB_id'])->save();
 					$b = $m_customerB_data->where('customerB_id =%s', $customerB['customerB_id'])->save();
 					$c = M('Provide')->where(array('customerB_id'=>$customerB['customerB_id']))->save(array('provide_name'=>$_POST['name']));
@@ -807,6 +845,37 @@ class CustomerBAction extends CommonAction {
             $alert = parseAlert();
             $this->alert = $alert;
             $this->customerB = $customerB;
+            
+            //服务字段预选
+            $service_item_data = array();
+            $service_item_str = '';
+            $simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->select();
+            foreach ($simple_data_mapping as $k=>$v){
+            	$class_id = substr($v['data_code'],4,2);
+            	$item_id = substr($v['data_code'],-2,2);
+            	$class_name = $v['data_type'];
+            	$item_name = $v['data_name'];
+            	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+            	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+            }
+            foreach ($service_item_data as $k=>$v){
+            	$temp = explode('_',current($v));
+            	$service_item_str .= '#'.$temp[0];
+            	foreach ($v as $kk=>$vv){
+            		$temp = explode('_',$vv);
+            		if($kk == '01'){
+            			$service_item_str .= '$'.$temp[1];
+            		}else{
+            			$service_item_str .= '|'.$temp[1];
+            		}
+            	}
+            }
+            $service_item_str = substr($service_item_str,1);
+            $this->service_item_data = $service_item_str;
+            //服务字段设置
+            $service_array = explode(chr(10),$customerB['service']);
+            $this->service_array = $service_array;
+            
             $this->field_list = field_list_html("edit","customerB",$customerB);
             $this->display();
 		}
@@ -1377,6 +1446,10 @@ class CustomerBAction extends CommonAction {
 
 			$contactsB_count = M('contactsB')->where('contactsB_id in (%s) and is_deleted=0', implode(',', $contactsB_ids))->count();
 			$customerB['contactsB_count'] = empty($contactsB_count)?0:$contactsB_count;
+			
+			//服务字段设置
+			$service_array = explode(chr(10),$customerB['service']);
+			$this->service_array = $service_array;
 			
 			//服务记录
 			$service_ids = M('rServiceCustomerB')->where('customerB_id = %d', $customerB_id)->getField('service_id', true);
