@@ -41,6 +41,7 @@
 	<thead>
 		<tr>
 			<th>&nbsp;</th>
+			<th>服务商编码</th>
             <volist name="field_array" id="v">
 				<if condition="$i lt 4">
 					<th>{$v[name]|default='&nbsp;'}</th>
@@ -77,6 +78,7 @@
 					<input type="radio" name="customerB" value="{$vo.customerB_id}" rel="{$vo.contacts_id}" />
 					<input type="hidden" name="contacts_name" value="{$vo.contacts_name}" />
 				</td>
+				<td>{$vo['provide_id']}</td>
                 <volist name="field_array" id="v">
 					<if condition="$i lt 4">
 					<td>{$vo[$v['field']]}</td>
