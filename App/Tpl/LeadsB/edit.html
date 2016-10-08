@@ -2,6 +2,10 @@
 <script type="text/javascript" src="__PUBLIC__/js/kindeditor-all-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/zh_CN.js"></script>
 <script src="__PUBLIC__/js/PCASClass.js" type="text/javascript"></script>
+<script>
+var service_item_data = "{$service_item_data}";
+</script>
+<script src="__PUBLIC__/js/PCAS2Class.js" type="text/javascript"></script>
 <script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
 <link rel="stylesheet" href="__PUBLIC__/css/kindeditor.css" type="text/css" />
@@ -24,6 +28,20 @@
 					</tfoot> 
 					<tbody width="100%">
 						<tr><th colspan="4">{:L('MIAN_INFO')}</th></tr>
+						
+						<tr>
+                            <td class="tdleft" width="15%">服务:</td>
+                            <td colspan="3">
+                            	<script type="text/javascript">
+								$(function(){
+									new PCAS2("service['class']","service['item']","{$service_array[0]}","{$service_array[1]}");
+								});
+								</script>
+								<select name="service['class']" class="input-medium"></select> 
+								<select name="service['item']" class="input-medium"></select>
+							</td>
+                        </tr>
+                        
 						<tr>
 							<td class="tdleft">{:L('LEADSB_OWNER')}</td>
 							<td><input type="hidden" id="owner_id" name="owner_role_id" value="{$leadsB.owner_role_id}"/><input type="text" id="owner_name" value="{$leadsB.owner.user_name}_{$leadsB.owner.true_name}" name="owner_name"/> &nbsp;&nbsp;<input class="btn btn-mini" id="remove"  type="button" value="{:L('PUT_LEADSB_INTO_THE_POOL')}"/> &nbsp;</td>

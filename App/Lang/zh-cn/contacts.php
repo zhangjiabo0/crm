@@ -77,6 +77,7 @@
 	'AFFIRM'=>'确认',	
 	'MAN'=>'男',	
 	'WOMAN'=>'女',	
+	'SEX'=>'性别',
 	'DID_NOT_FIND_THE_RESULTS_YOU_WANT'=>'没有找到您要的结果!',	
 	'THERE_IS_NO_DATA'=>'没有数据',	
 	'EDIT_THE_CONTACT'=>'编辑联系人',	

@@ -63,13 +63,20 @@
                         </tr>
                         <tr>
                             <td class="tdleft" >{:L('NAME')}</td>
-                            <td><input class="user_input" type="text" name="con_name" value="{$leads['contacts_name']}"></td>
-                            <td class="tdleft" >{:L('NAMED')}</td>
-                            <td><input class="user_input" type="text" name="saltname" value="{$leads['saltname']}"></td>
+                            <td><input class="user_input" type="text" name="con_name" id="con_name" value="{$leads['contacts_name']}"><span id="con_nameTip" style="color:red;"></span></td>
+                            <td class="tdleft" >{:L('SEX')}</td>
+                        	<td>
+                            	<select id="con_sex" name="con_sex">
+	                            	<option value="">--请选择--</option>
+	                            	<option value="男" <if condition="$leads['sex'] eq '男'">selected="selected"</if> >男</option>
+	                            	<option value="女" <if condition="$leads['sex'] eq '女'">selected="selected"</if> >女</option>
+                            	</select>
+                            	<span id="con_sexTip" style="color:red;"></span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="tdleft" >{:L('MAILBOX')}</td>
-                            <td><input class="user_input" name="con_email" type="text"  value="{$leads['email']}"/></td>
+                            <td><input class="user_input" name="con_email" id="con_email" type="text"  value="{$leads['email']}"/><span id="con_emailTip" style="color:red;"></span></td>
                             <td class="tdleft" >{:L('POSITION')}</td>
                             <td>
                                 <input class="user_input"  value="{$leads['position']}" type="text" name="con_post"/>
@@ -79,7 +86,7 @@
                             <td class="tdleft">QQ</td>
                             <td><input class="user_input" name="con_qq" data-type="nummber"  type="text" value="{$leads['qqnumber']}" /></td>
                             <td class="tdleft" >{:L('CELLPHONE')}</td>
-                            <td><input class="user_input" name="con_telephone" data-type="nummber"  value="{$leads['mobile']}" type="text" /></td>
+                            <td><input class="user_input" name="con_telephone" id="con_telephone" data-type="nummber"  value="{$leads['mobile']}" type="text" /><span id="con_telephoneTip" style="color:red;"></span></td>
                         </tr>
 						<tr>
                             <td class="tdleft" >{:L('REMARK')}</td>
@@ -245,10 +252,57 @@ $(function(){
 $(function(){
     $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
         onError:function(msg,obj,errorlist){
-        alert(msg);
-    },
-    submitAfterAjaxPrompt : '{:L('THERE_ARE_DATA_ARE_ASYNCHRONOUS_VALIDATION')}'
-});
+        	alert(msg);
+	    },
+	    submitAfterAjaxPrompt : '{:L('THERE_ARE_DATA_ARE_ASYNCHRONOUS_VALIDATION')}'
+	});
+    
+    $("#con_name").formValidator({
+        tipID:"con_nameTip",
+        empty:false,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,max:255,
+        onErrorMin:"姓名必填",
+        onErrorMax:"姓名超出最大长度"
+    });
+    
+    $("#con_email").formValidator({
+        tipID:"con_emailTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"邮件{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"邮件{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#con_email").regexValidator({
+        regExp:"email",
+        dataType:"enum",
+        onError:"邮件{:L('INCORRECT_FORMAT')}"
+    });
+    
+    $("#con_telephone").formValidator({
+        tipID:"con_telephoneTip",
+        empty:true,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:0,max:255,
+        onErrorMin:"手机{:L('CAN_NOT_EMPTY')}",
+        onErrorMax:"手机{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
+    });
+    $("#con_telephone").regexValidator({
+        regExp:"mobile",
+        dataType:"enum",
+        onError:"手机{:L('INCORRECT_FORMAT')}"
+    });
+    
 <volist name="field_list[main]" id="vo">
     <if condition="$vo['is_validate'] == 1">
         <if condition="$vo['form_type'] != 'box' || $vo['setting']['type'] == 'select'">

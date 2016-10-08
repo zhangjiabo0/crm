@@ -146,6 +146,10 @@ class LeadsBAction extends CommonAction{
 					$m_leadsB->create_time = time();
 					$m_leadsB->update_time = time();
 					$m_leadsB->have_time = time();
+					
+					$service = array_filter($_POST[service]);
+					$m_leadsB->service = !empty($service) ? implode(chr(10),$service) : '';
+					
 					if ($leadsB_id = $m_leadsB->add()) {
 						$m_leadsB_data->leadsB_id = $leadsB_id;
 						$m_leadsB_data->add();
@@ -173,6 +177,31 @@ class LeadsBAction extends CommonAction{
 			
 		}else{
 			$field_list = field_list_html("add","leadsB");
+			$service_item_data = array();
+			$service_item_str = '';
+			$simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->select();
+			foreach ($simple_data_mapping as $k=>$v){
+				$class_id = substr($v['data_code'],4,2);
+				$item_id = substr($v['data_code'],-2,2);
+				$class_name = $v['data_type'];
+				$item_name = $v['data_name'];
+				$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+				$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+			}
+			foreach ($service_item_data as $k=>$v){
+				$temp = explode('_',current($v));
+				$service_item_str .= '#'.$temp[0];
+				foreach ($v as $kk=>$vv){
+					$temp = explode('_',$vv);
+					if($kk == '01'){
+						$service_item_str .= '$'.$temp[1];
+					}else{
+						$service_item_str .= '|'.$temp[1];
+					}
+				}
+			}
+			$service_item_str = substr($service_item_str,1);
+			$this->service_item_data = $service_item_str;
 		 	$this->field_list = $field_list;
 			$this->alert = parseAlert();		
 			$this->display();
@@ -210,6 +239,10 @@ class LeadsBAction extends CommonAction{
 			if($m_leadsB->create()){
 				if($m_leadsB_data->create()!==false){
 					$m_leadsB->update_time = time();
+					
+					$service = array_filter($_POST[service]);
+					$m_leadsB->service = !empty($service) ? implode(chr(10),$service) : '';
+					
 					$a = $m_leadsB->where('leadsB_id= %d',$_REQUEST['leadsB_id'])->save();
 					$b = $m_leadsB_data->where('leadsB_id=%d',$_REQUEST['leadsB_id'])->save();
 					$c = M('Provide')->where(array('leadsB_id'=>$_REQUEST['leadsB_id']))->save(array('provide_name'=>$_POST['name']));
@@ -233,6 +266,36 @@ class LeadsBAction extends CommonAction{
 				die;
 			}
 			$field_list = field_list_html("edit","leadsB",$d_v_leadsB);
+			//服务字段预选
+			$service_item_data = array();
+			$service_item_str = '';
+			$simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->select();
+			foreach ($simple_data_mapping as $k=>$v){
+				$class_id = substr($v['data_code'],4,2);
+				$item_id = substr($v['data_code'],-2,2);
+				$class_name = $v['data_type'];
+				$item_name = $v['data_name'];
+				$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+				$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
+			}
+			foreach ($service_item_data as $k=>$v){
+				$temp = explode('_',current($v));
+				$service_item_str .= '#'.$temp[0];
+				foreach ($v as $kk=>$vv){
+					$temp = explode('_',$vv);
+					if($kk == '01'){
+						$service_item_str .= '$'.$temp[1];
+					}else{
+						$service_item_str .= '|'.$temp[1];
+					}
+				}
+			}
+			$service_item_str = substr($service_item_str,1);
+			$this->service_item_data = $service_item_str;
+			//服务字段设置
+			$service_array = explode(chr(10),$d_v_leadsB['service']);
+			$this->service_array = $service_array;
+			
 			$this->field_list = $field_list;
 			$this->leadsB = $d_v_leadsB;
 			$this->alert = parseAlert();
@@ -1461,7 +1524,8 @@ class LeadsBAction extends CommonAction{
 		if($_GET['start_time']) $start_time = strtotime(date('Y-m-d',strtotime($_GET['start_time'])));
 		$end_time = $_GET['end_time'] ?  strtotime(date('Y-m-d 23:59:59',strtotime($_GET['end_time']))) : strtotime(date('Y-m-d 23:59:59',time()));
 		if($role_id == "all") {
-			$roleList = getRoleByDepartmentId($department_id);
+			$roleList = D('RoleView')->select();
+// 			$roleList = getRoleByDepartmentId($department_id);
 			$role_id_array = array();
 			foreach($roleList as $v2){
 				$role_id_array[] = $v2['role_id'];
@@ -1483,7 +1547,7 @@ class LeadsBAction extends CommonAction{
 		//线索来源统计
 		$setting = M('Fields')->where("model = 'leadsB' and field = 'source'")->getField('setting');
 		$setting_str = '$revenueList='.$setting.';';
-		//eval($setting_str);
+		eval($setting_str);
 		$source_count_array = array();
 		$sourceList = M('leadsB')->field('count(1) as num , source')->group('source')->where($where_source)->select();
 		foreach($sourceList as $v){
