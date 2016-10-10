@@ -36,8 +36,9 @@ var service_item_data = "{$service_item_data}";
 										new PCAS2("service['class']","service['item']","{$service_array[0]}","{$service_array[1]}");
 									});
 									</script>
-									<select name="service['class']" class="input-medium"></select> 
+									<select name="service['class']" id="service" class="input-medium"></select> 
 									<select name="service['item']" class="input-medium"></select>
+									<span id="serviceTip" style="color:red;"></span>
 								</td>
 								<td class="tdleft" >{:L('THE_PRIMARY_CONTACT')}</td>
                                 <td>
@@ -232,10 +233,24 @@ $(function(){
 $(function(){
     $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
         onError:function(msg,obj,errorlist){
-        alert(msg);
-    },
+	        alert(msg);
+	    },
     submitAfterAjaxPrompt : '{:L('THERE_ARE_DATA_ARE_ASYNCHRONOUS_VALIDATION')}'
     });
+    
+    $("#service").formValidator({
+        tipID:"serviceTip",
+        empty:false,
+        onShow:"<span style='color:red;'>*必须填</span>",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,max:255,
+        onShow:"服务类型不能为空",
+        onErrorMin:"服务类型必填",
+        onErrorMax:"服务类型超出最大长度"
+    });
+    
 <volist name="field_list[main]" id="vo">
     <if condition="$vo['is_validate'] == 1">
         <if condition="$vo['form_type'] != 'box'">

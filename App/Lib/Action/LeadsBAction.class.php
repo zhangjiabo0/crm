@@ -4,7 +4,7 @@ class LeadsBAction extends CommonAction{
 	public function _initialize(){
 		$action = array(
 			'permission'=>array(),
-			'allow'=>array('analytics','transform','changecontent','getaddchartbyroleid','getownchartbyroleid','check','receive','remove','fenpei','batchreceive', 'assigndialog', 'batchassign', 'revert', 'validate','excelimportdownload','getcurrentstatus')
+			'allow'=>array('analytics','transform','changecontent','getaddchartbyroleid','getownchartbyroleid','check','receive','remove','fenpei','batchreceive', 'assigndialog', 'batchassign', 'revert', 'validate','excelimportdownload','getcurrentstatus','upload')
 		);
 		B('Authenticate', $action);
 	}
