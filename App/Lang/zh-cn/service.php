@@ -97,4 +97,5 @@
 	'CONFIRM_EXPORT_SERVICESB'			=>	'您确定要导出联系人吗？',
 	'SERVICES_CUSTOMER_CANNOT_BE_EMPTY'		=>	'客户不能为空！',
 	'SERVICESB_CUSTOMER_CANNOT_BE_EMPTY'		=>	'客户不能为空！',
+	'FOLLOW_UP_NAME' =>'跟进人',
 	);

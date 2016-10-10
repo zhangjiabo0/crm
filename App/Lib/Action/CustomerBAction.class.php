@@ -510,7 +510,7 @@ class CustomerBAction extends CommonAction {
 					if($_POST['con_name']){
 						$contactsB = array();
 						if($_POST['con_name']) $contactsB['name'] = $_POST['con_name'];
-						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
+// 						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
 						if($_POST['con_sex']) $contactsB['sex'] = $_POST['con_sex'];
 						if($_POST['con_email']) $contactsB['email'] = $_POST['con_email'];
 						if($_POST['con_post']) $contactsB['post'] = $_POST['con_post'];
@@ -786,7 +786,7 @@ class CustomerBAction extends CommonAction {
 		if (!$customerB) {
             alert('error', L('CUSTOMERB_DOES_NOT_EXIST!'),$_SERVER['HTTP_REFERER']);
         }
-        $customerB['owner'] = D('RoleView')->where('role.role_id = %d', $customerB['owner_role_id'])->find();
+//         $customerB['owner'] = D('RoleView')->where('role.role_id = %d', $customerB['owner_role_id'])->find();
         $customerB['contactsB_name'] = M('contactsB')->where('contactsB_id = %d', $customerB['contactsB_id'])->getField('name');
 		
         $field_list = M('Fields')->where('model = "customerB"')->order('order_id')->select();
@@ -875,7 +875,6 @@ class CustomerBAction extends CommonAction {
             //服务字段设置
             $service_array = explode(chr(10),$customerB['service']);
             $this->service_array = $service_array;
-            
             $this->field_list = field_list_html("edit","customerB",$customerB);
             $this->display();
 		}
@@ -886,7 +885,7 @@ class CustomerBAction extends CommonAction {
 		$d_v_customerB = D('CustomerBView');
         $by = isset($_GET['by']) ? trim($_GET['by']) : '';
 		$below_ids = getSubRoleId(false);
-		$all_ids = getSubRoleId(true);
+		$all_ids = getSubRoleIdByYuan(true);
 		$outdays = M('config') -> where('name="customerB_outdays"')->getField('value');
 		$outdate = empty($outdays) ? time() : time()-86400*$outdays;	
 		$where = array();
@@ -921,29 +920,30 @@ class CustomerBAction extends CommonAction {
 			case 'month' : $where['create_time'] = array('gt',strtotime(date('Y-m-01', time()))); break;
 			case 'add' : $order = 'create_time desc'; break;
 			case 'update' : $order = 'update_time desc'; break;
-			case 'sub' : $where['owner_role_id'] = array('in',implode(',', $below_ids)); break;
+			case 'sub' : $where['creator_role_id'] = array('in',implode(',', $below_ids)); break;
 			case 'deleted' : $where['is_deleted'] = 1;break;
-			case 'me' : $where['owner_role_id'] = session('role_id'); break;
+			case 'me' : $where['creator_role_id'] = session('role_id'); break;
 			case 'focus' : $where['customerB_id'] = array('in',$focus_id);break;
 			case 'share' : $where['customerB_id'] = array('in',$customerBid);break;
 			case 'myshare' : $where['customerB_id'] = array('in',$share_customerB_ids);break;
 			default :
 				if($this->_get('content') == 'resource'){
-		            $where['_string'] = "customerB.owner_role_id=0 or customerB.update_time < $outdate";
+		            $where['_string'] = "customerB.creator_role_id=0 or customerB.update_time < $outdate";
 		            $all_ids[] = "";
-		            $where['owner_role_id'] = array('in', $all_ids);
+		            $where['creator_role_id'] = array('in', $all_ids);
 					$where['is_locked'] = 0;
 		        }else{
-					$where['owner_role_id'] = array('in',implode(',', $all_ids));
+					$where['creator_role_id'] = array('in',implode(',', $all_ids));
 		        }
 			break;
 		}
 		if ($by != 'deleted') {
 			$where['is_deleted'] = array('neq',1);
 		}
-		if (!isset($where['owner_role_id'])&&$by!='share') {
+		
+		if (!isset($where['creator_role_id'])&&$by!='share') {
 			if($by != 'deleted'){
-				$where['owner_role_id'] = array('in', $all_ids);
+				$where['creator_role_id'] = array('in', $all_ids);
 			}
 		}
 		if($by == 'deleted') unset($where['update_time']);
@@ -952,7 +952,7 @@ class CustomerBAction extends CommonAction {
 				$where['_string'] = 'update_time > '.$outdate.' OR is_locked = 1';
 			}
 		}
-
+		
 		if ($_REQUEST["field"]) {
 			if (trim($_REQUEST['field']) == "all") {
 				$field = is_numeric(trim($_REQUEST['search'])) ? 'name|origin|address|email|telephone|website|account_type|industry|annual_revenue|sic_code|ticker_symbol|ownership|rating|description' : 'name|origin|address|email|telephone|website|account_type|industry|annual_revenue|sic_code|ticker_symbol|ownership|rating|description|create_time|update_time';
@@ -976,7 +976,7 @@ class CustomerBAction extends CommonAction {
 					$search .= chr(10) .trim($_REQUEST['search']);
 				}
 			}
-			 
+			
 			switch ($condition) {
 				case "is" : $where[$field] = array('eq',$search);break;
 				case "isnot" :  $where[$field] = array('neq',$search);break;
@@ -1008,7 +1008,7 @@ class CustomerBAction extends CommonAction {
 				$params[] = "city=".$_GET['city'];
 			}
 		}
-      
+		
 		if(trim($_GET['act'] == 'sms')){
 			$customerB_ids = $d_v_customerB->where($where)->getField('customerB_id', true);
 			$contactsB_ids = M('RContactsBCustomerB')->where('customerB_id in (%s)', implode(',', $customerB_ids))->getField('contactsB_id', true);
@@ -1064,12 +1064,12 @@ class CustomerBAction extends CommonAction {
 				foreach ($list as $k => $v) {
 					$list[$k]["delete_role"] = D('RoleView')->where('role.role_id = %d', $v['delete_role_id'])->find();
 					$list[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
-					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
+// 					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
 				}
 			} else {
 				foreach ($list as $k => $v) {
 					$days = 0;
-					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
+// 					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
 					$list[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
 					$days =  M('CustomerB')->where('customerB_id = %d', $v['customerB_id'])->getField('update_time');
 					$list[$k]["days"] = $outdays-floor((time()-$days)/86400);
@@ -1346,7 +1346,7 @@ class CustomerBAction extends CommonAction {
             //取得字段列表
 			$field_list = M('Fields')->where('model = "customerB"')->order('order_id')->select();
             //查询固定信息
-			$customerB['owner'] = D('RoleView')->where('role.role_id = %d', $customerB['owner_role_id'])->find();
+// 			$customerB['owner'] = D('RoleView')->where('role.role_id = %d', $customerB['owner_role_id'])->find();
 			$customerB['create'] = D('RoleView')->where('role.role_id = %d', $customerB['creator_role_id'])->find();
 			if($customerB['contactsB_id']) $customerB['contactsB_name'] = M('contactsB')->where('contactsB_id = %d', $customerB['contactsB_id'])->getField('name');
             
@@ -1454,7 +1454,7 @@ class CustomerBAction extends CommonAction {
 			
 			//服务记录
 			$service_ids = M('rServiceCustomerB')->where('customerB_id = %d', $customerB_id)->getField('service_id', true);
-			$customerB['service'] = M('service')->where('service_id in (%s) and is_deleted=0', implode(',', $service_ids))->select();
+			$customerB['service'] = D('ServiceView')->where(array('service_id'=>array('in',implode(',', $service_ids)),'is_deleted'=>0))->select();
 			foreach($customerB['service'] as $k=>$v){
 				if(M('CustomerB')->where('service_id = %d',$v['service_id'])->select()){
 					$customerB['service'][$k]['is_firstContact'] = 'true';
@@ -1469,7 +1469,6 @@ class CustomerBAction extends CommonAction {
 			$customerB_len = strlen($customerB['name']);
 			$this ->customerB_len =$customerB_len;
 			$this->customerB = $customerB;
-			
             $this->field_list = $field_list;
 			$this->alert = parseAlert();
 			$this->display();
@@ -2230,6 +2229,7 @@ class CustomerBAction extends CommonAction {
 		//来源统计图
 		$source_count_array = array();
 		$setting = M('Fields')->where("model = 'customerB' and field = 'source'")->getField('setting');
+		$setting = empty($setting)?'""':$setting;
 		$setting_str = '$sourceList='.$setting.';';
 		eval($setting_str);
 		$source_total_count = 0;
@@ -2246,6 +2246,7 @@ class CustomerBAction extends CommonAction {
 		//客户行业统计图
 		$industry_count_array = array();
 		$setting = M('Fields')->where("model = 'customerB' and field = 'leixing'")->getField('setting');
+		$setting = empty($setting)?'""':$setting;
 		$setting_str = '$industryList='.$setting.';';
 		eval($setting_str);
 		$where_industry['is_deleted'] = 0;
@@ -2262,6 +2263,7 @@ class CustomerBAction extends CommonAction {
 		//客户员工数统计
 		$employees_count_array = array();
 		$setting = M('Fields')->where("model = 'customerB' and field = 'no_of_employees'")->getField('setting');
+		$setting = empty($setting)?'""':$setting;
 		$setting_str = '$no_List='.$setting.';';
 		eval($setting_str);
 		$where_employees['is_deleted'] = 0;

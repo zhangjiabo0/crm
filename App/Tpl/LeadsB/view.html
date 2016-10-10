@@ -39,8 +39,6 @@
 								<td><a class="role_info" href="javascript:void(0)" rel="{$leadsB.creator.role_id}">{$leadsB.creator.user_name}_{$leadsB.creator.true_name}</if></a></td>
 							</tr>
 							<tr>
-								<td class="tdleft">{:L('OWNER_ROLE')}</td>
-								<td><a class="role_info" href="javascript:void(0)" rel="{$leadsB.owner.role_id}">{$leadsB.owner.user_name}_{$leadsB.owner.true_name}</if></a></td>
 								<td class="tdleft" width="15%">{:L('LAST_MODIFIED_TIME')}</td>
 								<td><if condition="$leadsB['update_time'] gt 0">{$leadsB.update_time|date='Y-m-d H:i:s',###}</if></td>
 							</tr>
@@ -109,11 +107,12 @@
 						<else /> 
 							<tr>
 								<td width="18%">&nbsp;</td>
-								<td width="20%">{:L('NAME')}</td>
+								<td width="19%">{:L('NAME')}</td>
 								<td width="10%">职位</td>
 								<td width="10%">{:L('CELLPHONE')}</td>
 								<td width="10%">QQ</td>
 								<td width="16%">email</td>
+								<td width="4%">备注</td>
 							</tr>
 							<volist name="leadsB['contactsB']" id="vo">
 								<tr>
@@ -137,6 +136,9 @@
 									</td>
 									<td>
 										<if condition="C('ismobile') eq 1"><a href="mailto:{$vo.email}">{$vo.email}</a><else />{$vo.email}</if>
+									</td>
+									<td>
+										<a title="{$vo.description}">详情</a>
 									</td>
 								</tr>
 							</volist>

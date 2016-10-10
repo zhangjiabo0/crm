@@ -136,6 +136,7 @@
 		//模块视图部分
 		'ALL'=>'全部',
 		'OWNER_ROLE'=>'业务员',
+    	'DEPT_3_NAME'=>'部门',
 		'CREATOR_ROLE'=>'创建人',
 		'DELETE_ROLE'=>	'删除人',
 		'MY_RESPONSIBLE'=>'我负责的',

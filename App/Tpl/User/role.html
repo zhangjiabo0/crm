@@ -194,6 +194,11 @@
 				window.location="{:U('user/role_delete','id=')}"+id;
 			}
 		});
+		//默认展开三级
+		var min = [3,7,8,21,23,63,5,31,28,88,61];
+		for(var i in min){
+			$("[rel='"+min[i]+"']").prev('div').click();
+		}
 	});
 	function changeContent(){
 		a = $("#select1  option:selected").val();

@@ -26,8 +26,8 @@ var service_item_data = "{$service_item_data}";
 						<tr><th colspan="4">{:L('KEY_MESSAGE')}</th></tr>
 						
 						<tr>
-                            <td class="tdleft" width="15%">服务类型:</td>
-                            <td colspan="3">
+                            <td class="tdleft">服务类型:</td>
+                            <td>
                             	<script type="text/javascript">
 								$(function(){
 									new PCAS2("service['class']","service['item']","{$service_array[0]}","{$service_array[1]}");
@@ -36,15 +36,6 @@ var service_item_data = "{$service_item_data}";
 								<select name="service['class']" class="input-medium"></select> 
 								<select name="service['item']" class="input-medium"></select>
 							</td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="tdleft" width="15%">{:L('PRINCIPAL')}:</td>
-                            <td>
-                                <input type="hidden" id="owner_id" name="owner_role_id" value="{$Think.session.role_id}"/>
-                                <input type="text" id="owner_name" value="{$Think.session.name}_{$Think.session.true_name}" /> &nbsp;&nbsp;
-                                <input class="btn btn-mini" id="remove"  type="button" value="{:L(IN_THE_CUSTOMERB_POOL)}"/>
-                            </td>
                         <php>$j=0;</php>
 						<volist name="field_list['main']" id="vo">
                         <php>if($vo['in_add']) { $j++;</php>

@@ -6,7 +6,7 @@
 		<ul class="nav nav-tabs">
 		  <li <if condition="$_GET['content'] == 'customerB' || $_GET['content'] == ''">class="active"</if>><a  href="{:U('customerB/index')}"><img src="__PUBLIC__/img/customerB_icon.png"/>&nbsp; {:L('CUSTOMERB')}</a></li>
 		  <li <if condition="$_GET['content'] == 'resource' "> class="active" </if>><a  href="{:U('customerB/index','content=resource')}"><img src="__PUBLIC__/img/customerB_source_icon.png"/>&nbsp; {:L('CUSTOMERB_POOL')}</a></li>
-		  <li><a href="{:U('contactsB/index')}"><img src="__PUBLIC__/img/contactsB_icon.png"/> &nbsp;{:L('LINKMAN')}</a></li>
+		  <li><a href="{:U('contactsB/index?from=customerB')}"><img src="__PUBLIC__/img/contactsB_icon.png"/> &nbsp;{:L('LINKMAN')}</a></li>
 		  <li><a href="{:U('service/index')}"><img src="__PUBLIC__/img/service_icon.png"/> &nbsp;{:L('SERVICE')}</a></li>
 		  <!-- <li><a href="{:U('customerB/cares')}"><img src="__PUBLIC__/img/cares_icon.png"/> &nbsp;{:L('CUMTOMER_CARE')}</a></li> -->
 		  <li><a href="{:U('customerB/analytics')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp;{:L('CLIENT_STATISTICS')}</a></li>
@@ -163,7 +163,6 @@
 									<th>{$vo.name}</th>
 								</if>
                             </volist>
-							<if condition="$Think.get.content neq 'resource'"><th>{:L('PRINCIPAL')}</th></if>
 							<if condition="C('ismobile') neq 1"><th>{:L('FOUNDER')}</th></if>
 							<if condition="(C('ismobile') neq 1) and ($Think.get.by eq 'deleted')"><th>{:L('DELETE_THE_PEOPLE')}</th><th>{:L('DELETE_THE_TIME')}</th></if>
 							<th>
@@ -245,9 +244,6 @@
 									</if>
                                
                                 </volist>
-								<if condition="$Think.get.content neq 'resource'">
-									<td><notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}_{$vo.owner.true_name}</a></notempty></td>
-								</if>	
 								<if condition="C('ismobile') neq 1">
 									<td>
 										<notempty name="vo.creator.user_name"><a class="role_info" rel="{$vo.creator.role_id}" href="javascript:void(0)">{$vo.creator.user_name}_{$vo.creator.true_name}</a></notempty>

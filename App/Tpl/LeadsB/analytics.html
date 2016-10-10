@@ -8,7 +8,8 @@
 		  <li>
 			<a href="{:U('leadsB/index')}"><img src="__PUBLIC__/img/task_checked2.png"/>&nbsp; {:L('LEADSB')}</a>
 		  </li>
-		   <li id="leadsBpool"><a href="{:U('leadsB/index','by=public')}" <if condition="$Think.get.by eq 'public'"></if>><img src="__PUBLIC__/img/customerB_source_icon.png"/>&nbsp; {:L('LEADSB_POOL')}</a></li>
+		  <li id="leadsBpool"><a href="{:U('leadsB/index','by=public')}" <if condition="$Think.get.by eq 'public'"></if>><img src="__PUBLIC__/img/customerB_source_icon.png"/>&nbsp; {:L('LEADSB_POOL')}</a></li>
+		  <li><a href="{:U('contactsB/index?from=leadsB')}"><img src="__PUBLIC__/img/contactsB_icon.png"/> &nbsp;{:L('CONTACTSB')}</a></li>
 		  <li class="active"><a href="{:U('leadsB/analytics')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp;{:L('STATISTICS')}</a></li>
 		</ul>
 	</div>

@@ -340,6 +340,115 @@ function getSubRoleId($self = true, $role_id=0){
 	return array_unique($below_ids);
 }
 
+//参数说明
+//$role_id == 0 为当前人下属roleid
+//$role_id == 1 为获得所有人roleid
+function getSubRoleIdByYuan(){
+	$all_role = M('role')->where('user_id <> 0')->select();
+	
+	$role_id = session('role_id');
+	$category_id = M('User')->where(array('role_id'=>$role_id))->getField('category_id');
+	$user_id = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
+	
+	$d_user = D('RoleView');
+	$user = $d_user->where('user.role_id = %d', $role_id)->find();
+	$parents = array();
+// 	return $user;
+	if($category_id == '1' || $user['parent_id'] == '0' || $user['role_name'] == '园区老大'){
+		//管理员、顶级岗位、园区总老大
+		$below_role = getSubRole(0, $all_role);
+	}else{
+		$parent = $user['parent_id'];
+		while ($parent){
+			$parents[] = $parent;
+			$parent = M('Position')->where(array('position_id'=>$parent))->getField('parent_id');
+		}
+		
+		if(count($parents)>1){
+			$last_2 = $parents[count($parents)-2];
+			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
+			if($last_2_name == '园区老大'){
+				//园区的
+				if(count($parents)>2){
+					$last_3 = $parents[count($parents)-3];
+					$target_role_id = M('Role')->where(array('position_id'=>$last_3))->getField('role_id');
+					$below_role = getSubRole($target_role_id, $all_role);
+				}else{//各园区老大
+					$below_role = getSubRole($role_id, $all_role);
+				}
+				
+			}else if($last_2_name == '总部（杭州）老大'){
+				//总部的
+				$below_role = getSubRole(0, $all_role);
+			}
+		}
+	}
+// 	$below_role = getSubRole($role_id, $all_role);
+
+	$below_ids = array();
+	$below_ids[] = $role_id;
+	
+	foreach ($below_role as $key=>$value) {
+		$below_ids[] = $value['role_id'];
+	}
+	return array_unique($below_ids);
+}
+/*
+ * 获取一级部门
+ */
+function getDept_3_Name($role_id){
+// 	$all_role = M('role')->where('user_id <> 0')->select();
+
+// 	$role_id = session('role_id');
+// 	$category_id = M('User')->where(array('role_id'=>$role_id))->getField('category_id');
+	$user_id = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
+
+	$d_user = D('RoleView');
+	$user = $d_user->where('user.role_id = %d', $role_id)->find();
+	$parents = array();
+	// 	return $user;
+	if($user['parent_id'] == '0'){
+		//顶级岗位
+		return $user['department_name'];
+	}else if($user['role_name'] == '园区老大'){
+		return $user['department_name'];
+		//园区总老大
+	}else{
+		$parent = $user['parent_id'];
+		while ($parent){
+			$parents[] = $parent;
+			$parent = M('Position')->where(array('position_id'=>$parent))->getField('parent_id');
+		}
+		if(count($parents)>1){
+			$last_2 = $parents[count($parents)-2];
+			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
+			if($last_2_name == '园区老大'){
+				//园区的
+				if(count($parents)>2){
+					$last_3 = $parents[count($parents)-3];
+					$department_id = M('Position')->where(array('position_id'=>$last_3))->getField('department_id');
+					$department_name = M('RoleDepartment')->where(array('department_id'=>$department_id))->getField('name');
+					return $department_name;
+				}else{//各园区老大
+					return $user['department_name'];
+				}
+
+			}else if($last_2_name == '总部（杭州）老大'){
+				if(count($parents)>2){
+					//总部老大下面的
+					$last_3 = $parents[count($parents)-3];
+					$department_id = M('Position')->where(array('position_id'=>$last_3))->getField('department_id');
+					$department_name = M('RoleDepartment')->where(array('department_id'=>$department_id))->getField('name');
+					return $department_name;
+				}else{
+					//总部部门老大
+					return $user['department_name'];
+				}
+			}
+		}
+	}
+}
+
 /*
 *	手机端getSubRoleId
 */
@@ -1440,7 +1549,11 @@ function println($data, $offset=true){
 function check_permission($module_id, $module, $permission_field='owner_role_id'){
 	$role_id = intval(session('role_id'));
 	$owner_role_id = M($module)->where($module.'_id = %d', $module_id)->getField($permission_field);
-	$permission_ids = getSubRoleId();
+	if($module == 'leadsB' || $module == 'customerB'){
+		$permission_ids = getSubRoleIdByYuan();
+	}else{
+		$permission_ids = getSubRoleId();
+	}
 	if(in_array($owner_role_id, $permission_ids) || !$owner_role_id) return true;
 	else return false;
 }
