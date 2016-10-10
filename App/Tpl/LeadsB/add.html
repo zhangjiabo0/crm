@@ -36,7 +36,7 @@ var service_item_data = "{$service_item_data}";
 									new PCAS2("service['class']","service['item']","","");
 								});
 								</script>
-								<select name="service['class']" class="input-medium"></select> 
+								<select name="service['class']" id="service" class="input-medium"></select> 
 								<select name="service['item']" class="input-medium"></select>
 								<span id="serviceTip" style="color:red;"></span>
 							</td>
@@ -215,12 +215,13 @@ $(function(){
     $("#service").formValidator({
         tipID:"serviceTip",
         empty:false,
-        onShow:" ",
+        onShow:"<span style='color:red;'>*必须填</span>",
         onFocus:" ",
         onCorrect:"<span style='color:green;'>√</span>"
     }).inputValidator({
         min:1,max:255,
-        onErrorMin:"服务类型",
+        onShow:"服务类型不能为空",
+        onErrorMin:"服务类型必填",
         onErrorMax:"服务类型超出最大长度"
     });
 <volist name="field_list[main]" id="vo">
