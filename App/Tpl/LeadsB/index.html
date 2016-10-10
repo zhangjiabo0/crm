@@ -9,6 +9,7 @@
 			<li <if condition="$Think.get.by eq 'public'">class="active"</if>>
 				<a href="{:U('leadsB/index','by=public')}"><img src="__PUBLIC__/img/customerB_source_icon.png"/>&nbsp;{:L('LEADSB_POOL')}</a>
 			</li>
+			<li><a href="{:U('contactsB/index?from=leadsB')}"><img src="__PUBLIC__/img/contactsB_icon.png"/> &nbsp;{:L('LINKMAN')}</a></li>
 		    <li><a href="{:U('leadsB/analytics')}"><img src="__PUBLIC__/img/tongji.png"/> &nbsp;{:L('STATISTICS')}</a></li>
 		</ul>
 	</div>
@@ -154,7 +155,7 @@
 								</if>
 								
                             </volist>
-							<if condition="$Think.get.by neq 'public'"><th>{:L('OWNER_ROLE')}</th></if>
+							<th>{:L('DEPT_3_NAME')}</th>
 							<th>{:L('CREATOR_ROLE')}</th>
 							<th>
 								<if condition="$_GET['asc_order'] == 'create_time'">
@@ -241,11 +242,9 @@
 										</td>
 									</if>
                                 </volist>
-								<if condition="$Think.get.by neq 'public'">
 								<td>
-									<a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}_{$vo.owner.true_name}</a>
+									{$vo.creator.Dept_3_Name}
 								</td>
-								</if>
 								<td>{$vo.creator.user_name}_{$vo.creator.true_name}</a></td>
 								<td>{$vo.create_time|date='Y-m-d',###}</td>
 								<if condition="$Think.get.by neq 'public' && $Think.get.by neq 'deleted'">

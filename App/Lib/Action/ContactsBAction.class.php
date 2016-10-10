@@ -695,7 +695,7 @@ class ContactsBAction extends Action {
 		$id = $_GET['id'];
 		$rcc =  M('RContactsBCustomerB');
 		$m_contactsB = M('contactsB');
-		$where['owner_role_id'] = array('in', implode(',', getSubRoleId()));
+		$where['creator_role_id'] = array('in', implode(',', getSubRoleId()));
 		$where['is_deleted'] = 0;
 	
 		if($id){

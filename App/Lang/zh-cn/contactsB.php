@@ -45,6 +45,7 @@
 	'NO CHANGE INFORMATION'=>'信息无变化！',	
 	'CUSTOMER POOL'=>'客户池',	
 	'CUSTOMERB POOL'=>'服务商合作池',
+	'LEADSB_POOL'=>'服务商合作池',
 	'THE CUSTOMERB STATISTICS'=>'服务商合作统计',	
 	'THE CONTACTS VIEW'=>'联系人视图：',	
 	'THE CONTACTSB VIEW'=>'联系人视图：',

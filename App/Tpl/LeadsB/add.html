@@ -29,8 +29,8 @@ var service_item_data = "{$service_item_data}";
 						<tr><th colspan="4">{:L('MIAN_INFO')}</th></tr>
 						
 						<tr>
-                            <td class="tdleft" width="15%">服务类型:</td>
-                            <td colspan="3">
+                            <td class="tdleft" >服务类型:</td>
+                            <td >
                             	<script type="text/javascript">
 								$(function(){
 									new PCAS2("service['class']","service['item']","","");
@@ -39,11 +39,6 @@ var service_item_data = "{$service_item_data}";
 								<select name="service['class']" class="input-medium"></select> 
 								<select name="service['item']" class="input-medium"></select>
 							</td>
-                        </tr>
-                        
-						<tr>
-							<td class="tdleft">{:L('OWNER_ROLE')}:</td>
-							<td><input type="hidden" id="owner_id" name="owner_role_id" value="{$Think.session.role_id}"/><input type="text" id="owner_name" value="{$Think.session.name}_{$Think.session.true_name}" name="owner_name"/> &nbsp;&nbsp;<input class="btn btn-mini" id="remove"  type="button" value="{:L('PUT_LEADSB_INTO_THE_POOL')}"/> &nbsp;</td>
 						<php>$j=0;</php>
 						<volist name="field_list['main']" id="vo">
                         <php>$j++;</php>

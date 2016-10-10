@@ -27,22 +27,10 @@ var service_item_data = "{$service_item_data}";
 						</tfoot>
 						<tbody>
 							<tr><th colspan="4">{:L('BASIC_INFORMATION')}</th></tr>
+                         
                             <tr>
-                                <td class="tdleft" width="15%">{:L('PRINCIPAL')}</td>
-                                <td>
-                                    <input type="hidden" id="owner_id" name="owner_role_id" value="{$customerB.owner_role_id}"/>
-                                    <input type="text" id="owner_name" value="{$customerB.owner.user_name}_{$customerB.owner.true_name}" /> &nbsp;&nbsp;
-                                    <input class="btn btn-mini" id="remove"  type="button" value="{:L('IN_THE_CUSTOMERB_POOL')}"/>
-                                </td>
-                                <td class="tdleft" width="15%">{:L('THE_PRIMARY_CONTACT')}</td>
-                                <td>
-                                    <input type="hidden" id="contacts_id" name="contacts_id" value="{$customerB.contacts_id}"/>
-                                    <input type="text" id="contacts_name" value="{$customerB.contacts_name}" />
-                                </td>
-                            </tr>
-                            <tr>
-	                            <td class="tdleft" width="15%">服务类型:</td>
-	                            <td colspan="3">
+	                            <td class="tdleft" >服务类型:</td>
+	                            <td >
 	                            	<script type="text/javascript">
 									$(function(){
 										new PCAS2("service['class']","service['item']","{$service_array[0]}","{$service_array[1]}");
@@ -51,7 +39,11 @@ var service_item_data = "{$service_item_data}";
 									<select name="service['class']" class="input-medium"></select> 
 									<select name="service['item']" class="input-medium"></select>
 								</td>
-	                        </tr>
+								<td class="tdleft" >{:L('THE_PRIMARY_CONTACT')}</td>
+                                <td>
+                                    <input type="hidden" id="contactsB_id" name="contactsB_id" value="{$customerB.contactsB_id}"/>
+                                    <input type="text" id="contactsB_name" value="{$customerB.contactsB_name}" />
+                                </td>
 							<php>$j=0;</php>
                             <volist name="field_list['main']" id="vo">
                             <php>$j++;</php>
@@ -160,11 +152,11 @@ $("#dialog-contacts-list").dialog({
 	maxHeight: 400,
 	buttons: { 
 		"Ok": function () {
-			var item = $('input:radio[name="contacts"]:checked').val();
-			var name = $('input:radio[name="contacts"]:checked').parent().next().html();
+			var item = $('input:radio[name="contactsB"]:checked').val();
+			var name = $('input:radio[name="contactsB"]:checked').parent().next().html();
 			if(item){
-				$('#contacts_name').val(name);
-				$('#contacts_id').val(item);
+				$('#contactsB_name').val(name);
+				$('#contactsB_id').val(item);
 			}
 			$(this).dialog("close"); 
 		},
@@ -199,10 +191,10 @@ $(function(){
 			$('#dialog-role-list').load("{:U('user/listDialog')}");
 		}
 	);
-    $('#contacts_name').click(
+    $('#contactsB_name').click(
 		function(){
 			$('#dialog-contacts-list').dialog('open');
-			$('#dialog-contacts-list').load('{:U("contacts/radioListDialog","r=RContactsCustomerB&module=customerB&id=".$customerB["customerB_id"])}');
+			$('#dialog-contacts-list').load('{:U("contactsB/radioListDialog","r=RContactsBCustomerB&module=customerB&id=".$customerB["customerB_id"])}');
 		}
 	);
     $('#remove').click(

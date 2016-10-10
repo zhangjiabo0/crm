@@ -124,7 +124,7 @@ class LeadsBAction extends CommonAction{
 					if($_POST['contactsB_name']){
 						$contactsB = array();
 						if($_POST['contactsB_name']) $contactsB['name'] = $_POST['contactsB_name'];
-						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
+// 						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
 						if($_POST['sex']) $contactsB['sex'] = $_POST['sex'];
 						if($_POST['email']) $contactsB['email'] = $_POST['email'];
 						if($_POST['position']) $contactsB['post'] = $_POST['position'];
@@ -458,7 +458,7 @@ class LeadsBAction extends CommonAction{
 				break;
 			case 'add' : $order = 'create_time desc';  break;
 			case 'update' : $order = 'update_time desc';  break;
-			case 'sub' : $where['owner_role_id'] = array('in',implode(',', $below_ids)); break;
+			case 'sub' : $where['creator_role_id'] = array('in',implode(',', $below_ids)); break;
 			case 'subcreate' : $where['creator_role_id'] = array('in',implode(',', $below_ids)); break;
 			case 'public' :
 				unset($where['have_time']);
@@ -466,8 +466,8 @@ class LeadsBAction extends CommonAction{
 				break;
 			case 'deleted' : $where['is_deleted'] = 1;unset($where['have_time']); break;
 			case 'transformed' : $where['is_transformed'] = 1; break;
-			case 'me' : $where['owner_role_id'] = session('role_id'); break;
-			default : $where['owner_role_id'] = array('in',implode(',', getSubRoleId())); break;
+			case 'me' : $where['creator_role_id'] = session('role_id'); break;
+			default : $where['creator_role_id'] = array('in',implode(',', getSubRoleIdByYuan())); break;
 		}
 		if ($by != 'deleted') {
 			$where['is_deleted'] = array('neq',1);
@@ -475,9 +475,11 @@ class LeadsBAction extends CommonAction{
 		if ($by != 'transformed' && $by != 'deleted') {
 			$where['is_transformed'] = array('neq',1);
 		}
-		if (!isset($where['owner_role_id'])) {
-			if(!isset($where['_string'])) $where['owner_role_id'] = array('in', implode(',', getSubRoleId(true)));
-			else $where['owner_role_id'] = array('in', '0,'.implode(',', getSubRoleId(true)));
+// 		dump(getSubRoleIdByYuan());
+// 		die;
+		if (!isset($where['creator_role_id'])) {
+			if(!isset($where['_string'])) $where['creator_role_id'] = array('in', implode(',', getSubRoleIdByYuan(true)));
+			else $where['creator_role_id'] = array('in', '0,'.implode(',', getSubRoleIdByYuan(true)));
 		}
 		
 		if ($_REQUEST["field"]) {
@@ -587,11 +589,13 @@ class LeadsBAction extends CommonAction{
 					$list[$k]["delete_role"] = getUserByRoleId($v['delete_role_id']);
 					$list[$k]["owner"] = getUserByRoleId($v['owner_role_id']);
 					$list[$k]["creator"] = getUserByRoleId($v['creator_role_id']);
+					$list[$k]["creator"]["Dept_3_Name"] = getDept_3_Name($list[$k]["creator"]["role_id"]);
 				}
 			}elseif($by == 'transformed'){
 				foreach ($list as $k => $v) {
 					$list[$k]["owner"] = getUserByRoleId($v['owner_role_id']);
 					$list[$k]["creator"] = getUserByRoleId($v['creator_role_id']);				
+					$list[$k]["creator"]["Dept_3_Name"] = getDept_3_Name($list[$k]["creator"]["role_id"]);
 					$list[$k]["transform_role"] = getUserByRoleId($v['transform_role_id']);
 					$list[$k]["business_name"] = M('business')->where('business_id = %d', $v['business_id'])->getField('name');
 					$list[$k]["contacts_name"] = M('contacts')->where('contacts_id = %d', $v['contacts_id'])->getField('name');
@@ -602,6 +606,7 @@ class LeadsBAction extends CommonAction{
 					$days = 0;
 					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
 					$list[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
+					$list[$k]["creator"]["Dept_3_Name"] = getDept_3_Name($list[$k]["creator"]["role_id"]);
 					$days =  M('leadsB')->where('leadsB_id = %d', $v['leadsB_id'])->getField('have_time');
 					$list[$k]["days"] = $outdays-floor((time()-$days)/86400);
 				}
@@ -834,7 +839,7 @@ class LeadsBAction extends CommonAction{
 		} else {
 			$leadsB = D('LeadsBView')->where('leadsB.leadsB_id = %d', $leadsB_id)->find();
 			$field_list = M('Fields')->where('model = "leadsB"')->order('order_id')->select();
-			$leadsB['owner'] = D('RoleView')->where('role.role_id = %d', $leadsB['owner_role_id'])->find();
+// 			$leadsB['owner'] = D('RoleView')->where('role.role_id = %d', $leadsB['owner_role_id'])->find();
 			$leadsB['creator'] = D('RoleView')->where('role.role_id = %d', $leadsB['creator_role_id'])->find();
 			$log_ids = M('rLeadsBLog')->where('leadsB_id = %d', $leadsB_id)->getField('log_id', true);
 			$leadsB['log'] = M('log')->where('log_id in (%s)', implode(',', $log_ids))->select();
@@ -1551,6 +1556,7 @@ class LeadsBAction extends CommonAction{
 		
 		//线索来源统计
 		$setting = M('Fields')->where("model = 'leadsB' and field = 'source'")->getField('setting');
+		$setting = empty($setting)?'""':$setting;
 		$setting_str = '$revenueList='.$setting.';';
 		eval($setting_str);
 		$source_count_array = array();

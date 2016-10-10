@@ -94,8 +94,8 @@ class SettingAction extends Action{
 				M('User')->add(array('user_id'=>$v['id'],'role_id'=>$role_id,'category_id'=>$category_id,'status'=>$v['is_del']+1,'name'=>$v['emp_no'],'true_name'=>$v['name'],'password'=>md5($v['password'].$salt),'salt'=>$salt,'sex'=>$sex,'navigation'=>$navigation,'reg_time'=>$time));
 				
 				//权限继承，
-				$P = A('Permission');
-				$P -> extends_authorize($v['pos_id']);
+// 				$P = A('Permission');
+// 				$P -> extends_authorize($v['pos_id']);
 			}
 			$this->ajaxReturn(1,'',1);
 		}else

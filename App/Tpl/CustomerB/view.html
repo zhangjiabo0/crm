@@ -76,8 +76,6 @@
                         </tr>
                         </if>
                         <tr>
-                            <td class="tdleft">{:L('PRINCIPAL')}</td>
-                            <td><a class="role_info" href="javascript:void(0)" rel="{$customerB.owner.role_id}">{$customerB.owner.user_name}_{$customerB.owner.true_name}</if></a> &nbsp;  &nbsp; <a href="{:U('customerB/customerBlock','customerB_id='.$customerB['customerB_id'])}"><if condition="$customerB['is_locked'] and $customerB['owner_role_id']"><img title="{:L('UNLOCK_TITLE')}" src="__PUBLIC__/img/customerB_locking.png"/><elseif condition="$customerB['owner_role_id']"/><img title="{:L('LOCK_TITLE')}" src="__PUBLIC__/img/customerB_unlocking.png"/></if></a></td>
                             <td class="tdleft" width="15%">{:L('THE_LAST_MODIFICATION_TIME')}</td>
                             <td><if condition="$customerB['update_time'] gt 0">{$customerB.update_time|date='Y-m-d H:i:s',###}</if></td>
                         </tr>
@@ -149,11 +147,12 @@
 					<else /> 
 						<tr>
 							<td width="18%">&nbsp;</td>
-							<td width="20%">{:L('NAME')}</td>
+							<td width="19%">{:L('NAME')}</td>
 							<td width="10%">职位</td>
 							<td width="10%">{:L('CELLPHONE')}</td>
 							<td width="10%">QQ</td>
 							<td width="16%">email</td>
+							<td width="4%">备注</td>
 						</tr>
 						<volist name="customerB['contactsB']" id="vo">
 							<tr>
@@ -178,6 +177,9 @@
 								<td>
 									<if condition="C('ismobile') eq 1"><a href="mailto:{$vo.email}">{$vo.email}</a><else />{$vo.email}</if>
 								</td>
+								<td>
+									<a title="{$vo.description}">详情</a>
+								</td>
 							</tr>
 						</volist>
 					</if>
@@ -198,6 +200,7 @@
 					<else /> 
 						<tr>
 							<td width="18%">&nbsp;</td>
+							<td width="12%">跟进人</td>
 							<td width="20%">服务时间</td>
 							<td width="50%">服务内容</td>
 						</tr>
@@ -208,7 +211,10 @@
 									<a href="{:U('service/mdelete', 'id='.$vo['service_id'].'&r=rServiceCustomerB&module_id='.$customerB['customerB_id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;
 									</if>
 								</td>
-								 <td>
+								<td>
+									{$vo.creator_user_name}
+								</td>
+								<td>
 									{$vo.service_time}
 								</td>
 								<td>
