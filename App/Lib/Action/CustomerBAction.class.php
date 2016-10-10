@@ -4,7 +4,7 @@ class CustomerBAction extends CommonAction {
 	public function _initialize(){
 		$action = array(
 			'permission'=>array(),
-			'allow'=>array('getcustomerBlist','analytics', 'validate','check', 'remove', 'fenpei', 'revert','changecontent','customerBlock','check_customerB_limit','excelimportdownload','search','listDialog','getcustomerBoriginal','batchclose','batchfocus','close_share','share','getcurrentstatus')
+			'allow'=>array('getcustomerBlist','analytics', 'validate','check', 'remove', 'fenpei', 'revert','changecontent','customerBlock','check_customerB_limit','excelimportdownload','search','listDialog','getcustomerBoriginal','batchclose','batchfocus','close_share','share','getcurrentstatus','upload')
 		);
 		B('Authenticate', $action);
 	}
