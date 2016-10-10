@@ -8,6 +8,7 @@ class ContractAction extends Action {
 		B('Authenticate', $action);
 	}
 	public function add(){
+		
 		$contract_custom = M('config') -> where('name="contract_custom"')->getField('value');
 		if(!$contract_custom)  $contract_custom = '5k_crm';
 		if($this->isPost()){
