@@ -1064,6 +1064,7 @@ class CustomerBAction extends CommonAction {
 				foreach ($list as $k => $v) {
 					$list[$k]["delete_role"] = D('RoleView')->where('role.role_id = %d', $v['delete_role_id'])->find();
 					$list[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
+					$list[$k]["creator"]["Dept_3_Name"] = getDept_3_Name($list[$k]["creator"]["role_id"]);
 // 					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
 				}
 			} else {
@@ -1071,6 +1072,7 @@ class CustomerBAction extends CommonAction {
 					$days = 0;
 // 					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
 					$list[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
+					$list[$k]["creator"]["Dept_3_Name"] = getDept_3_Name($list[$k]["creator"]["role_id"]);
 					$days =  M('CustomerB')->where('customerB_id = %d', $v['customerB_id'])->getField('update_time');
 					$list[$k]["days"] = $outdays-floor((time()-$days)/86400);
 				}

@@ -2219,3 +2219,6 @@ function f_decode($str) {
 	$str = base64_decode($str);
 	return $str;
 }
+function mb_substradd($str,$start,$length,$add){
+	return mb_strlen($str,'utf-8')>($start+$length)?mb_substr($str,$start,$length,'utf-8').$add:mb_substr($str,$start,$length,'utf-8');
+}
