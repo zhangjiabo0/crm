@@ -163,6 +163,7 @@
 									<th>{$vo.name}</th>
 								</if>
                             </volist>
+                            <th>{:L('DEPT_3_NAME')}</th>
 							<if condition="C('ismobile') neq 1"><th>{:L('FOUNDER')}</th></if>
 							<if condition="(C('ismobile') neq 1) and ($Think.get.by eq 'deleted')"><th>{:L('DELETE_THE_PEOPLE')}</th><th>{:L('DELETE_THE_TIME')}</th></if>
 							<th>
@@ -244,6 +245,9 @@
 									</if>
                                
                                 </volist>
+                                <td>
+									{$vo.creator.Dept_3_Name}
+								</td>
 								<if condition="C('ismobile') neq 1">
 									<td>
 										<notempty name="vo.creator.user_name"><a class="role_info" rel="{$vo.creator.role_id}" href="javascript:void(0)">{$vo.creator.user_name}_{$vo.creator.true_name}</a></notempty>

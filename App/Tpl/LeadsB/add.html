@@ -38,6 +38,7 @@ var service_item_data = "{$service_item_data}";
 								</script>
 								<select name="service['class']" class="input-medium"></select> 
 								<select name="service['item']" class="input-medium"></select>
+								<span id="serviceTip" style="color:red;"></span>
 							</td>
 						<php>$j=0;</php>
 						<volist name="field_list['main']" id="vo">
@@ -206,10 +207,22 @@ $(function(){
 $(function(){
     $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
         onError:function(msg,obj,errorlist){
-        alert(msg);
-    },
-    submitAfterAjaxPrompt : "{:L('AJAX_VALIDATING_PLEASE_WAIT')}"
-});
+	        alert(msg);
+	    },
+    	submitAfterAjaxPrompt : "{:L('AJAX_VALIDATING_PLEASE_WAIT')}"
+	});
+    
+    $("#service").formValidator({
+        tipID:"serviceTip",
+        empty:false,
+        onShow:" ",
+        onFocus:" ",
+        onCorrect:"<span style='color:green;'>√</span>"
+    }).inputValidator({
+        min:1,max:255,
+        onErrorMin:"服务类型",
+        onErrorMax:"服务类型超出最大长度"
+    });
 <volist name="field_list[main]" id="vo">
     <if condition="$vo['is_validate'] == 1">
         <if condition="$vo['form_type'] != 'box' || $vo['setting']['type'] == 'select'">

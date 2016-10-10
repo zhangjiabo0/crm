@@ -107,12 +107,12 @@
 						<else /> 
 							<tr>
 								<td width="18%">&nbsp;</td>
-								<td width="19%">{:L('NAME')}</td>
+								<td width="17%">{:L('NAME')}</td>
 								<td width="10%">职位</td>
 								<td width="10%">{:L('CELLPHONE')}</td>
 								<td width="10%">QQ</td>
 								<td width="16%">email</td>
-								<td width="4%">备注</td>
+								<td width="6%">备注</td>
 							</tr>
 							<volist name="leadsB['contactsB']" id="vo">
 								<tr>
@@ -138,7 +138,7 @@
 										<if condition="C('ismobile') eq 1"><a href="mailto:{$vo.email}">{$vo.email}</a><else />{$vo.email}</if>
 									</td>
 									<td>
-										<a title="{$vo.description}">详情</a>
+										<a title="{$vo.description}">{$vo.description|mb_substradd=###,0,2,'...'}</a>
 									</td>
 								</tr>
 							</volist>
