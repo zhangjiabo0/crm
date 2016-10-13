@@ -6,8 +6,8 @@
 				<li class="first-li"><span class="spans1"><img src="__PUBLIC__/img/house.png"/>&nbsp;合同详情</span></li>
 				<li class="active"><a href="#tab1">{:L('BASIC_INFO')}</a></li>
 				<li><a href="#tab2">{:L('PRODUCT')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['product_count']">{$info['product_count']}</if></span></a></li>
-				<li><a href="#tab3">应收款&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['receivables_count']">{$info['receivables_count']}</if></span></a></li>
-				<li><a href="#tab5">应付款&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['payables_count']">{$info['payables_count']}</if></span></a></li>
+				<!-- <li><a href="#tab3">应收款&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['receivables_count']">{$info['receivables_count']}</if></span></a></li>
+				<li><a href="#tab5">应付款&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['payables_count']">{$info['payables_count']}</if></span></a></li> -->
 				<li><a href="#tab4">{:L('FILE')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['file_count']">{$info['file_count']}</if></span></a></li>
 			</ul>
 		</div>
@@ -30,8 +30,8 @@
 								<td class="tdleft" width="15%">{:L('CONTRACT_NO')}</td>
 								<td>{$info.number}</td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%">{:L('BUSINESS')}</td>
-								<td><a href="{:U('business/view','id='.$info['business_id'])}">{$info.business_name}</a></td>
+								<td class="tdleft" width="15%">{:L('PRICE_SHEET')}</td>
+								<td><a href="{:U('priceSheet/view','id='.$info['price_sheet_id'])}">{$info.price_sheet_number}</a></td>
 							</tr>
 							<tr>
 								<td class="tdleft" width="15%">{:L('CUSTOMER')}</td>
@@ -41,8 +41,8 @@
 								<td><a class="role_info" href="javascript:void(0)" rel="{$info['creator_role_id']}">{$info.creator_name}</a></td>
 							</tr>
 							<tr>
-								<td class="tdleft" width="15%">{:L('CONTACTS')}</td>
-								<td>{$info.contacts_name}</td>
+								<td class="tdleft" width="15%">{:L('DEPT_NAME')}</td>
+								<td>{$info.dept_name}</td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft" width="15%">{:L('OWNER_ROLE')}</td>
 								<td><a class="role_info" rel="{$info['owner_role_id']}" href="javascript:void(0)">{$info['owner_name']}</a></a></td>
@@ -72,10 +72,11 @@
 								<td class="tdleft" width="15%">{:L('STATUS')}</td>
 								<td>{$info.status}</td>
 							</tr>
-							<tr>
+							<!-- <tr>
 								<td class="tdleft" width="15%">{:L('THE_TERMS_OF_THE_CONTRACT')}</td>
 								<td style="word-break:break-word;" <if condition="C('ismobile') neq 1">colspan="3"</if>><if condition="$info.content neq null">{$info.content}</if></td>
-							</tr><tr>
+							</tr> -->
+							<tr>
 								<td class="tdleft" width="15%">{:L('DESCRIBE')}</td>
 								<td style="word-break:break-word;" <if condition="C('ismobile') neq 1">colspan="3"</if>><if condition="$info.description neq null">{$info.description}</if></td>
 							</tr>
@@ -86,9 +87,9 @@
 			<div class="tab-pane fade back_box" id="tab2">
 				<div class="header1">
 					<div class="pull-left two-title" > {:L('RELATED_PRODUCTS')} </div>
-					<if condition="$info['is_deleted'] == 0">
+					<!-- <if condition="$info['is_deleted'] == 0">
 						<div class="pull-right"> <a href="javascript:void(0);" class="btn btn-primary add_product">{:L('ADD')}</a></div>
-					</if>
+					</if> -->
 					<div style="clear:both;"></div>
 				</div>
 				<table class="table">
@@ -99,7 +100,7 @@
 					<else /> 
 						<thead>
 							<tr>
-								<td>&nbsp;</td>
+								<!-- <td>&nbsp;</td> -->
 								<td>{:L('PRODUCT_NAME')}</td>
 								<td>{:L('PRODUCT_CATEGORY')}</td>
 								<if condition="C('ismobile') neq 1">
@@ -115,7 +116,7 @@
 						<tbody>
 							<volist name="info.product" id="vo">
 								<tr>
-									<td class="tdleft"><a href="{:U('product/mdelete', 'r=rContractProduct&id='.$vo['id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;<a class="edit_product" href="javascript:void(0)" rel="{$vo.id}">{:L('EDITING')}</a></a></td>
+									<!-- <td class="tdleft"><a href="{:U('product/mdelete', 'r=rContractProduct&id='.$vo['id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;<a class="edit_product" href="javascript:void(0)" rel="{$vo.id}">{:L('EDITING')}</a></a></td> -->
 									<td>
 										<a href="{:U('product/view', 'id='.$vo['product_id'])}">{$vo.info.name}</a>
 									</td>
@@ -294,7 +295,7 @@
 		<div class="span2 bs-docs-sidebar mar-lefts2" id="right_list" >
 			<ul class="nav nav-list bs-docs-sidenav  span2 widths" >
 				<li class="active first-li"><span class="spans1">编辑详情</span></li>
-				<li><a href="javascript:void(0);" class="add_product"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_PRODUCT')}</a> </li>
+				<!-- <li><a href="javascript:void(0);" class="add_product"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_PRODUCT')}</a> </li> -->
 				<li><a href="javascript:void(0);" class="add_file"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_ACCESSORY')}</a></li>
 			</ul>
 		</div>

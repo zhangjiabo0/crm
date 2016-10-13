@@ -1,0 +1,17 @@
+if(isYuanQuCaiWuBu($uid)){
+	$isYuanQuCaiWuBu = true;
+	$flow = checkFlowNotMe(array(getParentid($uid),getFinancialManagerId(),getHRDeputyGeneralManagerId($uid)));
+}else{
+	$isYuanQuCaiWuBu = false;
+	$flow = checkFlowNotMe(array(getParentid($uid),getHRDeputyGeneralManagerId($uid)));
+}
+if(!empty($flow)){
+	if($this->isAjax()){
+		$this->ajaxReturn(getFlowData($flow),null,1);
+	}
+	if($isYuanQuCaiWuBu){
+		$confirm_text = getConfirmTextNotMe(array('getParentid','getFinancialManagerId','getHRDeputyGeneralManagerId'),$array['flow_type_id'],$uid);
+	}else{
+		$confirm_text = getConfirmTextNotMe(array('getParentid','getHRDeputyGeneralManagerId'),$array['flow_type_id'],$uid);
+	}
+	$this->_add_flow_index_log($flow,$flow_log);

@@ -175,6 +175,9 @@
 									<else />
 										<a href="{:U('contract/revert','id='.$vo['contract_id'])}" title="{:L('RESET')}">{:L('RESET')}</a>
 									</if>
+									<if condition="$vo.confirm_to_me eq true">
+										<a href="{:U('contract/confirm','id='.$vo['contract_id'])}">{:L('CONFIRM')}</a>
+									</if>
 								</td>
 							</tr> 
 						</volist>

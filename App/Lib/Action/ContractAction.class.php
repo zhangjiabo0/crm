@@ -20,24 +20,36 @@ class ContractAction extends CommonAction {
 			if(!$_POST['number'])	alert('error', L('CONTRACT_NO_EMPTY'), $_SERVER['HTTP_REFERER']);
 			else $data['number'] = trim($_POST['number']);
 			$data['due_time'] = $_POST['due_time']?strtotime($_POST['due_time']):time();
-			$data['business_id'] = intval($_POST['business_id']);
-			if(empty($data['business_id'])){
-				alert('error',L('PLEASE_SELECT_A_BUSINESS_OPPORTUNITY'),$_SERVER['HTTP_REFERER']);
+			$data['price_sheet_id'] = intval($_POST['price_sheet_id']);
+			if(empty($data['price_sheet_id'])){
+				alert('error',L('PLEASE_SELECT_A_PRICE_SHEET_OPPORTUNITY'),$_SERVER['HTTP_REFERER']);
 			}
-			$data['customer_id'] = intval($_POST['customer_id']);
+// 			$data['customer_id'] = intval($_POST['customer_id']);
 			$data['owner_role_id'] = $_POST['owner_role_id']?$_POST['owner_role_id']:session('role_id');
 			$data['creator_role_id'] = session('role_id');
+			$data['dept_name'] = $_POST['dept_name'];
 			$data['price'] = intval($_POST['price']);
-			$data['content'] = trim($_POST['content']);
+			$data['add_file'] = trim($_POST['add_file']);
 			$data['description'] = trim($_POST['description']);
 			$data['start_date'] = strtotime($_POST['start_date']);
 			$data['end_date'] = strtotime($_POST['end_date']);
 			$data['create_time'] = time();
 			$data['update_time'] = time();
 			$data['status'] = L('HAS_BEEN_CREATED');
-
+			list($data['confirm'],$data['confirm_name']) = array('wangwr|wenxk|','王文冉<>翁晓科<>');
+			
 			if($contractId = $contract->add($data)){
-				M('RBusinessContract')->add(array('contract_id'=>$contractId,'business_id'=>$data['business_id']));
+				$confirm_array = array_filter(explode('|',$data['confirm']));
+				$flow_data['contract_flow_id'] = $contractId;
+				$flow_data['emp_no'] = $confirm_array[0];
+				$flow_data['user_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('user_id');
+				$flow_data['role_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('role_id');
+				$flow_data['user_name'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('true_name');
+				$flow_data['step'] = '21';
+				$flow_data['create_time'] = time();
+				$flow_data['is_read'] = 0;
+				M('ContractFlowLog')->add($flow_data);
+// 				M('RBusinessContract')->add(array('contract_id'=>$contractId,'business_id'=>$data['business_id']));
 				actionLog($contractId);
 				if($_POST['refer_url']){
 					alert('success', L('CREATE_A_CONTRACT_SUCCESSFULLY'), $_POST['refer_url']);
@@ -45,11 +57,16 @@ class ContractAction extends CommonAction {
 					alert('success', L('CREATE_A_CONTRACT_SUCCESSFULLY'), U('contract/index'));
 				}
 			}else{
-				alert('error', L('FAILED_TO_CREATE_THE_CONTRACT'), U('contract/add'));
+				alert('error', L('FAILED_TO_CREATE_THE_CONTRACT'), U('contract/add?price_sheet_id='.intval($_POST['price_sheet_id'])));
 			}
 		}else{
-			if(intval($_GET['business_id'])){
-				$this->assign('business_id',intval($_GET['business_id']));
+			if(intval($_GET['price_sheet_id'])){
+				$this->assign('price_sheet_id',intval($_GET['price_sheet_id']));
+				$price_sheet = D('PriceSheetView')->where(array('id'=>intval($_GET['price_sheet_id']),'is_del'=>0))->find();
+				$product = M('RPriceSheetProduct')->where(array('sheet_id'=>intval($_GET['price_sheet_id'])))->select();
+				
+				$this->assign('price_sheet', $price_sheet);
+				$this->assign('product', $product);
 				
 				$last_number = M('contract')->where(array('number'=>array('like',$contract_custom.date('Ymd').'%')))->order('number desc')->limit(1)->getField('number');
 				if($last_number){
@@ -74,19 +91,24 @@ class ContractAction extends CommonAction {
 	}
 	
 	public function edit(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
 		
 		$contract = D('ContractView');
 		$contract_id = intval($_REQUEST['id']) ? intval($_REQUEST['id']) : alert('error', L('PARAMETER_ERROR'),$_SERVER['HTTP_REFERER']);
 		if(!check_permission($contract_id, 'contract')) $this->error(L('HAVE NOT PRIVILEGES'));
 		$contract_info = $contract->where('contract.contract_id = %d',$contract_id)->find();
-
+		$product = M('RPriceSheetProduct')->where(array('sheet_id'=>$contract_info['price_sheet_id']))->select();
+		$this->assign('price_sheet_id',$contract_info['price_sheet_id']);
 		if (is_array($contract_info)) {
 			if($_POST['submit']){
 				$data['due_time'] = $_POST['due_time']?strtotime($_POST['due_time']):time();
-				$data['business_id'] = $_POST['business_id']?$_POST['business_id']:alert('error',L('PLEASE_SELECT_A_BUSINESS_OPPORTUNITY'),$_SERVER['HTTP_REFERER']);
+				$data['price_sheet_id'] = $_POST['price_sheet_id']?$_POST['price_sheet_id']:alert('error',L('PLEASE_SELECT_A_PRICE_SHEET_OPPORTUNITY'),$_SERVER['HTTP_REFERER']);
 				$data['owner_role_id'] = $_POST['owner_role_id']?$_POST['owner_role_id']:session('role_id');
 				$data['price'] = intval($_POST['price']);
-				$data['content'] = trim($_POST['content']);
+				$data['dept_name'] = $_POST['dept_name'];
 				$data['description'] = trim($_POST['description']);
 				$data['start_date'] = strtotime($_POST['start_date']);
 				$data['end_date'] = strtotime($_POST['end_date']);
@@ -94,13 +116,14 @@ class ContractAction extends CommonAction {
 				$data['status'] = $_POST['status'];
 				
 				if(M('contract')->where(array('contract_id'=>$contract_id))->save($data)){
-					M('rBusinessContract')->where(array('contract_id'=>$contract_id))->save(array('business_id'=>$data['business_id']));
+// 					M('rBusinessContract')->where(array('contract_id'=>$contract_id))->save(array('business_id'=>$data['business_id']));
 					alert('success', L('MODIFY_THE_SUCCESS'),U('contract/view','id='.$contract_id));
 				}else{
 					alert('success', L('THERE_WERE_NO_CHANGES_IN_DATA'),$_SERVER['HTTP_REFERER']);
 				}
 			}else{
 				$this->assign('info',$contract_info);
+				$this->assign('product',$product);
 				$this->alert = parseAlert();
 				$this->display();
 			}
@@ -119,8 +142,8 @@ class ContractAction extends CommonAction {
 		if(empty($info)) alert('error', L('THE_CONTRACT_DOES_NOT_EXIST_OR_HAS_BEEN_DELETED'), U('contract/index'));
 		$info['creator_name'] = M('user')->where('role_id = %d', $info['creator_role_id'])->getField('name');
 		
-		$info['product'] = M('rContractProduct')->where('contract_id = %d', $contract_id)->select();
-		$product_count =  M('rContractProduct')->where('contract_id = %d', $contract_id)->count();
+		$info['product'] = M('rPriceSheetProduct')->where('sheet_id = %d', $info['price_sheet_id'])->select();
+		$product_count =  M('rPriceSheetProduct')->where('sheet_id = %d', $info['price_sheet_id'])->count();
 		$info['product_count'] = empty($product_count)? 0 : $product_count;
 		foreach ($info['product'] as $k => $v) {
 			$m_product_category = M('productCategory');
@@ -366,12 +389,18 @@ class ContractAction extends CommonAction {
 			$list[$key]['owner'] = getUserByRoleId($value['owner_role_id']);
 			$list[$key]['creator'] = getUserByRoleId($value['creator_role_id']);
 			$list[$key]['deletor'] = getUserByRoleId($value['delete_role_id']);
-			$list[$key]['supplier_name'] = M('supplier')->where('supplier_id = %d',$value['supplier_id'])->getField('name');
-			$contacts_id = M('Business')->where('business_id = %d',$value['business_id'])->getField('contacts_id');
-			$list[$key]['contacts_name'] = M('contacts')->where('contacts_id = %d', $contacts_id)->getField('name');
+// 			$list[$key]['supplier_name'] = M('supplier')->where('supplier_id = %d',$value['supplier_id'])->getField('name');
+// 			$contacts_id = M('Business')->where('business_id = %d',$value['business_id'])->getField('contacts_id');
+// 			$list[$key]['contacts_name'] = M('contacts')->where('contacts_id = %d', $contacts_id)->getField('name');
 			$end_date =  $contract->where('contract_id = %d', $value['contract_id'])->getField('end_date');
 			if($end_date){
 				$list[$key]['days'] = floor(($end_date-time())/86400+1);
+			}
+			$ContractFlowLog = M('ContractFlowLog')->where(array('role_id'=>session('role_id'),'contract_flow_id'=>$value['contract_id'],'_string'=>'result is null'))->find();
+			if($ContractFlowLog){
+				$list[$key]['confirm_to_me'] = true;
+			}else{
+				$list[$key]['confirm_to_me'] = false;
 			}
 		}
 		// println($list);
