@@ -27,13 +27,6 @@
 				    <input type="hidden" name="refer_url" value="{$refer_url}">
 				    <input type="hidden" id="add_file" name="add_file" value="{$leadsB.add_file}">
 					<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
-						<thead>
-							<tr>
-								<td>&nbsp;</td>
-								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>&nbsp; <input type="button" class="btn" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
-							</tr>
-						</thead>
-
 						<tbody width="100%">
 							<tr><th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th></tr>
 							<tr>
@@ -140,9 +133,8 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td>&nbsp;</td>
-								<td colspan="3">
-									<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;
+								<td colspan="2"><input name="submit" class="btn btn-primary pull-right" type="submit" value="{:L('SAVE')}"/> &nbsp;</td>
+								<td colspan="2">
 									<input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>&nbsp;&nbsp;
 								</td>
 							</tr>

@@ -10,6 +10,10 @@ class PriceSheetAction extends CommonAction {
 	}
 	
 	public function index(){
+		$price = D('priceSheetView');
+		$info = $price ->where(array('id'=> 5)) -> select();
+		dump($price -> _sql());
+		dump($info);die;
 		$this -> display();
 	}
 	
@@ -40,7 +44,7 @@ class PriceSheetAction extends CommonAction {
 			$data['service_val'] = trim($_POST['service_val']);//产品服务商总价
 			if($sid = $sheet -> add($data)){
 				//添加产品
-				$m_rbusinessProduct = M('RPriceSheet');
+				$m_rbusinessProduct = M('RPriceSheetProduct');
 				if(is_array($_POST['product'])){
 					foreach($_POST['product'] as $val){
 						$data['product_id'] = $val['product_id'];//产品id
