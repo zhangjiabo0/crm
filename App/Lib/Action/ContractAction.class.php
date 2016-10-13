@@ -1,15 +1,20 @@
 <?php 
-class ContractAction extends Action {
+class ContractAction extends CommonAction {
 	public function _initialize(){
 		$action = array(
 			'permission'=>array(),
-			'allow'=>array('changecontent','listdialog','getcontractlist')
+			'allow'=>array('changecontent','listdialog','getcontractlist','upload','del_file')
 		);
 		B('Authenticate', $action);
 	}
 	public function add(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$contract_custom = M('config') -> where('name="contract_custom"')->getField('value');
-		if(!$contract_custom)  $contract_custom = '5k_crm';
+		if(!$contract_custom)  $contract_custom = 'FWHT';
 		if($this->isPost()){
 			$contract = M('contract');
 			if(!$_POST['number'])	alert('error', L('CONTRACT_NO_EMPTY'), $_SERVER['HTTP_REFERER']);
@@ -45,15 +50,25 @@ class ContractAction extends Action {
 		}else{
 			if(intval($_GET['business_id'])){
 				$this->assign('business_id',intval($_GET['business_id']));
-				$this->assign('contract_custom', $contract_custom.date('Ymd').rand(1000,9999));
+				
+				$last_number = M('contract')->where(array('number'=>array('like',$contract_custom.date('Ymd').'%')))->order('number desc')->limit(1)->getField('number');
+				if($last_number){
+					$num = intval(substr($last_number,-4));
+					$num_str = formatto4w($num+1);
+				}else{
+					$num_str = formatto4w(1);
+				}
+				$this->assign('contract_custom', $contract_custom.date('Ymd').$num_str);
 				$this->alert = parseAlert();
 				$this->refer_url = $_SERVER['HTTP_REFERER'];
-				$this->display('adddialog');
-			}else{
-				$this->assign('contract_custom', $contract_custom.date('Ymd').rand(1000,9999));
-				$this->refer_url=$_SERVER['HTTP_REFERER'];
-				$this->alert = parseAlert();
 				$this->display();
+			}else{
+				alert('error', L('PLEASE_CREATE_FROM_PRICESHEET'), U('priceSheet/index'));
+				
+// 				$this->assign('contract_custom', $contract_custom.date('Ymd').rand(1000,9999));
+// 				$this->refer_url=$_SERVER['HTTP_REFERER'];
+// 				$this->alert = parseAlert();
+// 				$this->display();
 			}
 		}
 	}

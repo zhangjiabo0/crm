@@ -86,7 +86,7 @@ class SettingAction extends Action{
 						}
 					}
 				}
-				$navigation = serialize($menu);
+				$navigation = $v['emp_no'] == 'admin'?serialize($menu):null;
 				$time = time();
 				$salt = substr(md5($time),0,4);
 				$category_id = $v['emp_no'] == 'admin'?1:2;

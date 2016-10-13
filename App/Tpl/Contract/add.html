@@ -2,6 +2,9 @@
 <script type="text/javascript" src="__PUBLIC__/js/kindeditor-all-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/zh_CN.js"></script>
 <link rel="stylesheet" href="__PUBLIC__/css/kindeditor.css" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/kindeditor.css" type="text/css" />
 <script type="text/javascript">
 	<if condition="C('ismobile') neq 1">
 		var editor;
@@ -23,8 +26,9 @@
         <div class="row">
 			<div class="span12">
 				<include file="Public:alert"/>
-				<form action="{:U('contract/add')}" method="post">
+				<form id="form1" action="{:U('contract/add')}" method="post">
 				    <input type="hidden" name="refer_url" value="{$refer_url}">
+				    <input type="hidden" id="add_file" name="add_file" value="{$contract.add_file}">
 					<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
 						<thead>
 							<tr>
@@ -37,57 +41,137 @@
 							<tr><th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th></tr>
 							<tr>
 								<td width="15%" class="tdleft">{:L('CONTRACT_NO')}</td>
-								<td width="35%"><input  type="text" name="number" id="number" value="{$contract_custom}"></td>
+								<td width="35%"><input  type="text" readonly="readonly" name="number" id="number" value="{$contract_custom}"></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('SIGNING_TIME')}</td>
-								<td><input onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:s'})"  type="text" id="due_time" name="due_time"/></td>
+								<td><input onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:s'})"  type="text" id="due_time" name="due_time"/><span id="due_timeTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
-								<td width="15%" class="tdleft">{:L('SOURCE_OF_BUSINESS_OPPORTUNITIES_CLICK_ON_THE_SELECT')}</td>
-								<td width="35%">
-									<input type="hidden" name="business_id" id="business_id" />
-									<input  type="text" name="business_name" id="business_name" />
-									<a target="_blank" href="{:U('business/add')}">{:L('NEW_BUSINESS_OPPORTUNITIES')}</a>
-								</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft">{:L('CONTACTS')}</td>
-								<td><input type="text" readonly="readonly" id="contacts_name" value=""/></td>
-							</tr>
-							<tr>
-								<td width="15%" class="tdleft">{:L('SOURCE_OF_CUSTOMERS')}</td>
-								<td width="35%" colspan="3">
-									<input readonly="readonly" type="text" id="customer_name"/>
+								<td width="15%" class="tdleft">{:L('SOURCE_OF_CUSTOMER')}</td>
+								<td>
+									<input type="text" readonly="readonly" id="customer_name" value=""/>
 									<input type="hidden" name="customer_id" id="customer_id" value=""/>
 								</td>
-							</tr>
-							<tr>
+								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('OWNER_ROLE')}</td>
 								<td>
 									<input type="hidden" name="owner_role_id" id="owner_id" value="{$Think.session.role_id}"/>
-									<input type="text" name="owner_role_name" id="owner_name" value="{$Think.session.name}"/>
+									<input type="text" readonly="readonly" name="owner_role_name" id="owner_name" value="{$Think.session.name}"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="tdleft">{:L('BELONG_TO_DEPT')}</td>
+								<td>
+									<input readonly="readonly" type="text" id="dept_name"/>
+									<input type="hidden" name="dept_id" id="dept_id" value=""/>
 								</td>
 								<td class="tdleft">{:L('QUOTATION')}</td>
-								<td><input type="text" name="price" id="price"/></td>
+								<td><input type="text" name="price" id="price"/><span id="priceTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('THE_TIME_WHICH_THE_CONTRACT_COMES_INTO_FORCE')}</td>
 								<td>
 									<input type="text" id="start_date" name="start_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2038-01-01'}&quot;})" class="Wdate"/>
+									<span id="start_dateTip" style="color:red;"></span>
 								</td>
 								<td class="tdleft">{:L('CONTRACT_TIME')}</td>
 								<td colspan="3">
 									<input type="text" id="end_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_date\')}&quot;,maxDate:'2038-01-01'})" name="end_date" class="Wdate"/>
+									<span id="end_dateTip" style="color:red;"></span>
 								</td>
-							</tr>
-							<tr>
-								<td class="tdleft">{:L('TERMS_AND_CONDITIONS')}</td>
-								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="content" id="content" style="width: 800px; height: 350px;"></textarea></td>
 							</tr>
 							<tr>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('THE_CONTRACT_DESCRIPTION')}</td>
 								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="description" id="description"></textarea></td>
+							</tr>
+							<tr>
+	                        	<td class="tdleft" width="15%">上传合同盖章附件:</td>
+	                        	<td width="35%">{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'add'))}
+	                        	<span id="add_fileTip" style="color:red;"></span>
+	                        	</td>
+	                        </tr>
+	                        
+	                        <tr>
+								<th colspan="4">{:L('RELATED_PRODUCTS')}</th>
+							</tr>
+							<tr>
+								<td style="padding:0px;" colspan="4">
+									<!-- 隐藏域 -->
+									<input type="hidden" name="subtotal_val" class="subtotal_val" value=""/>
+									<input type="hidden" name="total_amount" class="total_amount" value=""/>
+									<!-- 隐藏域 END-->
+									<table class="table table-bordered" id="no-input-border" width="95%" border="0" cellspacing="1" cellpadding="0">
+										<thead>
+											<tr style="background-color:#E0E8FF;text-align:center;">
+												<td class="span1">&nbsp;</td>
+												<td class="span2">产品</td>
+												<td>数量</td>
+												<td>单价</td>
+												<td>折扣率(%)</td>
+												<td>税率(%)</td>
+												<td>小计</td>
+												<td class="span2">备注</td>
+											</tr>
+										</thead>
+										
+										<tbody>
+											<volist name="business.product" id="vo">
+												<input type="hidden" name="product[{$key+1}][r_id]" value="{$vo.id}"/>
+												<tr id="row_{$key+1}">
+													<td style="text-align:center;">
+														<a href="javascript:void(0);" class="reduce_one"><span class="btn btn-primary">删除<span></a>
+													</td>
+													<td>
+														<input type="hidden" name="product[{$key+1}][product_id]" id="product_id_{$key+1}" class="product_id" value="{$vo.product_id}" />
+														<input type="text" id="product_name_{$key+1}" value="{$vo.info.name}"/>
+													</td>
+													<td>
+														<input type="text" name="product[{$key+1}][amount]" id="product_amount_{$key+1}" class="amount" onkeyup="calculate({$key+1})" value="{$vo.amount}"/>
+													</td>
+													<td>
+														<input type="text" name="product[{$key+1}][unit_price]" id="product_unit_price_{$key+1}" onkeyup="calculate({$key+1})" value="{$vo.unit_price}" />
+													</td>
+													<td>
+														<input type="text" name="product[{$key+1}][discount_rate]" id="product_discount_rate_{$key+1}" onkeyup="calculate({$key+1})" value="{$vo.discount_rate}"/>
+													</td>
+													<td>
+														<input type="text" name="product[{$key+1}][tax_rate]" id="product_tax_rate_{$key+1}" onkeyup="calculate({$key+1})" value="{$vo.tax_rate}"/>
+													</td>
+													<td>
+														<input type="text" name="product[{$key+1}][subtotal]" id="subtotal{$key+1}" class="subtotal" onkeyup="calculate({$key+1})" readonly="readonly" value="{$vo.subtotal}"/>
+													</td>
+													<td>
+														<input type="text" name="product[{$key+1}][description]" value="{$vo.description}"/>
+													</td>
+													
+												</tr>
+												<?php $max_key = ++$key;?>
+											</volist>
+										</tbody>
+										<tbody>
+											<tr style="background-color:#FFFFF3;color:#808080">
+												<td></td>
+												<td>合计</td>
+												<td style="text-align:center" id="total_amount_val">{$total_amount}</td>
+												<td></td>
+												<td></td>
+												<td></td>
+												<td style="text-align:center" id="subtotal_val" colspan="2">{$vo.subtotal_val}</td>
+											</tr>
+											<tr style="background-color:#FFFFF1">
+												<td>&nbsp;</td>
+												<td>其他费用</td>
+												<td><input type="text" name="discount_price" id="discount_price" value="{$vo.discount_price}" onkeyup="cal_discount_price()"/></td>
+												<td></td>
+												<td></td>
+												<td>最终费用</td>
+												<td colspan="2"><input type="text" name="sales_price" id="sales_price" readonly="true" value="{$vo.sales_price}"/></td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
 							</tr>
 						</tbody>
 						<tfoot>
@@ -104,13 +188,13 @@
 			</div>
 		</div>
 	</div>
-	<div id="dialog-business" title="{:L('SELECT_BUSINESS_OPPORTUNITIES')}">loading...</div>
+	<!-- <div id="dialog-business" title="{:L('SELECT_BUSINESS_OPPORTUNITIES')}">loading...</div>
 	<div id="dialog-customer" title="{:L('DIALOG_SELECT_CUSTOMER')}">loading...</div>
-	<div id="dialog-role-list2" title="{:L('SELECT_HEAD')}">loading...</div>
+	<div id="dialog-role-list2" title="{:L('SELECT_HEAD')}">loading...</div> -->
 <script type="text/javascript">
 <if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
 
-	$(function(){
+	/* $(function(){
 		$(document).on('click','#business_name',function () {
 			$('#dialog-business').dialog('open');
 			$('#dialog-business').load("{:U('business/listDialog')}");
@@ -191,6 +275,96 @@
 			}
 		},
 		position: ["center", 100]
-	});
+	}); */
+	
+	$(function(){
+	    $.formValidator.initConfig({formID:"form1",debug:false,submitOnce:true,
+	        onError:function(msg,obj,errorlist){
+		        alert(msg);
+		    },
+	    	submitAfterAjaxPrompt : '{:L('THERE_ARE_DATA_ARE_ASYNCHRONOUS_VALIDATION')}'
+		});
+	    
+	    $("#due_time").formValidator({
+	        tipID:"due_timeTip",
+	        empty:false,
+	        onShow:" ",
+	        onFocus:" ",
+	        onCorrect:"<span style='color:green;'>√</span>"
+	    }).inputValidator({
+	        min:1,
+	        onErrorMin:"签约时间必填",
+	    });
+	    
+	    $("#price").formValidator({
+	        tipID:"priceTip",
+	        empty:false,
+	        onShow:" ",
+	        onFocus:" ",
+	        onCorrect:"<span style='color:green;'>√</span>"
+	    }).inputValidator({
+	        min:1,
+	        onErrorMin:"合同金额必填"
+	    });
+	    $("#price").regexValidator({
+	        regExp:"num",
+	        dataType:"enum",
+	        onError:"合同金额{:L('INCORRECT_FORMAT')}"
+	    });
+	    
+	    $("#start_date").formValidator({
+	        tipID:"start_dateTip",
+	        empty:false,
+	        onShow:" ",
+	        onFocus:" ",
+	        onCorrect:"<span style='color:green;'>√</span>"
+	    }).inputValidator({
+	        min:1,
+	        onErrorMin:"合同生效时间必填"
+	    });
+	    
+	    $("#end_date").formValidator({
+	        tipID:"end_dateTip",
+	        empty:false,
+	        onShow:" ",
+	        onFocus:" ",
+	        onCorrect:"<span style='color:green;'>√</span>"
+	    }).inputValidator({
+	        min:1,
+	        onErrorMin:"合同到期时间必填"
+	    });
+	    
+	    $("#add_file").formValidator({
+	        tipID:"add_fileTip",
+	        empty:false,
+	        onShow:" ",
+	        onFocus:" ",
+	        onCorrect:"<span style='color:green;'>√</span>"
+	    }).inputValidator({
+	        min:1,
+	        onErrorMin:"请上传合同盖章附件"
+	    });
+	})
 </script>
+
+<script type="text/javascript">
+	var upload_url = "{:U('upload')}";
+	var del_url = "{:U('del_file')}";
+	var app_path = "__ROOT__";
+	var cookie_prefix = "{:C('COOKIE_PREFIX')}";
+	var link_select = "{:U('Popup/link_select')}";
+	var _hmt = _hmt || [];
+	(function() {
+		var hm = document.createElement("script");
+		hm.src = "//hm.baidu.com/hm.js?2a935166b0c9b73fef3c8bae58b95fe4";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})(); 
+	
+	function is_mobile() {
+		return navigator.userAgent.match(/mobile/i);
+	}
+</script>
+<include file="Widget:css" />
+<include file="Widget:plugin" />
 <include file="Public:footer" />	

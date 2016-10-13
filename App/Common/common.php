@@ -2222,3 +2222,17 @@ function f_decode($str) {
 function mb_substradd($str,$start,$length,$add){
 	return mb_strlen($str,'utf-8')>($start+$length)?mb_substr($str,$start,$length,'utf-8').$add:mb_substr($str,$start,$length,'utf-8');
 }
+function formatto4w($num){
+	if($num>=1000){
+		return substr($num,-4);
+	}
+	if($num>=100){
+		return '0'.substr($num,-4);
+	}
+	if($num>=10){
+		return '00'.substr($num,-4);
+	}
+	if($num>=1){
+		return '000'.substr($num,-4);
+	}
+}
