@@ -1298,7 +1298,7 @@ class CustomerBAction extends CommonAction {
 		$m_contactsB = M('ContactsB');
 		$d_v_customerB = D('CustomerBView');
 		$m_r_contactsB_customerB = M('RContactsBCustomerB');
-		$underling_ids = getSubRoleId();
+		$underling_ids = getSubRoleIdByYuan(true);
 		$business_id = intval($_GET['bid']);
 		if(!empty($business_id)){
 			$customerB_id = M('business')->where('business_id = %d',$business_id)->getField('customerB_id');
