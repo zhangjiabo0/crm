@@ -6,8 +6,8 @@
             <li class="first-li"><span class="spans1"><img src="__PUBLIC__/img/house.png"/>&nbsp;<if condition="$customerB_len gt 10">{:msubstr($customerB['name'], 0, 10)}<else/>{$customerB['name']}</if></span></li>
             <li class="active"><a href="#tab1" >基本信息</a></li>
             <li><a href="#tab3">{:L('COMMUNICATION_LOGS')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['log_count']">{$customerB['log_count']}</if></span></a></li>
-            <li><a href="#tab10">{:L('BUSINESS_HISTORY')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['business_count']">{$customerB['business_count']}</if></span></a></li>
-            <li><a href="#tab12">{:L('CUMTOMER_CARE')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['cares_count']">{$customerB['cares_count']}</if></span></a></li>
+            <!-- <li><a href="#tab10">{:L('BUSINESS_HISTORY')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['business_count']">{$customerB['business_count']}</if></span></a></li>
+            <li><a href="#tab12">{:L('CUMTOMER_CARE')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['cares_count']">{$customerB['cares_count']}</if></span></a></li> -->
             <li><a href="#tab7">{:L('BUY_THE_PRODUCT')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['product_count']">{$customerB['product_count']}</if></span></a></li>
             <li><a href="#tab11">{:L('CONTRACT')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['contract_count']">{$customerB['contract_count']}</if></span></a></li>
             <li><a href="#tab8">{:L('THE_ACCOUNTS_RECEIVABLE')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$customerB['receivables_count']">{$customerB['receivables_count']}</if></span></a></li>
