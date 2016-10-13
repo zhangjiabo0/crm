@@ -910,7 +910,8 @@ a.active{font-weight:700;color:#555555;}
 	border-right-color: #FFF;
 	box-shadow: none;
 }
-#no-input-border  > tbody> tr > td > input{
+#no-input-border  > tbody> tr > td > input ,
+#no-input-border  > tbody> tr > td > a{
 	width:90%;
 	height:100%;
 	font-size:14px;
@@ -923,6 +924,9 @@ a.active{font-weight:700;color:#555555;}
 	border-right-color: #FFF;
 	border-bottom-color: #FFF;
 	box-shadow: none;
+	overflow:hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
 }
 #no-input-border .divSelect{
 	max-width: 69px;
@@ -1169,7 +1173,4 @@ a.active{font-weight:700;color:#555555;}
  .no-gz{display:block;margin:0 5px; float:left; width:16px; height:16px; background:url(../img/attention.png) left top no-repeat}
  .yes-gz{display:block;margin:0 5px;float:left;width:16px; height:16px; background:url(../img/attention.png) left bottom no-repeat}
  #td_colspan p span.starIcon{float:left;}
- 
- 
- 
  

@@ -110,6 +110,7 @@ class UserAction extends Action {
 							session('position_id', $role['position_id']);
 							session('role_name', $role['role_name']);
 							session('department_id', $role['department_id']);
+							session('department_name', $role['department_name']);
 							session('name', $user['name']);
 							session('true_name', $user['true_name']);
 							session('user_id', $user['user_id']);
@@ -327,8 +328,11 @@ class UserAction extends Action {
 			$where = 'role.role_id in ('.implode(',', $below_ids).')';
 		}
 		$where = 'user.status = 1';
-		$role_list = $this->role_list = $d_role_view->where($where)->select();
-		
+		$role_list  = $d_role_view->where($where)->select();
+		foreach ($role_list as $k => $v){
+			$role_list[$k]['depts'] = getDept_3_Name($v['role_id']);
+		}
+		$this -> assign('role_list',$role_list);
 		$count =  $d_role_view->where($where)->count();
 		$this->count = $count;
 		$this->total = $count%10 > 0 ? ceil($count/10) : $count/10;

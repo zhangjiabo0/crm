@@ -42,7 +42,7 @@
 	'SIGNING_TIME'=>'来源客户',			
 	'SOURCE_OF_BUSINESS_OPPORTUNITIES_CLICK_ON_THE_SELECT'=>'来源商机(单击选择)',		
 	'NEW_BUSINESS_OPPORTUNITIES'=>'新建商机',		
-	'SOURCE_OF_CUSTOMERS'=>'来源客户',	
+	'SOURCE_OF_CUSTOMERS'=>'客户名称',	
 	'OWNER_ROLE_CLICK_ON_THE_SELECT'=>'业务员(单击选择)',	
 	'THE_TIME_WHICH_THE_CONTRACT_COMES_INTO_FORCE'=>'报价单生效时间',	
 	'CONTRACT_TIME'=>'报价单到期时间',	
@@ -87,4 +87,8 @@
 	'CONTRACT_OUT_OF_DATE'	=>	'距报价单到期天数',
 	'DEPARTMENT' => '所属部门',
 	'APPLY_REASON' => '申请事由',
+	'SERVICE_NAME' => '服务商名称',
+	'AFFIRM'=>'确认',
+	'CUSTOMER_NAME_NOTNULL' => '客户名称不能为空',
+	'SERVICE_NAME_NOTNULL' => '服务商名称不能为空',
 	);

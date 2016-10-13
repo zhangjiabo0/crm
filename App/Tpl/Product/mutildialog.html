@@ -62,6 +62,7 @@
 					<th>&nbsp;</th>
 					<th>{:L('PRODUCT_NAME')}</th>
 					<th>{:L('PRODUCT_CATEGORY')}</th>
+					<th>{:L('SUGGESTED_PRICE')}</th>
 				</tr>
 			</thead>
 			<tfoot id="footer">
@@ -97,9 +98,11 @@
 						<td>
 							<input type="checkbox" name="product_id" class="product_id" value="{$vo.product_id}" />
 							<input type="hidden" value="{$vo.suggested_price}"/>
+							<input id="threeDesc" type="hidden" value="{$vo.description}"/>
 						</td>
 						<td>{$vo.name}</td>
 						<td>{$vo.category_name}</td>
+						<td>{$vo.suggested_price}</td>
 					</tr>
 					</volist>
 				</empty>
@@ -161,7 +164,7 @@
 				if(data.data.list != null){
 					$.each(data.data.list, function(k, v){
 						var checked = checkRes(v.product_id) ? 'checked=checked' : '';
-						temp += '<tr><td><input type="checkbox" class="product_id" name="product_id" '+checked+' class="check_list" value="'+v.product_id+'"/><input type="hidden" value="'+v.suggested_price+'"/></td><td>'+v.name+'</td><td>'+v.category_name+'</td></tr>';
+						temp += '<tr><td><input type="checkbox" class="product_id" name="product_id" '+checked+' class="check_list" value="'+v.product_id+'"/><input type="hidden" value="'+v.suggested_price+'"/><input id="threeDesc" type="hidden" value="'+v.description+'"/></td><td>'+v.name+'</td><td>'+v.category_name+'</td><td>'+v.suggested_price+'</td></tr>';
 					});
 					var changepage = "";
 					if(data.data.p == 1){
@@ -228,8 +231,9 @@
 			if(checked){
 				var pname = $(this).parent().next().text();
 				var price = $(this).next().val();
+				var desc = $(this).next().next().val();
 
-				$('#res').append('<div class="se_product" rel="'+$(this).val()+'">'+pname+'<input type="hidden" name="suggested_price" value="'+price+'"> &nbsp; <i class="icon-remove remove"></i></div>');
+				$('#res').append('<div class="se_product" rel="'+$(this).val()+'" desc="'+$(this)+'">'+pname+'<input type="hidden" name="suggested_price" value="'+price+'"> &nbsp; <i class="icon-remove remove"></i></div>');
 				bindaction();
 			}else{
 				checkDelRes(pid);
