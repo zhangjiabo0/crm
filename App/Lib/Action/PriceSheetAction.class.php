@@ -10,11 +10,39 @@ class PriceSheetAction extends CommonAction {
 	}
 	
 	public function index(){
-		$price = D('priceSheetView');
-		$info = $price ->where(array('id'=> 5)) -> select();
-		dump($price -> _sql());
-		dump($info);die;
-		$this -> display();
+		$p = isset($_GET['p']) ? intval($_GET['p']) : 1 ;
+		if($_GET['listrows']){
+			$listrows = $_GET['listrows'];
+			$params[] = "listrows=" . trim($_GET['listrows']);
+		}else{
+			$listrows = 15;
+			$params[] = "listrows=15";
+		}
+		$price = D('PriceSheetView');
+		$list = $price -> where('PriceSheet.is_del=0') -> order('PriceSheet.create_time DESC')->page($p.','.$listrows) -> select();
+		$count = $price -> where('PriceSheet.is_del=0') -> count();
+		import("@.ORG.Page");
+		$Page = new Page($count,$listrows);
+		if (!empty($_GET['by'])) {
+			$params[] = "by=" . trim($_GET['by']);
+		}
+		if (!empty($_GET['content'])) {
+			$params[] = "content=" . trim($_GET['content']);
+		}
+		$this->parameter = implode('&', $params);
+		
+		if ($_GET['desc_order']) {
+			$params[] = "desc_order=" . trim($_GET['desc_order']);
+		} elseif($_GET['asc_order']){
+			$params[] = "asc_order=" . trim($_GET['asc_order']);
+		}
+		$Page->parameter = implode('&', $params);
+		$this->assign('page',$Page->show());
+		$this->listrows = $listrows;
+		$this->list = $list;
+		$this->assign('count',$count);
+		$this->alert = parseAlert();
+		$this->display();
 	}
 	
 	/**
@@ -33,6 +61,12 @@ class PriceSheetAction extends CommonAction {
 			else $data['customer_id'] = trim($_POST['customer_id']);//客户名称
 			if(!$_POST['customerB_id'])	alert('error', L('SERVICE_NAME_NOTNULL'), $_SERVER['HTTP_REFERER']);
 			else $data['customerB_id'] = trim($_POST['customerB_id']);//服务商名称
+			if(!is_array($_POST['product']))alert('error', L('PLEASE_SELECT_PRODUCT'), $_SERVER['HTTP_REFERER']);
+			else{
+				foreach ($_POST['product'] as $v){
+					if(empty($v['provider_price'])) alert('error',L('PROVIDER_PRICES') , $_SERVER['HTTP_REFERER']);
+				}
+			}
 			$data['role_id'] = $_POST['owner_role_id']?$_POST['owner_role_id']:session('role_id');//业务员id
 			$data['department'] = trim($_POST['department']);//所属部门
 			$data['reason'] = trim($_POST['reason']);//申请事由
@@ -89,6 +123,21 @@ class PriceSheetAction extends CommonAction {
 				$this->display();
 			}
 		}
+	}
+	/**
+	 * 查看报价单
+	 */
+	public function view(){
+		$id = $_GET['id'];
+		$sheet = D('PriceSheetView');
+		$list = $sheet -> where('PriceSheet.is_del=0') -> find($id);
+		//绑定报价单下面的产品信息
+		if(!empty($list['id'])){
+			$product = M('RPriceSheetProduct');
+			$list['products'] = $product -> where('sheet_id = '.$list['id']) -> select();
+		}
+		$this-> vo = $list;
+		$this -> display();
 	}
 	
 }

@@ -1,305 +1,129 @@
 <include file="Public:header" />
-<div class="container no-mar-top no-bg" >
-	<div class="row ">
-		<div class="span2 bs-docs-sidebar mar-left3" >
-			<ul class="nav nav-list bs-docs-sidenav span2 widths" id="left_list" style="height:440px;">
-				<li class="first-li"><span class="spans1"><img src="__PUBLIC__/img/house.png"/>&nbsp;合同详情</span></li>
-				<li class="active"><a href="#tab1">{:L('BASIC_INFO')}</a></li>
-				<li><a href="#tab2">{:L('PRODUCT')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['product_count']">{$info['product_count']}</if></span></a></li>
-				<li><a href="#tab3">应收款&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['receivables_count']">{$info['receivables_count']}</if></span></a></li>
-				<li><a href="#tab5">应付款&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['payables_count']">{$info['payables_count']}</if></span></a></li>
-				<li><a href="#tab4">{:L('FILE')}&nbsp;&nbsp;<span class="badge badge-success"><if condition="$info['file_count']">{$info['file_count']}</if></span></a></li>
-			</ul>
+<div class="container">
+		<div class="page-header">
+			<h4>{:L('THE_VIEW_CONTRACT')}</h4>
 		</div>
-		<div class="tab-content span8 mar-lefts" >
-			<div class="tab-pane fade in active" id="tab1">
-				<div class="container2 top-pad" >
-					<span class="basic_information" name="tab">基本信息</span>
-					<div class="pull-right"style="margin:-3px 10px 0 0;">
-						<a href="{:U('contract/edit', 'id='.$info['contract_id'])}" class="btn btn-primary">{:L('EDITING')}</a>
-						<a href="{:U('contract/delete', 'contract_id='.$info['contract_id'])}" class="btn btn-primary del_confirm">{:L('DELETE')}</a>
-						<a href="javascript:void(0)" onclick="javascript:history.go(-1)" class="btn btn-primary">{:L('RETURN')}</a>
-					</div>
-				</div>
-				<div class="back_box" style="margin-top:10px;">
-					<include file="Public:alert"/>
-					<table class="table table-hover">
-						<tbody>
+        <div class="row">
+			<div class="span12">
+				<include file="Public:alert"/>
+				<form action="{:U('priceSheet/add')}" method="post">
+				    <input type="hidden" name="refer_url" value="{$refer_url}">
+				    <input type="hidden" id="add_file" name="add_file" value="{$leadsB.add_file}">
+					<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
+						<tbody width="100%">
 							<tr><th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th></tr>
 							<tr>
-								<td class="tdleft" width="15%">{:L('CONTRACT_NO')}</td>
-								<td>{$info.number}</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%">{:L('BUSINESS')}</td>
-								<td><a href="{:U('business/view','id='.$info['business_id'])}">{$info.business_name}</a></td>
-							</tr>
-							<tr>
-								<td class="tdleft" width="15%">{:L('CUSTOMER')}</td>
-								<td><a href="{:U('customer/view','id='.$info['customer_id'])}">{$info.customer_name}</a></td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft">{:L('CREATOR_ROLE')}</td>
-								<td><a class="role_info" href="javascript:void(0)" rel="{$info['creator_role_id']}">{$info.creator_name}</a></td>
-							</tr>
-							<tr>
-								<td class="tdleft" width="15%">{:L('CONTACTS')}</td>
-								<td>{$info.contacts_name}</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%">{:L('OWNER_ROLE')}</td>
-								<td><a class="role_info" rel="{$info['owner_role_id']}" href="javascript:void(0)">{$info['owner_name']}</a></a></td>
-							</tr>
-							<tr>
-								<td class="tdleft" width="15%">{:L('THE_TIME_WHICH_THE_CONTRACT_COMES_INTO_FORCE')}</td>
-								<td>
-									<if condition="$info['start_date']">{$info['start_date']|date="Y-m-d",###}</if>
-								</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%">{:L('CONTRACT_TIME')}</td>
-								<td>
-									<if condition="$info['end_date']">{$info['end_date']|date="Y-m-d",###}</if>
+								<td width="15%" class="tdleft">{:L('CONTRACT_NO')}</td>
+								<td width="35%"><input  type="text" name="number" id="number" value="{$vo.number}"></td>
+								<td width="15%" class="tdleft">{:L('SOURCE_OF_CUSTOMERS')}</td>
+								<td width="35%" colspan="3">
+									<input type="text" name="customer_id" id="customer_id" value="{$vo.customer_name}"/>
 								</td>
 							</tr>
 							<tr>
-								<td class="tdleft" width="15%">{:L('SIGNING_TIME')}</td>
-								<td>{$info.due_time|date="Y-m-d",###}</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%">{:L('UPDATE_TIME')}</td>
-								<td>{$info.update_time|date="Y-m-d",###}</td>
+								<td class="tdleft" >{:L('SERVICE_NAME')}</td>
+								<td><input type="text" name="customerB_id" id="customerB_id" value="{$vo.service_name}" /></td>
+							
+								<td class="tdleft">{:L('OWNER_ROLE')}</td>
+								<td>
+									<input readonly="readonly" type="text" name="owner_role_name" id="owner_name" value="{$vo.user_name}_{$vo.true_name}"/>
+								</td>
 							</tr>
 							<tr>
-								<td class="tdleft" width="15%">{:L('QUOTATION')}</td>
-								<td>{$info.price}</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft" width="15%">{:L('STATUS')}</td>
-								<td>{$info.status}</td>
+								<td class="tdleft">{:L('DEPARTMENT')}</td>
+								<td colspan="3"><input type="text" name="department" id="department" value="{$vo.department}" readonly="readonly"/></td>
 							</tr>
 							<tr>
-								<td class="tdleft" width="15%">{:L('THE_TERMS_OF_THE_CONTRACT')}</td>
-								<td style="word-break:break-word;" <if condition="C('ismobile') neq 1">colspan="3"</if>><if condition="$info.content neq null">{$info.content}</if></td>
-							</tr><tr>
-								<td class="tdleft" width="15%">{:L('DESCRIBE')}</td>
-								<td style="word-break:break-word;" <if condition="C('ismobile') neq 1">colspan="3"</if>><if condition="$info.description neq null">{$info.description}</if></td>
+								<td class="tdleft">{:L('APPLY_REASON')}</td>
+								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="reason" id="reason">{$vo.reason}</textarea></td>
 							</tr>
+							<tr>
+	                        	<td class="tdleft" width="15%">附件:</td>
+	                        	<if condition="$vo['add_file'] eq ''">
+	                            	<td width="35%">{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'add'))}</td>
+	                            <else/>
+	                            	<td width="35%">{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'show'))}</td>
+	                            </if>
+                       	 	</tr>
+							<tr>
+							<th colspan="4">{:L('RELATED_PRODUCTS')}</th>
+						</tr>
+						<tr>
+							<td style="padding:0px;" colspan="4">
+								<!-- 隐藏域 -->
+								<input type="hidden" name="subtotal_val" class="subtotal_val" value=""/>
+								<input type="hidden" name="total_amount" class="total_amount" value=""/>
+								<input type="hidden" name="willtotal_val" class="willtotal_val" value=""/>
+								<input type="hidden" name="service_val" class="service_val" value=""/>
+								<!-- 隐藏域 END-->
+								<table class="table table-bordered" id="no-input-border" width="95%" border="0" cellspacing="1" cellpadding="0">
+									<thead>
+										<tr style="background-color:#E0E8FF;text-align:center;">
+											<td class="span2">产品</td>
+											<td>数量</td>
+											<td>标准目录价</td>
+											<td>金额</td>
+											<td style="width: 75px;">客户意向单价</td>
+											<td>客户意向金额</td>
+											<td>服务商单价</td>
+											<td>服务商金额</td>
+											<td>折扣</td>
+											<td>利润率</td>
+											<td>产品说明</td>
+											<td class="span2">备注</td>
+										</tr>
+									</thead>
+									<tbody id="add_products">
+										<foreach name="vo.products" item="v">
+											<tr>
+												<td><input type="text" value="{$v.product_name}" title="{$v.product_name}" readonly="readonly"/></td>
+												<td>{$v.amount}</td>
+												<td>{$v.unit_price}</td>
+												<td>{$v.subtotal}</td>
+												<td>{$v.will_price}</td>
+												<td>{$v.will_total}</td>
+												<td>{$v.provider_price}</td>
+												<td>{$v.provider_total}</td>
+												<td>{$v.tax_rate}</td>
+												<td>{$v.lirun}</td>
+												<td><input type="text" value="{$v.discount_rate}" readonly="readonly"/></td>
+												<td>{$v.discription}</td>
+											</tr>
+										</foreach>
+									</tbody>
+									<tbody id="add_pro">
+										<tr style="background-color:#FFFFF3;color:#808080">
+											<td>合计</td>
+											<td id="total_amount_val" style="text-align:center">{$vo.total_amount}</td>
+											<td></td>
+											<td id="subtotal_val" style="text-align:center" name="subtotal_val">{$vo.subtotal_val}</td>
+											<td></td>
+											<td id="willtotal_val" style="text-align:center" name="willtotal_val">{$vo.willtotal_val}</td>
+											<td></td>
+											<td id="service_val" style="text-align:center" name="service_val">{$vo.service_val}</td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+									</tbody> 
+								</table>
+							</td>
+						</tr>
 						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="2"></td>
+								<td colspan="2">
+									<input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>&nbsp;&nbsp;
+								</td>
+							</tr>
+						</tfoot>
 					</table>
-				</div>
+				</form>
 			</div>
-			<div class="tab-pane fade back_box" id="tab2">
-				<div class="header1">
-					<div class="pull-left two-title" > {:L('RELATED_PRODUCTS')} </div>
-					<if condition="$info['is_deleted'] == 0">
-						<div class="pull-right"> <a href="javascript:void(0);" class="btn btn-primary add_product">{:L('ADD')}</a></div>
-					</if>
-					<div style="clear:both;"></div>
-				</div>
-				<table class="table">
-					<if condition="$info.product eq null">
-						<tr>
-							<td>{:L('THERE_IS_NO_DATA')} </td>
-						</tr>
-					<else /> 
-						<thead>
-							<tr>
-								<td>&nbsp;</td>
-								<td>{:L('PRODUCT_NAME')}</td>
-								<td>{:L('PRODUCT_CATEGORY')}</td>
-								<if condition="C('ismobile') neq 1">
-								<td>{:L('QUOTATION_YUAN')})</td>
-								</if>
-								<td>{:L('TRADING_YUAN')}</td>
-								<if condition="C('ismobile') neq 1">
-								<td>{:L('THE_COST_PRICE_YUAN')}</td>
-								<td width="30%">{:L('REMARK')}</td>
-								</if>
-							</tr>
-						</thead>
-						<tbody>
-							<volist name="info.product" id="vo">
-								<tr>
-									<td class="tdleft"><a href="{:U('product/mdelete', 'r=rContractProduct&id='.$vo['id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;<a class="edit_product" href="javascript:void(0)" rel="{$vo.id}">{:L('EDITING')}</a></a></td>
-									<td>
-										<a href="{:U('product/view', 'id='.$vo['product_id'])}">{$vo.info.name}</a>
-									</td>
-									<td>
-										{$vo.category_name}
-									</td>
-									<if condition="C('ismobile') neq 1">
-									<td>
-										<if condition="$vo['estimate_price'] gt 0">{$vo.estimate_price}</if>
-									</td>
-									</if>
-									<td>
-										<if condition="$vo['sales_price'] gt 0">{$vo.sales_price}</if>
-									</td>
-									<if condition="C('ismobile') neq 1">
-									<td>
-										<if condition="$vo['info']['cost_price'] gt 0">{$vo.info.cost_price}</if>
-									</td>
-									<td style="word-break:break-word;">
-										{$vo.description}
-									</td>
-									</if>
-								</tr>
-							</volist>
-						</tbody>
-					</if>
-				</table>
-			</div>
-			<div class="tab-pane fade back_box" id="tab3">
-				<div class="header1">
-					<div class="pull-left two-title" > {:L('THE_ACCOUNTS_RECEIVABLE')} </div>
-						<if condition="$info['is_deleted'] == 0">
-							<div class="pull-right"> <a href="javascript:void(0);" class="btn btn-primary add_receivables">{:L('ADD')}</a></div>
-						</if>
-					<div style="clear:both;"></div>
-				</div>
-				<table class="table">
-					<if condition="$info.receivables eq null">
-						<tr>
-							<td>{:L('THERE_IS_NO_DATA')}</td>
-						</tr>
-					<else />
-						<thead>
-							<tr>
-								<td width="10%">&nbsp;</td>
-								<td>{:L('THE_ACCOUNTS_RECEIVABLE_NAME')}</td>
-								<td>{:L('STATUS')}</td>
-								<td>{:L('MONEY')}</td>
-								<if condition="C('ismobile') neq 1">
-								<td>{:L('OWNER_ROLE')}</td>
-								</if>
-							</tr>
-						</thead>
-						<tbody>
-							<volist name="info.receivables" id="vo">
-								<tr>
-									<td class="tdleft">
-										<a href="{:U('finance/delete', 't=receivables&id='.$vo['receivables_id'].'&refer=receivables')}" class="del_confirm">{:L('DELETE')}</a>&nbsp;
-										<a class="edit_receivables" href="javascript:void(0);" rel="{$vo['receivables_id']}">{:L('EDITING')}</a></a>
-										</td>
-									<td>
-										<a href="{:U('finance/view', 't=receivables&id='.$vo['receivables_id'])}" >{$vo.name}</a>
-									</td>
-									<td>
-										<if condition="$vo['status'] eq 2">{:L('HAS_BEEN_RECEIVING')}<elseif condition="$vo['status'] eq 1" />{:L('PART_OF_THE_RECEIVED')}<else />{:L('DID_NOT_RECEIVE_PAYMENT')}</if>
-									</td>
-									<td>
-										{$vo['price']}
-									</td>
-									<if condition="C('ismobile') neq 1">
-									<td>
-										<a class="role_info" href="javascript:void(0)" rel="{$vo['owner_role_id']}">{$vo['owner']['user_name']}</a>
-									</td>
-									</if>
-								</tr>
-							</volist>
-						</tbody>
-					</if>
-					
-				</table>
-			</div>
-			<div class="tab-pane fade back_box" id="tab5">
-				<div class="header1">
-					<div class="pull-left two-title" > {:L('THE_ACCOUNTS_PAYABLE')} </div>
-						<if condition="$info['is_deleted'] == 0">
-							<div class="pull-right"> <a href="javascript:void(0);" class="btn btn-primary add_payables">{:L('ADD')}</a></div>
-						</if>
-					<div style="clear:both;"></div>
-				</div>
-				<table class="table">
-					<if condition="$info.payables eq null">
-						<tr>
-							<th colspan="6">{:L('THERE_IS_NO_DATA')}</th>
-						</tr>
-					<else />
-						<thead>
-							<tr>
-								<th width="10%">&nbsp;</th>
-								<th>{:L('THE_ACCOUNTS_PAYABLE_NAME')}</th>
-								<th>{:L('STATUS')}</th>
-								<th>{:L('MONEY')}</th>
-								<if condition="C('ismobile') neq 1">
-								<th>{:L('OWNER_ROLE')}</th>
-								</if>
-							</tr>
-						</thead>
-						<tbody>
-							<volist name="info.payables" id="vo">
-								<tr>
-									<td class="tdleft">
-										<a href="{:U('finance/delete', 't=payables&id='.$vo['payables_id'].'&refer=payables')}" class="del_confirm">{:L('DELETE')}</a>&nbsp;
-										<a class="edit_payables" href="javascript:void(0);" rel="{$vo['payables_id']}">{:L('EDITING')}</a></a>
-										</td>
-									<td>
-										<a href="{:U('finance/view', 't=payables&id='.$vo['payables_id'])}">{$vo.name}</a>
-									</td>
-									<td>
-										<if condition="$vo['status'] eq 2">{:L('PAYMENT_HAS_BEEN')}<elseif condition="$vo['status'] eq 1" />{:L('PART_OF_THE_PREPAID')}<else />{:L('NOT_PAYING')}</if>
-									</td>
-									<td>
-										{$vo['price']}
-									</td>
-									<if condition="C('ismobile') neq 1">
-									<td>
-										<a class="role_info" href="javascript:void(0)" rel="{$vo['owner_role_id']}">{$vo['owner']['user_name']}</a>
-									</td>
-									</if>
-								</tr>
-							</volist>
-						</tbody>
-					</if>
-				</table>
-			</div>
-			<div class="tab-pane fade back_box" id="tab4">
-				<div class="header1">
-					<div class="pull-left two-title" > {:L('RELATED_FILE')} </div>
-						<if condition="$info['is_deleted'] == 0">
-							<div class="pull-right"><a href="javascript:void(0);" class="add_file btn btn-primary">{:L('ADD')}</a></div>
-						</if>
-					<div style="clear:both;"></div>
-				</div>
-				<table class="table">
-					<if condition="$info.file eq null">
-						<tr>
-							<td>{:L('THERE_IS_NO_DATA')} </td>
-						</tr>
-					<else /> 
-						<tr>
-							<td>&nbsp;</td>
-							<td>{:L('FILE_NAME')}</td>
-							<td>{:L('SIZE')}</td>
-							<td>{:L('ADDED_BY')}</td>
-							<td>{:L('ADD_TIME')}</td>
-						</tr>
-						<volist name="info.file" id="vo">
-							<tr>
-								<td class="tdleft"><a href="{:U('file/delete','r=rContractFile&id='.$vo['file_id'])}" class="del_confirm">{:L('DELETE')}</a></td>
-								<td>
-									<a target="_blank" href="{$vo.file_path}">{$vo.name}</a>
-								</td>
-								<td>
-									{$vo.size}{:L('BYTE')}
-								</td>
-								<td>
-									<notempty name="vo.owner.user_name">{$vo.owner.user_name} [{$vo.owner.department_name}-{$vo.owner.role_name}]</notempty>
-								</td>
-								<td>
-									<notempty name="vo.create_date">{$vo.create_date|date="Y-m-d g:i:s a",###}</notempty>
-								</td>
-							</tr>
-						</volist>
-					</if>
-				</table>
-			</div>
-		</div>
-		<div class="span2 bs-docs-sidebar mar-lefts2" id="right_list" >
-			<ul class="nav nav-list bs-docs-sidenav  span2 widths" >
-				<li class="active first-li"><span class="spans1">编辑详情</span></li>
-				<li><a href="javascript:void(0);" class="add_product"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_PRODUCT')}</a> </li>
-				<li><a href="javascript:void(0);" class="add_file"><img src="__PUBLIC__/img/youce.png"/>&nbsp;&nbsp;&nbsp;{:L('ADD_ACCESSORY')}</a></li>
-			</ul>
 		</div>
 	</div>
-</div>
 <div class="hide" id="dialog-product" title="{:L('ADD_PRODUCT')}">loading...</div>
 <div class="hide" id="dialog-edit" title="{:L('AMENDING_THE_CONTRACT_PRODUCT_INFORMATION')}">loading...</div>
 <div class="hide" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">loading...</div>
