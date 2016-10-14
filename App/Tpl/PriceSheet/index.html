@@ -33,13 +33,11 @@
 							<select id="field" style="width:auto" onchange="changeCondition()" name="field">
 								<option class="all" value="all">{:L('ANY_FIELD')}</option>
 								<option class="word" value="number">{:L('CONTRACT_NO')}</option>
-								<option class="role" value="owner_role_id">{:L('OWNER_ROLE')}</option>
-								<option class="customer" value="customer_id">{:L('CUSTOMER')}</option>
-								<option class="date" value="create_time">{:L('CREATION_DATE')}</option>
-								<option class="date" value="update_time">{:L('MODIFICATION_DATE')}</option>
-								<option class="date" value="due_time">{:L('CONTRACT_TIME')}</option>
-								<option class="number" value="price">{:L('QUOTATION')}</option>
-								<option class="word" value="description">{:L('REMARK')}</option>
+								<option class="role" value="owner_role_id">{:L('SERVICE_NAME')}</option>
+								<option class="customer" value="customer_id">{:L('DEPARTMENT')}</option>
+								<option class="date" value="create_time">{:L('SALESMAN')}</option>
+								<option class="date" value="update_time">{:L('APPLY_TIME')}</option>
+								<option class="date" value="due_time">{:L('APPROVAL_STATUS')}</option>
 							</select>&nbsp;&nbsp;
 						</li>
 						<li id="conditionContent" class="pull-left">
@@ -99,9 +97,17 @@
 								<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
 								<td></td>
 								<td><a href="{:U('priceSheet/view', 'id='.$vo['id'])}">{:L('VIEW')}</a>&nbsp;
-									<a href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('RECALL')}</a>
+									<a onclick="javascript:return confirm('您确定要作废吗？')"  href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('RECALL')}</a>
+									<if condition="$vo['t_service'] eq 0">
 									<a href="{:U('contract/add', 'price_sheet_id='.$vo['id'])}">{:L('T_SERVER')}</a>
+									<else />
+									<span style="color:#ccc;">{:L('T_SERVER')}</span>
+									</if>
+									<if condition="$vo['t_epiboly'] eq 0">
 									<a href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('T_EPIBOLY')}</a>
+									<else />
+									<span style="color:#ccc;">{:L('T_EPIBOLY')}</span>
+									</if>
 								</td>
 							</tr> 
 						</volist>

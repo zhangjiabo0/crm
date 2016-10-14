@@ -10,6 +10,47 @@ class PriceSheetAction extends CommonAction {
 	}
 	
 	public function index(){
+		if ($_REQUEST["field"]) {//查询条件处理
+			if (trim($_REQUEST['field']) == "all") {
+				$field = is_numeric(trim($_REQUEST['search'])) ? 'number|price|contract.description' : 'number|contract.description';
+			} else {
+				$field = trim($_REQUEST['field']);
+			}
+			$search = empty($_REQUEST['search']) ? '' : trim($_REQUEST['search']);
+			$condition = empty($_REQUEST['condition']) ? 'is' : trim($_REQUEST['condition']);
+		
+			if	('create_time' == $field || 'update_time' == $field || 'start_date' == $field || 'end_date' == $field) {
+				$search = is_numeric($search)?$search:strtotime($search);
+			}
+			switch ($condition) {
+				case "is" :
+					if($field == 'customer_id'){
+						$where['customer.'.$field] = array('eq',$search);
+					}else{
+						$where['contract.'.$field] = array('eq',$search);
+					}break;
+				case "isnot" :  $where['contract.'.$field] = array('neq',$search);break;
+				case "contains" :  $where['contract.'.$field] = array('like','%'.$search.'%');break;
+				case "not_contain" :  $where['contract.'.$field] = array('notlike','%'.$search.'%');break;
+				case "start_with" :  $where['contract.'.$field] = array('like',$search.'%');break;
+				case "end_with" :  $where['contract.'.$field] = array('like','%'.$search);break;
+				case "is_empty" :  $where['contract.'.$field] = array('eq','');break;
+				case "is_not_empty" :  $where['contract.'.$field] = array('neq','');break;
+				case "gt" :  $where['contract.'.$field] = array('gt',$search);break;
+				case "egt" :  $where['contract.'.$field] = array('egt',$search);break;
+				case "lt" :  $where['contract.'.$field] = array('lt',$search);break;
+				case "elt" :  $where['contract.'.$field] = array('elt',$search);break;
+				case "eq" : $where['contract.'.$field] = array('eq',$search);break;
+				case "neq" : $where['contract.'.$field] = array('neq',$search);break;
+				case "between" : $where['contract.'.$field] = array('between',array($search-1,$search+86400));break;
+				case "nbetween" : $where['contract.'.$field] = array('not between',array($search,$search+86399));break;
+				case "tgt" :  $where['contract.'.$field] = array('gt',$search+86400);break;
+				default :	$where[$field] = array('eq',$search);
+			}
+			$params = array('field='.trim($_REQUEST['field']), 'condition='.$condition, 'search='.$_REQUEST["search"]);
+		}
+		
+		$all_ids = getSubRoleIdByYuan(true);
 		$p = isset($_GET['p']) ? intval($_GET['p']) : 1 ;
 		if($_GET['listrows']){
 			$listrows = $_GET['listrows'];
@@ -18,9 +59,11 @@ class PriceSheetAction extends CommonAction {
 			$listrows = 15;
 			$params[] = "listrows=15";
 		}
+		$where['PriceSheet.is_del'] = 0;
+		$where['PriceSheet.role_id'] = array('in',implode(',',$all_ids));
 		$price = D('PriceSheetView');
-		$list = $price -> where('PriceSheet.is_del=0') -> order('PriceSheet.create_time DESC')->page($p.','.$listrows) -> select();
-		$count = $price -> where('PriceSheet.is_del=0') -> count();
+		$list = $price -> where($where) -> order('PriceSheet.create_time DESC')->page($p.','.$listrows) -> select();
+		$count = $price -> where($where) -> count();
 		import("@.ORG.Page");
 		$Page = new Page($count,$listrows);
 		if (!empty($_GET['by'])) {
@@ -139,5 +182,12 @@ class PriceSheetAction extends CommonAction {
 		$this-> vo = $list;
 		$this -> display();
 	}
-	
+	/**
+	 * 作废报价单
+	 */
+	public function del(){
+		$id = $_GET['id'];
+		$flag = M('PriceSheet')->save(array('id'=>$id,'is_del'=>1));
+		alert('success', '作废成功!', U('priceSheet/index'));
+	}
 }
