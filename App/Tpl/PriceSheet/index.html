@@ -75,56 +75,12 @@
 						<tr>
 							<th><input class="check_all" id="check_all" type="checkbox" /> &nbsp;</th>
 							<th>{:L('CONTRACT_NO')}</th>
-							<th>{:L('CUSTOMER')}</th>
-							<if condition="C('ismobile') neq 1">
-							<th>{:L('CONTACTS')}</th>
-							<th>{:L('OWNER_ROLE')}</th>
-							<th>
-								<if condition="$_GET['asc_order'] == 'due_time'">
-									<a href="{:U('contract/index','desc_order=due_time&'.$parameter)}">
-										{:L('SIGNING_DATE')}&nbsp;<img src="__PUBLIC__/img/arrow_up.png">
-									</a>
-								<elseif condition="$_GET['desc_order'] == 'due_time'"/>
-									<a href="{:U('contract/index','asc_order=due_time&'.$parameter)}">
-										{:L('SIGNING_DATE')}&nbsp;<img src="__PUBLIC__/img/arrow_down.png">
-									</a>
-								<else/>
-									<a href="{:U('contract/index','desc_order=due_time&'.$parameter)}">{:L('SIGNING_DATE')}</a>
-								</if>
-							</th>
-							<th>
-								<if condition="$_GET['asc_order'] == 'price'">
-									<a href="{:U('contract/index','desc_order=price&'.$parameter)}">
-										{:L('QUOTATION')}&nbsp;<img src="__PUBLIC__/img/arrow_up.png">
-									</a>
-								<elseif condition="$_GET['desc_order'] == 'price'"/>
-									<a href="{:U('contract/index','asc_order=price&'.$parameter)}">
-										{:L('QUOTATION')}&nbsp;<img src="__PUBLIC__/img/arrow_down.png">
-									</a>
-								<else/>
-									<a href="{:U('contract/index','desc_order=price&'.$parameter)}">{:L('QUOTATION')}</a>
-								</if>
-							</th>
-							<th>{:L('STATUS')}</th></if>
-							<if condition="C('ismobile') neq 1 and $Think.get.by eq 'deleted'">
-								<th>{:L('DELETE_ROLE')}</th>
-								<th>{:L('DELETE_TIME')}</th>
-							<elseif condition="C('ismobile') neq 1" />
-								<th>
-									<if condition="$_GET['asc_order'] == 'end_date'">
-										<a href="{:U('contract/index','desc_order=end_date&'.$parameter)}">
-											{:L('CONTRACT_OUT_OF_DATE')}&nbsp;<img src="__PUBLIC__/img/arrow_up.png">
-										</a>
-									<elseif condition="$_GET['desc_order'] == 'end_date'"/>
-										<a href="{:U('contract/index','asc_order=end_date&'.$parameter)}">
-											{:L('CONTRACT_OUT_OF_DATE')}&nbsp;<img src="__PUBLIC__/img/arrow_down.png">
-										</a>
-									<else/>
-										<a href="{:U('contract/index','desc_order=end_date&'.$parameter)}">{:L('CONTRACT_OUT_OF_DATE')}</a>
-									</if>
-								</th>
-							</if>
-							
+							<th>{:L('SOURCE_OF_CUSTOMERS')}</th>
+							<th>{:L('SERVICE_NAME')}</th>
+							<th>{:L('DEPARTMENT')}</th>
+							<th>{:L('SALESMAN')}</th>
+							<th>{:L('APPLY_TIME')}</th>
+							<th>{:L('APPROVAL_STATUS')}</th>
 							<th>{:L('OPERATING')}</th>
 						</tr>
 					</thead>
@@ -134,47 +90,18 @@
 					<tbody>
 						<volist name="list" id="vo">
 							<tr>
-								<td><input type="checkbox" class="check_list" name="contract_id[]" value="{$vo.contract_id}"/> &nbsp;
-								</td>
-								<td><a href="{:U('contract/view','id='.$vo['contract_id'])}">{$vo.number}</a></td>
-								<td><a href="{:U('customer/view','id='.$vo['customer_id'])}">{$vo.customer_name}</a></td>
-								<if condition="C('ismobile') neq 1">
-								<td><a href="{:U('contacts/view','id='.$vo['contacts_id'])}">{$vo.contacts_name}</a></td>
-								<td><notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}</a></notempty></td>
-								<td><notempty name="vo.due_time">{$vo.due_time|date="Y-m-d H:i:s",###}</notempty></td>
-								<td>{$vo.price}{:L('yuan')}</td>
-								<td>{$vo.status}</td>
-								</if>
-								<if condition="C('ismobile') neq 1 and $Think.get.by eq 'deleted'">
-									<td><notempty name="vo.deletor.user_name"><a class="role_info" rel="{$vo.deletor.role_id}" href="javascript:void(0)">{$vo.deletor.user_name}</a></notempty></td>
-									<td>
-										<if condition="$vo.days lt 0"><font color="blue">{:L('DELINQUENCY_DATE')}</font>
-										<elseif condition="$vo.days elt 10 and $vo.days egt 0"/><font color="red">{$vo.days}<font>
-										<else />{$vo.days}{:L('DAY')}</if>
-									</td>
-								<elseif condition="C('ismobile') neq 1" />
-									<td>
-										<if condition="$vo.days lt 0">
-											<font color="blue">{:L('DELINQUENCY_DATE')}</font>
-										<elseif condition="$vo.days gt 10"/>
-										   {$vo.days}{:L('DAY')}
-										<elseif condition="$vo.days elt 10 and $vo.days gt 0"/>
-											<font color="red">{$vo.days}{:L('DAY')}<font>
-										<elseif condition="isset($vo['days'])"/>
-										    <font color="red">{$vo.days}{:L('DAY')}<font>
-										<else />
-											{$vo.days}
-										</if>
-									</td>
-								</if>
-
-								<td>
-									<a href="{:U('contract/view','id='.$vo['contract_id'])}" title="{:L('VIEW')}">{:L('VIEW')}</a>&nbsp;
-									<if condition="$Think.get.by neq 'deleted'">
-										<a href="{:U('contract/edit','id='.$vo['contract_id'])}">{:L('EDITING')}</a>
-									<else />
-										<a href="{:U('contract/revert','id='.$vo['contract_id'])}" title="{:L('RESET')}">{:L('RESET')}</a>
-									</if>
+								<td><input type="checkbox" class="check_list" name="contract_id[]" value="{$vo.contract_id}"/> &nbsp;</td>
+								<td>{$vo.number}</a></td>
+								<td>{$vo.customer_name}</td>
+								<td>{$vo.service_name}</td>
+								<td>{$vo.department}</td>
+								<td>{$vo.true_name}</td>
+								<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
+								<td></td>
+								<td><a href="{:U('priceSheet/view', 'id='.$vo['id'])}">{:L('VIEW')}</a>&nbsp;
+									<a href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('RECALL')}</a>
+									<a href="{:U('contract/add', 'price_sheet_id='.$vo['id'])}">{:L('T_SERVER')}</a>
+									<a href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('T_EPIBOLY')}</a>
 								</td>
 							</tr> 
 						</volist>
