@@ -39,6 +39,10 @@ class ContractAction extends CommonAction {
 			list($data['confirm'],$data['confirm_name']) = getContractFlow(session('role_id'));
 			
 			if($contractId = $contract->add($data)){
+				//在price_sheet中加上标识表示已转服务合同
+				M('PriceSheet')->where(array('id'=>intval($_POST['price_sheet_id'])))->save(array('t_service'=>1));
+				
+				//加上流程
 				$confirm_array = array_filter(explode('|',$data['confirm']));
 				if(!empty($confirm_array[0])){
 					$flow_data['contract_flow_id'] = $contractId;
@@ -215,12 +219,12 @@ class ContractAction extends CommonAction {
 			$data['result'] = 0;
 			$res = M('ContractFlowLog')->where(array('id'=>$ContractFlowLog['id']))->save($data);
 			if(!$res){
+				$this->ajaxReturn('0', L('CONFIRM FAILED'), 0);
+			}else{
 				//发站内信，否决审核
 				$owner_role_id = M('Contract')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
 				$content = '<a href="'.U('contract/index').'">您的服务合同已被否决，点击查看</a>';
 				sendMessage($owner_role_id,$content,1);
-				
-				$this->ajaxReturn('0', L('CONFIRM FAILED'), 0);
 			}
 		}
 		$this->ajaxReturn('1', L('CONFIRM SUCCESS'), 1);
