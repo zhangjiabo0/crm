@@ -28,15 +28,18 @@
 				<div class="tab-pane active" id="tab1">
 				<form id="form1" action="{:U('contract/edit')}" method="post">
 				<input type="hidden" name="id" value="{$info.contract_id}">
+				<input type="hidden" name="price_sheet_id" id="price_sheet_id" value="{$price_sheet_id}">
 				<input type="hidden" name="total_amount" id="total_amount" value="0">
 				<input type="hidden" id="add_file" name="add_file" value="{$info.add_file}">
 					<table class="table table-hover">
+						<if condition="$can_confirm eq false">
 						<thead>
 							<tr>
 								<td>&nbsp;</td>
 								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;<input type="button" class="btn" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
 							</tr>
 						</thead>
+						</if>
 						<tbody>
 							<tr><th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th></tr>
 							<tr>
@@ -67,18 +70,18 @@
 								
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('QUOTATION')}</td>
-								<td><input type="text" name="price" id="price" value="{$info.price}"/><span id="priceTip" style="color:red;"></span></td>
+								<td><input type="text" name="price" id="price" value="{$info.price}"<if condition="$can_confirm eq true"> readonly="readonly"</if>/><span id="priceTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('THE_TIME_WHICH_THE_CONTRACT_COMES_INTO_FORCE')}</td>
 								<td>
-									<input type="text" id="start_date" name="start_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2038-01-01'}&quot;})" class="Wdate" <if condition="$info['start_date']">value="{$info['start_date']|date="Y-m-d",###}"</if>/>
+									<input type="text" id="start_date" name="start_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2038-01-01'}&quot;})" class="Wdate" <if condition="$info['start_date']">value="{$info['start_date']|date="Y-m-d",###}"</if><if condition="$can_confirm eq true"> disabled</if>/>
 									<span id="start_dateTip" style="color:red;"></span>
 								</td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('CONTRACT_TIME')}</td>
 								<td>
-									<input type="text" id="end_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_date\')}&quot;,maxDate:'2038-01-01'})" name="end_date" class="Wdate" <if condition="$info['end_date']">value="{$info['end_date']|date="Y-m-d",###}"</if>/>
+									<input type="text" id="end_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_date\')}&quot;,maxDate:'2038-01-01'})" name="end_date" class="Wdate" <if condition="$info['end_date']">value="{$info['end_date']|date="Y-m-d",###}"</if><if condition="$can_confirm eq true"> disabled</if>/>
 									<span id="end_dateTip" style="color:red;"></span>
 								</td>
 							</tr>
@@ -93,15 +96,19 @@
 								</td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('SIGNING_TIME')}</td>
-								<td><input onclick="WdatePicker()"  type="text" id="due_time" name="due_time" value="{$info.due_time|date='Y-m-d',###}" /><span id="due_timeTip" style="color:red;"></span></td>
+								<td><input onclick="WdatePicker()"  type="text" id="due_time" name="due_time" value="{$info.due_time|date='Y-m-d',###}" <if condition="$can_confirm eq true"> disabled</if>/><span id="due_timeTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('DESCRIBE')}</td>
-								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="description" id="description">{$info.description}</textarea></td>
+								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="description" id="description"<if condition="$can_confirm eq true"> readonly="readonly"</if>>{$info.description}</textarea></td>
 							</tr>
 							<tr>
 	                        	<td class="tdleft" width="15%">上传合同盖章附件:</td>
-	                        	<td width="35%">{:W('File',array('add_file'=>$info['add_file'],'mode'=>'edit'))}
+	                        	<if condition="$can_confirm eq true">
+	                        		<td width="35%">{:W('File',array('add_file'=>$info['add_file'],'mode'=>'show'))}
+	                        	<else/>
+	                        		<td width="35%">{:W('File',array('add_file'=>$info['add_file'],'mode'=>'edit'))}
+	                        	</if>
 	                        	<span id="add_fileTip" style="color:red;"></span>
 	                        	</td>
 	                        </tr>
@@ -167,12 +174,27 @@
 							</tr>
 						</tbody>
 						<tfoot>
+							<if condition="$can_confirm eq true">
+								<tr>
+									<td class="tdleft">{:L('COMMENT')}</td>
+									<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="comment" id="comment"></textarea></td>
+								</tr>
+							</if>
+							
 							<tr>
 								<td>&nbsp;</td>
-								<td colspan="3">
-									<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;
-									<input type="button" class="btn" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
-								</td>
+								<if condition="$can_confirm eq true">
+									<td colspan="3">
+										<input type="button" class="btn btn-primary" onclick="approve({$Think.get.id})" value="{:L('APPROVE')}"/> &nbsp;
+										<input type="button" class="btn" onclick="reject({$Think.get.id})" value="{:L('REJECT')}"/>
+									</td>
+								<else/>
+									<td colspan="3">
+										<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;
+										<input type="button" class="btn" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
+									</td>
+								</if>
+								
 							</tr>
 						</tfoot>
 					</table>
@@ -311,6 +333,38 @@
 	        onErrorMin:"请上传合同盖章附件"
 	    });
 	})
+function approve(id){
+		var comment = $("#comment").val();
+		$.ajax({
+			type: "post",
+			data:{contract_id:id,comment:comment,type:"approve"},
+			url: "{:U('contract/mark')}",    
+			dataType: "json",
+			success: function(result){
+				alert(result.info);
+				location.href = "{:U('contract/index')}";
+			},
+			error:function(){
+				alert(0);
+			}
+		})
+}
+function reject(id){
+	var comment = $("#comment").val();
+	$.ajax({
+		type: "post",
+		data:{contract_id:id,comment:comment,type:"reject"},
+		url: "{:U('contract/mark')}",    
+		dataType: "json",
+		success: function(result){
+			alert(result.info);
+			location.href = "{:U('contract/index')}";
+		},
+		error:function(){
+			alert(0);
+		}
+	})
+}
 </script>
 
 <script type="text/javascript">

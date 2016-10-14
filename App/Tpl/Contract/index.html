@@ -25,7 +25,7 @@
 	<div class="row">
 		<div class="span12">
 			<ul class="nav pull-left">
-				<li class="pull-left"><a id="delete"  class="btn" style="margin-right: 8px;"><i class="icon-remove"></i>{:L('DELETE')}</a></li>
+				<!-- <li class="pull-left"><a id="delete"  class="btn" style="margin-right: 8px;"><i class="icon-remove"></i>{:L('DELETE')}</a></li> -->
 				<li class="pull-left">
 				<form class="form-inline" id="searchForm" onsubmit="return checkSearchForm();" action="" method="get">
 					<ul class="nav pull-left">
@@ -73,23 +73,23 @@
 				<notempty name="list">
 					<thead>
 						<tr>
-							<th><input class="check_all" id="check_all" type="checkbox" /> &nbsp;</th>
+							<!-- <th><input class="check_all" id="check_all" type="checkbox" /> &nbsp;</th> -->
 							<th>{:L('CONTRACT_NO')}</th>
 							<th>{:L('CUSTOMER')}</th>
 							<if condition="C('ismobile') neq 1">
-							<th>{:L('CONTACTS')}</th>
+							<th>{:L('BELONG_TO_DEPT')}</th>
 							<th>{:L('OWNER_ROLE')}</th>
 							<th>
-								<if condition="$_GET['asc_order'] == 'due_time'">
-									<a href="{:U('contract/index','desc_order=due_time&'.$parameter)}">
-										{:L('SIGNING_DATE')}&nbsp;<img src="__PUBLIC__/img/arrow_up.png">
+								<if condition="$_GET['asc_order'] == 'create_time'">
+									<a href="{:U('contract/index','desc_order=create_time&'.$parameter)}">
+										{:L('CREATE_TIME')}&nbsp;<img src="__PUBLIC__/img/arrow_up.png">
 									</a>
-								<elseif condition="$_GET['desc_order'] == 'due_time'"/>
-									<a href="{:U('contract/index','asc_order=due_time&'.$parameter)}">
-										{:L('SIGNING_DATE')}&nbsp;<img src="__PUBLIC__/img/arrow_down.png">
+								<elseif condition="$_GET['desc_order'] == 'create_time'"/>
+									<a href="{:U('contract/index','asc_order=create_time&'.$parameter)}">
+										{:L('CREATE_TIME')}&nbsp;<img src="__PUBLIC__/img/arrow_down.png">
 									</a>
 								<else/>
-									<a href="{:U('contract/index','desc_order=due_time&'.$parameter)}">{:L('SIGNING_DATE')}</a>
+									<a href="{:U('contract/index','desc_order=create_time&'.$parameter)}">{:L('CREATE_TIME')}</a>
 								</if>
 							</th>
 							<th>
@@ -134,14 +134,14 @@
 					<tbody>
 						<volist name="list" id="vo">
 							<tr>
-								<td><input type="checkbox" class="check_list" name="contract_id[]" value="{$vo.contract_id}"/> &nbsp;
-								</td>
+								<!-- <td><input type="checkbox" class="check_list" name="contract_id[]" value="{$vo.contract_id}"/> &nbsp;
+								</td> -->
 								<td><a href="{:U('contract/view','id='.$vo['contract_id'])}">{$vo.number}</a></td>
 								<td><a href="{:U('customer/view','id='.$vo['customer_id'])}">{$vo.customer_name}</a></td>
 								<if condition="C('ismobile') neq 1">
-								<td><a href="{:U('contacts/view','id='.$vo['contacts_id'])}">{$vo.contacts_name}</a></td>
+								<td>{$vo.dept_name}</td>
 								<td><notempty name="vo.owner.user_name"><a class="role_info" rel="{$vo.owner.role_id}" href="javascript:void(0)">{$vo.owner.user_name}</a></notempty></td>
-								<td><notempty name="vo.due_time">{$vo.due_time|date="Y-m-d H:i:s",###}</notempty></td>
+								<td><notempty name="vo.create_time">{$vo.create_time|date="Y-m-d H:i:s",###}</notempty></td>
 								<td>{$vo.price}{:L('yuan')}</td>
 								<td>{$vo.status}</td>
 								</if>
@@ -171,12 +171,17 @@
 								<td>
 									<a href="{:U('contract/view','id='.$vo['contract_id'])}" title="{:L('VIEW')}">{:L('VIEW')}</a>&nbsp;
 									<if condition="$Think.get.by neq 'deleted'">
-										<a href="{:U('contract/edit','id='.$vo['contract_id'])}">{:L('EDITING')}</a>
+										<if condition="$vo.can_edit eq true">
+											<a href="{:U('contract/edit','id='.$vo['contract_id'])}">{:L('EDITING')}</a>
+										</if>
 									<else />
 										<a href="{:U('contract/revert','id='.$vo['contract_id'])}" title="{:L('RESET')}">{:L('RESET')}</a>
 									</if>
 									<if condition="$vo.confirm_to_me eq true">
-										<a href="{:U('contract/confirm','id='.$vo['contract_id'])}">{:L('CONFIRM')}</a>
+										<a href="{:U('contract/edit','id='.$vo['contract_id'].'&type=confirm')}">{:L('CONFIRM')}</a>
+									</if>
+									<if condition="$vo.can_cancel eq true">
+										<a href="{:U('contract/cancel','id='.$vo['contract_id'])}">{:L('CANCEL')}</a>
 									</if>
 								</td>
 							</tr> 

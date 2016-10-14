@@ -3,7 +3,7 @@ class ContractAction extends CommonAction {
 	public function _initialize(){
 		$action = array(
 			'permission'=>array(),
-			'allow'=>array('changecontent','listdialog','getcontractlist','upload','del_file')
+			'allow'=>array('changecontent','listdialog','getcontractlist','upload','del_file','mark','cancel')
 		);
 		B('Authenticate', $action);
 	}
@@ -36,19 +36,21 @@ class ContractAction extends CommonAction {
 			$data['create_time'] = time();
 			$data['update_time'] = time();
 			$data['status'] = L('HAS_BEEN_CREATED');
-			list($data['confirm'],$data['confirm_name']) = array('wangwr|wenxk|','王文冉<>翁晓科<>');
+			list($data['confirm'],$data['confirm_name']) = getContractFlow(session('role_id'));
 			
 			if($contractId = $contract->add($data)){
 				$confirm_array = array_filter(explode('|',$data['confirm']));
-				$flow_data['contract_flow_id'] = $contractId;
-				$flow_data['emp_no'] = $confirm_array[0];
-				$flow_data['user_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('user_id');
-				$flow_data['role_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('role_id');
-				$flow_data['user_name'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('true_name');
-				$flow_data['step'] = '21';
-				$flow_data['create_time'] = time();
-				$flow_data['is_read'] = 0;
-				M('ContractFlowLog')->add($flow_data);
+				if(!empty($confirm_array[0])){
+					$flow_data['contract_flow_id'] = $contractId;
+					$flow_data['emp_no'] = $confirm_array[0];
+					$flow_data['user_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('user_id');
+					$flow_data['role_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('role_id');
+					$flow_data['user_name'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('true_name');
+					$flow_data['step'] = '21';
+					$flow_data['create_time'] = time();
+					$flow_data['is_read'] = 0;
+					M('ContractFlowLog')->add($flow_data);
+				}
 // 				M('RBusinessContract')->add(array('contract_id'=>$contractId,'business_id'=>$data['business_id']));
 				actionLog($contractId);
 				if($_POST['refer_url']){
@@ -96,9 +98,24 @@ class ContractAction extends CommonAction {
 		$widget['editor'] = true;
 		$this -> assign("widget", $widget);
 		
+		
 		$contract = D('ContractView');
 		$contract_id = intval($_REQUEST['id']) ? intval($_REQUEST['id']) : alert('error', L('PARAMETER_ERROR'),$_SERVER['HTTP_REFERER']);
-		if(!check_permission($contract_id, 'contract')) $this->error(L('HAVE NOT PRIVILEGES'));
+		
+		//默认不能审核
+		$this -> assign("can_confirm", false);
+		//检验是否可以审核
+		if($_GET['type'] == 'confirm'){
+			$flow_log = M('ContractFlowLog')->where(array('role_id'=>session('role_id'),'contract_flow_id'=>$contract_id,'_string'=>'result is null'))->find();
+			if(empty($flow_log)){
+				$this->error(L('HAVE NOT PRIVILEGES'));
+			}else{
+				$this -> assign("can_confirm", true);
+			}
+		}else{
+			if(!check_permission($contract_id, 'contract')) $this->error(L('HAVE NOT PRIVILEGES'));
+		}
+			
 		$contract_info = $contract->where('contract.contract_id = %d',$contract_id)->find();
 		$product = M('RPriceSheetProduct')->where(array('sheet_id'=>$contract_info['price_sheet_id']))->select();
 		$this->assign('price_sheet_id',$contract_info['price_sheet_id']);
@@ -114,8 +131,22 @@ class ContractAction extends CommonAction {
 				$data['end_date'] = strtotime($_POST['end_date']);
 				$data['update_time'] = time();
 				$data['status'] = $_POST['status'];
+				list($data['confirm'],$data['confirm_name']) = getContractFlow(session('role_id'));
 				
 				if(M('contract')->where(array('contract_id'=>$contract_id))->save($data)){
+					$confirm_array = array_filter(explode('|',$data['confirm']));
+					if(!empty($confirm_array[0])){
+						$flow_data['contract_flow_id'] = $contract_id;
+						$flow_data['emp_no'] = $confirm_array[0];
+						$flow_data['user_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('user_id');
+						$flow_data['role_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('role_id');
+						$flow_data['user_name'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('true_name');
+						$last_step = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step desc')->limit(1)->getField('step');
+						$flow_data['step'] = $last_step?$last_step+1:21;
+						$flow_data['create_time'] = time();
+						$flow_data['is_read'] = 0;
+						M('ContractFlowLog')->add($flow_data);
+					}
 // 					M('rBusinessContract')->where(array('contract_id'=>$contract_id))->save(array('business_id'=>$data['business_id']));
 					alert('success', L('MODIFY_THE_SUCCESS'),U('contract/view','id='.$contract_id));
 				}else{
@@ -131,14 +162,92 @@ class ContractAction extends CommonAction {
 			alert('error', L('THERE_IS_NO_DATA'),$_SERVER['HTTP_REFERER']);
 		}
 	}
-	
+	public function mark(){
+		$contract_id = $_POST['contract_id'];
+		$type = $_POST['type'];
+		$comment = $_POST['comment'];
+		$role_id = session('role_id');
+		//判断是否可以审核
+		$ContractFlowLog = M('ContractFlowLog')->where(array('role_id'=>$role_id,'contract_flow_id'=>$contract_id,'_string'=>'result is null'))->find();
+		$is_cancel = M('Contract')->where(array('contract_id'=>$contract_id))->getField('is_cancel');
+		if(empty($ContractFlowLog) || $is_cancel == 1){
+			$this->ajaxReturn('0', L('HAVE NOT PRIVILEGES'), 0);
+		}
+// 		$data['contract_flow_id'] = $contract_id;
+// 		$data['emp_no'] = M('User')->where(array('role_id'=>$role_id))->getField('name');
+// 		$data['role_id'] = $role_id;
+// 		$data['user_id'] = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
+// 		$data['user_name'] = M('User')->where(array('role_id'=>$role_id))->getField('true_name');
+		
+		$data['update_time'] = time();
+		$data['comment'] = $comment;
+		
+		if($type == 'approve'){
+			$data['result'] = 1;
+			$res = M('ContractFlowLog')->where(array('id'=>$ContractFlowLog['id']))->save($data);
+			if($res){
+				//下一步
+				$confirm = M('Contract')->where(array('contract_id'=>$contract_id))->getField('confirm');
+				$confirm = array_filter(explode('|',$confirm));
+				$emp_no = M('User')->where(array('role_id'=>$role_id))->getField('name');
+				$i = array_search($emp_no,$confirm);
+				if($i<count($confirm)-1){
+					$next_emp_no = $confirm[$i+1];
+					$next_data['contract_flow_id'] = $contract_id;
+					$next_data['emp_no'] = $next_emp_no;
+					$next_data['user_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('user_id');
+					$next_data['role_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('role_id');
+					$next_data['user_name'] = M('User')->where(array('name'=>$next_emp_no))->getField('true_name');
+					$last_step = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step desc')->limit(1)->getField('step');
+					$next_data['step'] = $last_step?$last_step+1:21;
+					$next_data['create_time'] = time();
+					M('ContractFlowLog')->add($next_data);
+				}else{
+					//发站内信，通过审核
+					$owner_role_id = M('Contract')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
+					$content = '<a href="'.U('contract/index').'">您的服务合同已通过审核，点击查看</a>';
+					sendMessage($owner_role_id,$content,1);
+				}
+			}else{
+				$this->ajaxReturn('0', L('CONFIRM FAILED'), 0);
+			}
+		}elseif ($type == 'reject'){
+			$data['result'] = 0;
+			$res = M('ContractFlowLog')->where(array('id'=>$ContractFlowLog['id']))->save($data);
+			if(!$res){
+				//发站内信，否决审核
+				$owner_role_id = M('Contract')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
+				$content = '<a href="'.U('contract/index').'">您的服务合同已被否决，点击查看</a>';
+				sendMessage($owner_role_id,$content,1);
+				
+				$this->ajaxReturn('0', L('CONFIRM FAILED'), 0);
+			}
+		}
+		$this->ajaxReturn('1', L('CONFIRM SUCCESS'), 1);
+	}
+	public function cancel(){
+		$contract_id = $_REQUEST['id'];
+		$contract = M('Contract')->where(array('contract_id'=>$contract_id))->find();
+		if(empty($contract) || $contract['owner_role_id']!=session('role_id') || $contract['is_cancel'] == 1){
+			$this->error(L('CAN NOT CANCEL'));
+		}
+		$res = M('Contract')->where(array('contract_id'=>$contract_id))->save(array('is_cancel'=>1));
+		if($res){
+			alert('success', L('CANCEL SUCCESS'),U('contract/index'));
+		}else{
+			alert('error', L('CANCEL FAILED'),U('contract/index'));
+		}
+	}
 	public function view(){
 		$contract_id = intval($_REQUEST['id']);
-		if(!check_permission($contract_id, 'contract')) $this->error(L('HAVE NOT PRIVILEGES'));
+// 		if(!check_permission($contract_id, 'contract')) $this->error(L('HAVE NOT PRIVILEGES'));
 		$contract = D('ContractView');
 		if (0 == $contract_id) alert('error', L('NOT CHOOSE ANY'), U('contract/index'));
 		
 		$info = $contract->where(array('contract_id'=>$contract_id))->find();
+		
+		$all_ids = getSubRoleIdByYuan(true);
+		if(!in_array($info['owner_role_id'],$all_ids)) $this->error(L('HAVE NOT PRIVILEGES'));
 		if(empty($info)) alert('error', L('THE_CONTRACT_DOES_NOT_EXIST_OR_HAS_BEEN_DELETED'), U('contract/index'));
 		$info['creator_name'] = M('user')->where('role_id = %d', $info['creator_role_id'])->getField('name');
 		
@@ -237,6 +346,9 @@ class ContractAction extends CommonAction {
 				$contract_payables = $m_payables->where('is_deleted <> 1 and contract_id = %d',$v)->select();//合同关联的应付款
 				
 				if(empty($contract_product) && empty($contract_file) && empty($contract_receivables) && empty($contract_payables)){
+					if(!empty($contract['owner_role_id']) && $contract['owner_role_id'] != session('role_id')){
+						alert('error',L('CAN NOT DELETE CONTRACT NOT ME'),$_SERVER['HTTP_REFERER']);
+					}
 					if(!$m_contract->where('contract_id = %d', $v)->save($data)){
 						alert('error',L('NOT CHOOSE ANY'),$_SERVER['HTTP_REFERER']);
 					}
@@ -266,7 +378,7 @@ class ContractAction extends CommonAction {
 		
 		$contract = D('ContractView');
 		$below_ids = getSubRoleId(false);
-		$all_ids = getSubRoleId();
+		$all_ids = getSubRoleIdByYuan(true);
 		$where = array();
 		$order = 'contract.create_time desc';
 		if($_GET['desc_order']){
@@ -318,7 +430,7 @@ class ContractAction extends CommonAction {
 			$where['contract.is_deleted'] = 0;
 		}
 		if (!isset($where['contract.owner_role_id'])) {
-			$where['contract.owner_role_id'] = array('in',implode(',', getSubRoleId())); 
+			$where['contract.owner_role_id'] = array('in',implode(',', $all_ids)); 
 		}
 		
 		if ($_REQUEST["field"]) {
@@ -368,6 +480,7 @@ class ContractAction extends CommonAction {
 			$params[] = "listrows=15";
 		}
 		$p = intval($_GET['p'])?intval($_GET['p']):1;
+		
 		$list = $contract->where($where)->page($p.','.$listrows)->order($order)->select();
 		$count = $contract->where($where)->count();
 		
@@ -396,11 +509,34 @@ class ContractAction extends CommonAction {
 			if($end_date){
 				$list[$key]['days'] = floor(($end_date-time())/86400+1);
 			}
-			$ContractFlowLog = M('ContractFlowLog')->where(array('role_id'=>session('role_id'),'contract_flow_id'=>$value['contract_id'],'_string'=>'result is null'))->find();
-			if($ContractFlowLog){
+			$ContractFlowLogToMe = M('ContractFlowLog')->where(array('role_id'=>session('role_id'),'contract_flow_id'=>$value['contract_id'],'_string'=>'result is null'))->find();
+			if($ContractFlowLogToMe && $value['is_cancel'] == 0){
 				$list[$key]['confirm_to_me'] = true;
 			}else{
 				$list[$key]['confirm_to_me'] = false;
+			}
+			$ContractFlowLogLast = M('ContractFlowLog')->where(array('contract_flow_id'=>$value['contract_id']))->order('step desc')->limit(1)->find();
+			if($ContractFlowLogLast['result'] === '0' && $value['owner_role_id'] == session('role_id')){
+				$list[$key]['can_edit'] = true;
+			}else{
+				$list[$key]['can_edit'] = false;
+			}
+			if($value['is_cancel'] == '1'){
+				$list[$key]['status'] = '已作废';
+			}else{
+				if($ContractFlowLogLast['result'] === '0'){
+					$list[$key]['status'] = '否决';
+				}else if($ContractFlowLogLast['result'] === '1'){
+					$list[$key]['status'] = '通过';
+				}else if(!empty($ContractFlowLogLast)){
+					$list[$key]['status'] = '审批中';
+				}
+			}
+			
+			if($value['is_cancel'] == 0 && $value['owner_role_id'] == session('role_id')){
+				$list[$key]['can_cancel'] = true;
+			}else{
+				$list[$key]['can_cancel'] = false;
 			}
 		}
 		// println($list);
