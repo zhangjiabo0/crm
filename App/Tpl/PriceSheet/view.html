@@ -78,16 +78,16 @@
 											<tr>
 												<td><input type="text" value="{$v.product_name}" title="{$v.product_name}" readonly="readonly"/></td>
 												<td>{$v.amount}</td>
-												<td>{$v.unit_price}</td>
+												<td class="unit_price">{$v.unit_price}</td>
 												<td>{$v.subtotal}</td>
-												<td>{$v.will_price}</td>
+												<td class="will_price">{$v.will_price}</td>
 												<td>{$v.will_total}</td>
 												<td>{$v.provider_price}</td>
 												<td>{$v.provider_total}</td>
-												<td>{$v.tax_rate}</td>
-												<td>{$v.lirun}</td>
-												<td><input type="text" value="{$v.discount_rate}" readonly="readonly"/></td>
-												<td>{$v.discription}</td>
+												<td class="tax_rate">{$v.tax_rate}</td>
+												<td class="lirun">{$v.lirun}</td>
+												<td><input type="text" value="{$v.discount_rate}" title="{$v.discount_rate}" readonly="readonly"/></td>
+												<td><input type="text" value="{$v.discription}" title="{$v.discription}" readonly="readonly"/></td>
 											</tr>
 										</foreach>
 									</tbody>
@@ -124,119 +124,36 @@
 			</div>
 		</div>
 	</div>
-<div class="hide" id="dialog-product" title="{:L('ADD_PRODUCT')}">loading...</div>
-<div class="hide" id="dialog-edit" title="{:L('AMENDING_THE_CONTRACT_PRODUCT_INFORMATION')}">loading...</div>
-<div class="hide" id="dialog-role-info" title="{:L('DIALOG_USER_INFO')}">loading...</div>
-<div class="hide" id="dialog-receivables" title="{:L('ADD_THE_ACCOUNTS_RECEIVABLE')}">loading...</div>
-<div class="hide" id="dialog-payables" title="添加应付款">loading...</div>
-<div class="hide" id="dialog-receivables-edit" title="编辑应收款">loading...</div>
-<div class="hide" id="dialog-payables-edit" title="编辑应付款">loading...</div>
-<div class="hide" id="dialog-file" title="{:L('ADD_ACCESSORY')}">loading...</div>
-<script>
-$('#left_list a').click(function (e) {
-        e.preventDefault();
-        $('#right_list').hide();
-        $('#left_list').parent().next().removeClass('span8').addClass('span10');
-        $(this).tab('show');
-    })
-    $('#left_list a:first').on('click', function (e) {
-        $('#left_list').parent().next().removeClass('span10').addClass('span8');
-        $('#right_list').show();
-    })
-<if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else />width=800;</if>
-$("#dialog-product").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight:400,
-	position: ["center",100]
+<script type="text/javascript">
+$(window).load(function(){
+	init_style();
 });
-$("#dialog-edit").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight:400,
-	position: ["center",100]
-});
-$("#dialog-role-info").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight:400,
-	position: ["center",100]
-});
-$("#dialog-receivables").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight:400,
-	position: ["center",100]
-});
-$("#dialog-receivables-edit").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight:400,
-	position: ["center",100]
-});
-$("#dialog-payables").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight:450,
-	position: ["center",100]
-});
-$("#dialog-payables-edit").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight:450,
-	position: ["center",100]
-});
-$("#dialog-file").dialog({
-    autoOpen: false,
-    modal: true,
-	width: width,
-	maxHeight: 400,
-	position: ["center",100]
-});
-$(function(){
-	$(".edit_product").click(function(){
-		id = $(this).attr('rel');
-		$('#dialog-edit').dialog('open');
-		$('#dialog-edit').load('{:U("product/editdialog","r=RContractProduct&id")}'+id);
+function  init_style(){
+	$("#add_products tr").each(function(){
+		$(this).find("input").attr('style','text-decoration: underline;color:blue;');
+		var will = $(this).find(".will_price");
+		var unit = $(this).find(".unit_price");
+		if(will.text().trim() != unit.text().trim()){
+			will.attr('style','background-color:red;color:#fff;');
+		}else{
+			will.attr('style','');
+		}
+		var tax = $(this).find(".tax_rate");
+		var lirun = $(this).find(".lirun");
+		if(tax.text().trim() <= 8){
+			tax.attr('style','color:red;');
+		}else{
+			tax.attr('style','');
+		}
+		var tmp = lirun.text().trim().split('%');
+		if(tmp[0] <= 20){
+			lirun.attr('style','color:red;');
+		}else{
+			lirun.attr('style','');
+		}
 	});
-	$(".add_product").click(function(){
-		$('#dialog-product').dialog('open');
-		$('#dialog-product').load('{:U("product/adddialog","r=RContractProduct&module=contract&id=".$info["contract_id"])}');
-	});
-	$(".role_info").click(function(){
-		$role_id = $(this).attr('rel');
-		$('#dialog-role-info').dialog('open');
-		$('#dialog-role-info').load('{:U("user/dialoginfo","id=")}'+$role_id);
-	});
-	$(".add_receivables").click(function(){
-		$('#dialog-receivables').dialog('open');
-		$('#dialog-receivables').load('{:U("finance/adddialog", "t=receivables&contract_id=".$info['contract_id'])}');
-	});
-	$(".edit_receivables").click(function(){
-		var receivables_id = $(this).attr('rel');
-		$('#dialog-receivables-edit').dialog('open');
-		$('#dialog-receivables-edit').load('{:U("finance/editdialog", "t=receivables&id=")}'+receivables_id);
-	});
-	$(".add_payables").click(function(){
-		$('#dialog-payables').dialog('open');
-		$('#dialog-payables').load('{:U("finance/adddialog", "t=payables&contract_id=".$info['contract_id'])}');
-	});
-	$(".edit_payables").click(function(){
-		var payables_id = $(this).attr('rel');
-		$('#dialog-payables-edit').dialog('open');
-		$('#dialog-payables-edit').load('{:U("finance/editdialog", "t=payables&id=")}'+payables_id);
-	});
-	$(".add_file").click(function(){
-		$('#dialog-file').dialog('open');
-		$('#dialog-file').load('{:U("file/add","r=RContractFile&module=contract&id=".$info["contract_id"])}');
-	});
-});
+}
+	
+	
 </script>
 <include file="Public:footer" />	
