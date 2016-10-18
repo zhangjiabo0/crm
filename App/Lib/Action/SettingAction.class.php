@@ -727,6 +727,8 @@ class SettingAction extends Action{
 			$this->assign('leadsB_outdays', $leadsB_outdays);
 			$contract_custom = M('config') -> where('name="contract_custom"')->getField('value');
 			$this->assign('contract_custom', $contract_custom);
+			$contract_epiboly_custom = M('config') -> where('name="contract_epiboly_custom"')->getField('value');
+			$this->assign('contract_epiboly_custom', $contract_epiboly_custom);
 			$customer_outdays = M('config') -> where('name="customer_outdays"')->getField('value');
 			$this->assign('customer_outdays', $customer_outdays);
 			$customer_limit_condition = M('config') -> where('name="customer_limit_condition"')->getField('value');
@@ -798,13 +800,21 @@ class SettingAction extends Action{
 					$result_defaultinfo = false;
 				}
 			}
-			//改变合同前缀名
+			//改变服务合同前缀名
 			if(!$m_config-> where('name="contract_custom"')->find()){
 				$contract_custom['name'] = 'contract_custom';
 				$contract_custom['contract_custom'] = $_POST['contract_custom'];
 				$contract_custom = $m_config -> add($contract_custom);
 			}else {
 				$contract_custom = $m_config -> where('name="contract_custom"') -> setField('value',$_POST['contract_custom']);
+			}
+			//改变服务外包合同前缀名
+			if(!$m_config-> where('name="contract_epiboly_custom"')->find()){
+				$contract_epiboly_custom['name'] = 'contract_epiboly_custom';
+				$contract_epiboly_custom['contract_epiboly_custom'] = $_POST['contract_epiboly_custom'];
+				$contract_epiboly_custom = $m_config -> add($contract_epiboly_custom);
+			}else {
+				$contract_epiboly_custom = $m_config -> where('name="contract_epiboly_custom"') -> setField('value',$_POST['contract_epiboly_custom']);
 			}
 			$leads_outdays = M('config') -> where('name="leads_outdays"') -> setField('value',$_POST['leads_outdays']);
 			$leadsB_outdays = M('config') -> where('name="leadsB_outdays"') -> setField('value',$_POST['leadsB_outdays']);
@@ -814,7 +824,7 @@ class SettingAction extends Action{
 			$result_customerB_outdays = $m_config->where('name = "customerB_outdays"')->setField('value', $_POST['customerB_outdays']);
 			$result_customerB_limit_condition = $m_config->where('name = "customerB_limit_condition"')->setField('value', $_POST['customerB_limit_condition']);
 			$result_customerB_limit_counts = $m_config->where('name = "customerB_limit_counts"')->setField('value', $_POST['customerB_limit_counts']);
-			if($result_defaultinfo || $contract_custom  || $leads_outdays || $leadsB_outdays || $result_customer_outdays || $result_customer_limit_condition || $result_customer_limit_counts || $result_customerB_outdays || $result_customerB_limit_condition || $result_customerB_limit_counts){
+			if($result_defaultinfo || $contract_custom || $contract_epiboly_custom  || $leads_outdays || $leadsB_outdays || $result_customer_outdays || $result_customer_limit_condition || $result_customer_limit_counts || $result_customerB_outdays || $result_customerB_limit_condition || $result_customerB_limit_counts){
 				alert('success',L('SUCCESSFULLY SET AND SAVED'),U('setting/defaultinfo'));
 			} else {
 				alert('error',L('DATA UNCHANGED'),U('setting/defaultinfo'));

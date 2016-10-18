@@ -25,7 +25,7 @@
 					<span class="basic_information" name="tab">基本信息</span>
 					<div class="pull-right"style="margin:-3px 10px 0 0;">
 						<if condition="$can_edit eq true">
-						<a href="{:U('contract/edit', 'id='.$info['contract_id'])}" class="btn btn-primary">{:L('EDITING')}</a>
+						<a href="{:U('contractEpiboly/edit', 'id='.$info['contract_id'])}" class="btn btn-primary">{:L('EDITING')}</a>
 						</if>
 						<!-- <a href="{:U('contract/delete', 'contract_id='.$info['contract_id'])}" class="btn btn-primary del_confirm">{:L('DELETE')}</a> -->
 						<a href="javascript:void(0)" onclick="javascript:history.go(-1)" class="btn btn-primary">{:L('RETURN')}</a>
@@ -44,8 +44,8 @@
 								<td><a href="{:U('priceSheet/view','id='.$info['price_sheet_id'])}">{$info.price_sheet_number}</a></td>
 							</tr>
 							<tr>
-								<td class="tdleft" width="15%">{:L('CUSTOMER')}</td>
-								<td><a href="{:U('customer/view','id='.$info['customer_id'])}">{$info.customer_name}</a></td>
+								<td class="tdleft" width="15%">{:L('CUSTOMERB')}</td>
+								<td><a href="{:U('customerB/view','id='.$info['customerB_id'])}">{$info.customer_name}</a></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('CREATOR_ROLE')}</td>
 								<td><a class="role_info" href="javascript:void(0)" rel="{$info['creator_role_id']}">{$info.creator_name}</a></td>
@@ -539,11 +539,11 @@ $(function(){
 	$(".edit_product").click(function(){
 		id = $(this).attr('rel');
 		$('#dialog-edit').dialog('open');
-		$('#dialog-edit').load('{:U("product/editdialog","r=RContractProduct&id")}'+id);
+		$('#dialog-edit').load('{:U("product/editdialog","r=RContractEpibolyProduct&id")}'+id);
 	});
 	$(".add_product").click(function(){
 		$('#dialog-product').dialog('open');
-		$('#dialog-product').load('{:U("product/adddialog","r=RContractProduct&module=contract&id=".$info["contract_id"])}');
+		$('#dialog-product').load('{:U("product/adddialog","r=RContractEpibolyProduct&module=contractEpiboly&id=".$info["contract_id"])}');
 	});
 	$(".role_info").click(function(){
 		$role_id = $(this).attr('rel');
@@ -570,7 +570,7 @@ $(function(){
 	});
 	$(".add_file").click(function(){
 		$('#dialog-file').dialog('open');
-		$('#dialog-file').load('{:U("file/add","r=RContractFile&module=contract&id=".$info["contract_id"])}');
+		$('#dialog-file').load('{:U("file/add","r=RContractEpibolyFile&module=contractEpiboly&id=".$info["contract_id"])}');
 	});
 });
 </script>

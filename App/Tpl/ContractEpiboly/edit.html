@@ -26,7 +26,7 @@
 		<div class="tabbable span12">
 			<div class="tab-content">
 				<div class="tab-pane active" id="tab1">
-				<form id="form1" action="{:U('contract/edit')}" method="post">
+				<form id="form1" action="{:U('contractEpiboly/edit')}" method="post">
 				<input type="hidden" name="id" value="{$info.contract_id}">
 				<input type="hidden" name="price_sheet_id" id="price_sheet_id" value="{$price_sheet_id}">
 				<input type="hidden" name="total_amount" id="total_amount" value="0">
@@ -46,10 +46,10 @@
 								<td class="tdleft">{:L('CONTRACT_NO')}</td>
 								<td><input  type="text" name="number" id="number" value="{$info.number}" readonly="readonly"></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft">{:L('SOURCE_OF_CUSTOMER')}</td>
+								<td class="tdleft">{:L('SOURCE_OF_CUSTOMERB')}</td>
 								<td>
-									<input type="text" readonly="readonly" id="customer_name" value="{$info.customer_name}"/>
-									<input type="hidden" name="customer_id" id="customer_id" value="{$info.customer_id}"/>
+									<input type="text" readonly="readonly" id="customerB_name" value="{$info.customerB_name}"/>
+									<input type="hidden" name="customerB_id" id="customerB_id" value="{$info.customerB_id}"/>
 								</td>
 							</tr>
 							<tr>
@@ -58,8 +58,8 @@
 									<input readonly="readonly" type="text" name="dept_name" id="dept_name" value="{$info.dept_name}"/>
 								</td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft">{:L('CUSTOMER')}</td>
-								<td><input type="text" readonly="readonly" id="customer_name" value="{$info.customer_name}"> </td>
+								<!-- <td class="tdleft">{:L('CUSTOMERB')}</td>
+								<td><input type="text" readonly="readonly" id="customerB_name" value="{$info.customerB_name}"> </td> -->
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('OWNER_ROLE_CLICK_ON_THE_SELECT')}</td>
@@ -334,11 +334,11 @@ function approve(id){
 		$.ajax({
 			type: "post",
 			data:{contract_id:id,comment:comment,type:"approve"},
-			url: "{:U('contract/mark')}",    
+			url: "{:U('contractEpiboly/mark')}",    
 			dataType: "json",
 			success: function(result){
 				alert(result.info);
-				location.href = "{:U('contract/index')}";
+				location.href = "{:U('contractEpiboly/index')}";
 			},
 			error:function(){
 				alert(0);
@@ -350,11 +350,11 @@ function reject(id){
 	$.ajax({
 		type: "post",
 		data:{contract_id:id,comment:comment,type:"reject"},
-		url: "{:U('contract/mark')}",    
+		url: "{:U('contractEpiboly/mark')}",    
 		dataType: "json",
 		success: function(result){
 			alert(result.info);
-			location.href = "{:U('contract/index')}";
+			location.href = "{:U('contractEpiboly/index')}";
 		},
 		error:function(){
 			alert(0);
