@@ -100,4 +100,5 @@
 	'RECALL' => '作废',
 	'T_SERVER'=>'转服务',
 	'T_EPIBOLY' => '转外包',
+	'APPROVE_NAME' => '审批',
 	);

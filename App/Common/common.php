@@ -2231,6 +2231,20 @@ function formatto4w($num){
 		return '000'.substr($num,-4);
 	}
 }
+function getRoleIdByDeptPosition($dept_name,$position_name,$type='department_id'){
+	$department_id = M('RoleDepartment')->where(array('name'=>array('like','%'.$dept_name.'%')))->getField('department_id');
+	if($department_id){
+		$position_id = M('Position')->where(array($type=>$department_id,'name'=>array('like',array('%'.$position_name.'%'))))->getField('position_id',true);
+		$role_ids = M('Role')->where(array('position_id'=>array('in',$position_id)))->getField('role_id',true);
+		foreach ($role_ids as $k => $role_id){
+			$status = M('User')->where(array('role_id'=>$role_id))->getField('status');
+			if($status == '2'){
+				unset($role_ids[$k]);
+			}
+		}
+		return  array_values($role_ids);
+	}
+}
 function getMarketOperativeId(){
 	$department_id = M('RoleDepartment')->where(array('name'=>array('like','%市场部%')))->getField('department_id');
 	if($department_id){
@@ -2245,9 +2259,16 @@ function getConfirmText($role_id){
 		$name = '';
 		if(is_array($role_id)){
 			foreach ($role_id as $role_id_d){
-				$user = M('User')->field('name,true_name')->where(array('role_id'=>$role_id_d))->find();
-				$emp_no .= $user['name'].'|';
-				$name .= $user['true_name'].'<>';
+				if($role_id_d == 'more'){
+					list($yun_name,$yun_true_name) = getConfirmTextMore(getRoleIdByDeptPosition('市场部','运营'));
+					$emp_no .= $yun_name.'|';
+					$name .= $yun_true_name.'<>';
+				}else{
+					$user = M('User')->field('name,true_name')->where(array('role_id'=>$role_id_d))->find();
+					$emp_no .= $user['name'].'|';
+					$name .= $user['true_name'].'<>';
+				}
+				
 			}
 		}else{
 			$user = M('User')->field('name,true_name')->where(array('role_id'=>$role_id))->find();
@@ -2258,6 +2279,22 @@ function getConfirmText($role_id){
 	}
 	return array($emp_no,$name);
 }
+//当借点上有多人审批的时候
+function getConfirmTextMore($role_id){
+	if(!empty($role_id)){
+		$emp_no = '';
+		$name = '';
+		if(is_array($role_id)){
+			foreach ($role_id as $role_id_d){
+				$user = M('User')->field('name,true_name')->where(array('role_id'=>$role_id_d))->find();
+				$emp_no .= $user['name'].',';
+				$name .= $user['true_name'].',';
+			}
+		}
+	}
+	return array($emp_no,$name);
+}
+
 function getContractFlow($role_id){
 	$user_id = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
 	$d_user = D('RoleView');
@@ -2298,6 +2335,47 @@ function getContractFlow($role_id){
 					return array();
 				}
 			}
+		}
+	}
+}
+//获取报价单审批流程
+function getPriceSheetFlow($role_id,$flag,$also=true){
+	$user_id = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
+	$d_user = D('RoleView');
+	$user = $d_user->where('user.role_id = %d', $role_id)->find();
+	$parents = array();
+	if($user['parent_id'] == '0'){
+		//顶级岗位
+		return array();
+	}else if($user['role_name'] == '园区老大'){
+		return array();
+	}else{
+		$parent = $user['parent_id'];
+		while ($parent){
+			$parents[] = $parent;//获取所有的父级id
+			$parent = M('Position')->where(array('position_id'=>$parent))->getField('parent_id');
+		}
+		if(count($parents)>1){
+			$last_2 = $parents[count($parents)-2];
+			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
+			if(count($parents)>2){
+				$hjx = getRoleIdByDeptPosition('市场部','市场拓展部','parent_id');
+				$marketBoss = getRoleIdByDeptPosition('市场部','市场部老大');
+				$role_id = M('Role')->where(array('position_id'=>$parents[0]))->getField('role_id');
+				if($flag){//折扣大于8折或者利润大于20%
+					return getConfirmText($role_id);
+				}else{
+					if($also){//折扣小于等于8折并且利润小于等于20%
+						return getConfirmText(array($role_id,$hjx[0],$marketBoss[0]));
+					}else{
+						return getConfirmText(array($role_id,$hjx[0],'more',$hjx[0],$marketBoss[0]));
+					}
+				}
+				
+			}else{//各园区老大
+				return array();
+			}
+	
 		}
 	}
 }

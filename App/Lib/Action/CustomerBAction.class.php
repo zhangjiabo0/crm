@@ -1304,7 +1304,7 @@ class CustomerBAction extends CommonAction {
 			$customerB_id = M('business')->where('business_id = %d',$business_id)->getField('customerB_id');
 			$customerB = $d_v_customerB->where('customerB_id = %d and is_deleted = 0',$customerB_id)->order('create_time desc')->limit(10)->select();
 		}else{
-			$customerB = $d_v_customerB->where('owner_role_id in (%s) and is_deleted = 0',implode(',',$underling_ids))->order('create_time desc')->limit(10)->select();
+			$customerB = $d_v_customerB->where('creator_role_id in (%s) and is_deleted = 0',implode(',',$underling_ids))->order('create_time desc')->limit(10)->select();
 		}
 		foreach($customerB as $k=>$v){
 			//如果存在首要联系人，则查出首要联系人。否则查出联系人中第一个。

@@ -4,15 +4,70 @@ class PriceSheetAction extends CommonAction {
 	public function _initialize(){
 		$action = array(
 			'permission'=>array(),
-			'allow'=>array('index','add','upload','getParentsDeptName')
+			'allow'=>array('index','add','upload','flowlog')
 		);
 		B('Authenticate', $action);
 	}
 	
 	public function index(){
+		$where = array();
+		$below_ids = getSubRoleId(false);
+		$all_ids = getSubRoleIdByYuan(true);
+		$order = 'PriceSheet.create_time desc';
+		if($_GET['desc_order']){
+			$order = trim($_GET['desc_order']).' desc';
+		}elseif($_GET['asc_order']){
+			$order = trim($_GET['asc_order']).' asc';
+		}
+		switch ($_GET['by']){
+			case 'create':
+				$where['PriceSheet.role_id'] = session('role_id');
+				break;
+			case 'sub' :
+				$where['PriceSheet.role_id'] = array('in',implode(',', $below_ids));
+				break;
+			case 'subcreate' :
+				$where['PriceSheet.role_id'] = array('in',implode(',', $below_ids));
+				break;
+			case 'today' :
+				$where['PriceSheet.due_time'] =  array('between',array(strtotime(date('Y-m-d')) -1 ,strtotime(date('Y-m-d')) + 86400));
+				break;
+			case 'week' :
+				$week = (date('w') == 0)?7:date('w');
+				$where['PriceSheet.due_time'] =  array('between',array(strtotime(date('Y-m-d')) - ($week-1) * 86400 -1 ,strtotime(date('Y-m-d')) + (8-$week) * 86400));
+				break;
+			case 'month' :
+				$next_year = date('Y')+1;
+				$next_month = date('m')+1;
+				$month_time = date('m') ==12 ? strtotime($next_year.'-01-01') : strtotime(date('Y').'-'.$next_month.'-01');
+				$where['PriceSheet.due_time'] = array('between',array(strtotime(date('Y-m-01')) -1 ,$month_time));
+				break;
+			case 'add' :
+				$order = 'PriceSheet.create_time desc';
+				break;
+			case 'deleted' :
+				$where['PriceSheet.is_del'] = 1;
+				break;
+			case 'update' :
+				$order = 'PriceSheet.update_time desc';
+				break;
+			case 'me' :
+				$where['PriceSheet.role_id'] = session('role_id');
+				break;
+			default:
+				$where['PriceSheet.role_id'] = array('in',implode(',', $all_ids));
+				break;
+		}
+		
+		if (!isset($where['PriceSheet.is_del'])) {
+			$where['PriceSheet.is_del'] = 0;
+		}
+		if (!isset($where['PriceSheet.role_id'])) {
+			$where['PriceSheet.role_id'] = array('in',implode(',', $all_ids));
+		}
 		if ($_REQUEST["field"]) {//查询条件处理
 			if (trim($_REQUEST['field']) == "all") {
-				$field = is_numeric(trim($_REQUEST['search'])) ? 'number|price|contract.description' : 'number|contract.description';
+				$field = is_numeric(trim($_REQUEST['search'])) ? 'number|PriceSheet.reason' : 'number|PriceSheet.reason';
 			} else {
 				$field = trim($_REQUEST['field']);
 			}
@@ -27,30 +82,29 @@ class PriceSheetAction extends CommonAction {
 					if($field == 'customer_id'){
 						$where['customer.'.$field] = array('eq',$search);
 					}else{
-						$where['contract.'.$field] = array('eq',$search);
+						$where['PriceSheet.'.$field] = array('eq',$search);
 					}break;
-				case "isnot" :  $where['contract.'.$field] = array('neq',$search);break;
-				case "contains" :  $where['contract.'.$field] = array('like','%'.$search.'%');break;
-				case "not_contain" :  $where['contract.'.$field] = array('notlike','%'.$search.'%');break;
-				case "start_with" :  $where['contract.'.$field] = array('like',$search.'%');break;
-				case "end_with" :  $where['contract.'.$field] = array('like','%'.$search);break;
-				case "is_empty" :  $where['contract.'.$field] = array('eq','');break;
-				case "is_not_empty" :  $where['contract.'.$field] = array('neq','');break;
-				case "gt" :  $where['contract.'.$field] = array('gt',$search);break;
-				case "egt" :  $where['contract.'.$field] = array('egt',$search);break;
-				case "lt" :  $where['contract.'.$field] = array('lt',$search);break;
-				case "elt" :  $where['contract.'.$field] = array('elt',$search);break;
-				case "eq" : $where['contract.'.$field] = array('eq',$search);break;
-				case "neq" : $where['contract.'.$field] = array('neq',$search);break;
-				case "between" : $where['contract.'.$field] = array('between',array($search-1,$search+86400));break;
-				case "nbetween" : $where['contract.'.$field] = array('not between',array($search,$search+86399));break;
-				case "tgt" :  $where['contract.'.$field] = array('gt',$search+86400);break;
+				case "isnot" :  $where['PriceSheet.'.$field] = array('neq',$search);break;
+				case "contains" :  $where['PriceSheet.'.$field] = array('like','%'.$search.'%');break;
+				case "not_contain" :  $where['PriceSheet.'.$field] = array('notlike','%'.$search.'%');break;
+				case "start_with" :  $where['PriceSheet.'.$field] = array('like',$search.'%');break;
+				case "end_with" :  $where['PriceSheet.'.$field] = array('like','%'.$search);break;
+				case "is_empty" :  $where['PriceSheet.'.$field] = array('eq','');break;
+				case "is_not_empty" :  $where['PriceSheet.'.$field] = array('neq','');break;
+				case "gt" :  $where['PriceSheet.'.$field] = array('gt',$search);break;
+				case "egt" :  $where['PriceSheet.'.$field] = array('egt',$search);break;
+				case "lt" :  $where['PriceSheet.'.$field] = array('lt',$search);break;
+				case "elt" :  $where['PriceSheet.'.$field] = array('elt',$search);break;
+				case "eq" : $where['PriceSheet.'.$field] = array('eq',$search);break;
+				case "neq" : $where['PriceSheet.'.$field] = array('neq',$search);break;
+				case "between" : $where['PriceSheet.'.$field] = array('between',array($search-1,$search+86400));break;
+				case "nbetween" : $where['PriceSheet.'.$field] = array('not between',array($search,$search+86399));break;
+				case "tgt" :  $where['PriceSheet.'.$field] = array('gt',$search+86400);break;
 				default :	$where[$field] = array('eq',$search);
 			}
 			$params = array('field='.trim($_REQUEST['field']), 'condition='.$condition, 'search='.$_REQUEST["search"]);
 		}
 		
-		$all_ids = getSubRoleIdByYuan(true);
 		$p = isset($_GET['p']) ? intval($_GET['p']) : 1 ;
 		if($_GET['listrows']){
 			$listrows = $_GET['listrows'];
@@ -59,11 +113,10 @@ class PriceSheetAction extends CommonAction {
 			$listrows = 15;
 			$params[] = "listrows=15";
 		}
-		$where['PriceSheet.is_del'] = 0;
-		$where['PriceSheet.role_id'] = array('in',implode(',',$all_ids));
 		$price = D('PriceSheetView');
-		$list = $price -> where($where) -> order('PriceSheet.create_time DESC')->page($p.','.$listrows) -> select();
+		$list = $price -> where($where) -> order($order)->page($p.','.$listrows) -> select();
 		$count = $price -> where($where) -> count();
+		//判断是否是审批人
 		import("@.ORG.Page");
 		$Page = new Page($count,$listrows);
 		if (!empty($_GET['by'])) {
@@ -83,6 +136,7 @@ class PriceSheetAction extends CommonAction {
 		$this->assign('page',$Page->show());
 		$this->listrows = $listrows;
 		$this->list = $list;
+		$this->role_id = $_SESSION['role_id'];
 		$this->assign('count',$count);
 		$this->alert = parseAlert();
 		$this->display();
@@ -120,6 +174,7 @@ class PriceSheetAction extends CommonAction {
 			$data['willtotal_val'] = trim($_POST['willtotal_val']);//产品客户意向总价
 			$data['service_val'] = trim($_POST['service_val']);//产品服务商总价
 			if($sid = $sheet -> add($data)){
+				$lirun_total = 0;$zhekou_total = 0;
 				//添加产品
 				$m_rbusinessProduct = M('RPriceSheetProduct');
 				if(is_array($_POST['product'])){
@@ -139,6 +194,37 @@ class PriceSheetAction extends CommonAction {
 						$data['description'] = $val['description'];//备注
 						$data['sheet_id'] = $sid;//报价单id
 						$m_rbusinessProduct->add($data);
+						$lirun_total += is_numeric(substr($val['lirun'],0,-1)) ? intval(substr($val['lirun'],0,-1)) : 0;
+						$zhekou_total += is_numeric($val['tax_rate']) ? intval($val['tax_rate']) : 0;
+					}
+				}
+				//添加流程
+				$lirun_total = $lirun_total/(count($_POST['product']));
+				$zhekou_total = $zhekou_total/(count($_POST['product']));
+				if($lirun_total > 20 || $zhekou_total > 8){//利润大于8折...
+					list($info['confirm'],$info['confirm_name']) = getPriceSheetFlow(session('role_id'),true);
+				}else{
+					if($lirun_total <= 20 && $zhekou_total <= 8){
+						list($info['confirm'],$info['confirm_name']) = getPriceSheetFlow(session('role_id'),false,false);
+					}else{
+						list($info['confirm'],$info['confirm_name']) = getPriceSheetFlow(session('role_id'),false);
+					}
+				}
+				$info['id'] = $sid;
+				if($sheet -> save($info)){
+					//加上流程日志
+					$confirm_array = array_filter(explode('|',$info['confirm']));
+					if(!empty($confirm_array[0])){
+						$flow_data['contract_flow_id'] = $sid;
+						$flow_data['emp_no'] = $confirm_array[0];
+						$flow_data['user_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('user_id');
+						$flow_data['role_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('role_id');
+						$flow_data['user_name'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('true_name');
+						$flow_data['step'] = '21';
+						$flow_data['result'] = '-1';//-1表示未审核
+						$flow_data['create_time'] = time();
+						$flow_data['is_read'] = 0;
+						M('PriceSheetFlowLog')->add($flow_data);
 					}
 				}
 			actionLog($sid);
@@ -178,7 +264,21 @@ class PriceSheetAction extends CommonAction {
 		if(!empty($list['id'])){
 			$product = M('RPriceSheetProduct');
 			$list['products'] = $product -> where('sheet_id = '.$list['id']) -> select();
+			$flow =  M('PriceSheetFlowLog') -> where(array('price_flow_id'=>$list['id'],'result'=>'-1'))->field('id,role_id') -> find();
+			$list['flow'] = $flow;
+			$role_id = session('role_id');
+			$flag = true;
+			if(strpos($flow['role_id'],',')){
+				$emps = array_filter(explode(',',$flow['role_id']));
+				foreach ($emps as $k => $v){
+					if($v == $role_id){
+						$flag = false;break;
+					}
+				}
+			}
+			$list['isflow'] = $flag;
 		}
+		dump($list);
 		$this-> vo = $list;
 		$this -> display();
 	}
@@ -189,5 +289,57 @@ class PriceSheetAction extends CommonAction {
 		$id = $_GET['id'];
 		$flag = M('PriceSheet')->save(array('id'=>$id,'is_del'=>1));
 		alert('success', '作废成功!', U('priceSheet/index'));
+	}
+	/**
+	 * 审批流程操作
+	 */
+	public function flowlog(){
+			$data['price_flow_id'] = $_REQUEST['id'];
+			$data['id'] = $_REQUEST['fid'];
+			$data['result'] = $_REQUEST['re'];
+			$data['comment'] = $_REQUEST['comm'];
+			$data['update_time'] = time();
+			$log = M('PriceSheetFlowLog');
+			$log->startTrans(); //开启事物
+			$tmp = $log ->save($data);
+			$flag = false;
+			//加上流程日志
+			if($data['result'] == '1'){//同意
+				$confirm = M('PriceSheet') -> find($_REQUEST['id']);
+				$confirm_array = array_filter(explode('|',$confirm['confirm']));
+				$emp_no = $log -> where('id = '.$data['id'])->getField('emp_no');
+				$i = array_search($emp_no,$confirm_array);
+				if($i < count($confirm_array)-1){
+					$next_emp_no = $confirm_array[$i+1];
+					$next_data['price_flow_id'] = $data['price_flow_id'];
+					$next_data['emp_no'] = $next_emp_no;
+					$last_step = $log->where(array('price_flow_id'=>$data['price_flow_id']))->order('step desc')->limit(1)->getField('step');
+					$next_data['step'] = $last_step?$last_step+1:21;
+					$next_data['result'] = '-1';
+					$next_data['create_time'] = time();
+					if(strpos($next_emp_no,',') === false){//单人审批
+						$next_data['user_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('user_id');
+						$next_data['role_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('role_id');
+						$next_data['user_name'] = M('User')->where(array('name'=>$next_emp_no))->getField('true_name');
+					}else{//多人审批
+						$emps = array_filter(explode(',',$next_emp_no));
+						foreach ($emps as $k => $v){
+							$user = M('User')->where(array('name'=>$v))->field('user_id,role_id,true_name')->find();
+							$next_data['user_id'] .= $user['user_id'].',';
+							$next_data['role_id'] .= $user['role_id'].',';
+							$next_data['user_name'] .= $user['true_name'].',';
+						}
+					}
+					$flag =$log -> add($next_data);
+				}
+			}
+			
+			if($flag && $tmp){
+				$log -> commit();
+				$this -> ajaxReturn('1');
+			}else{
+				$log -> rollback();
+				$this -> ajaxReturn('0');
+			}
 	}
 }

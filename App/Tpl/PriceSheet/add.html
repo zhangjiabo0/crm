@@ -2,6 +2,7 @@
 <script type="text/javascript" src="__PUBLIC__/js/kindeditor-all-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/zh_CN.js"></script>
 <link rel="stylesheet" href="__PUBLIC__/css/kindeditor.css" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
 <script type="text/javascript">
 	<if condition="C('ismobile') neq 1">
 		var editor;
@@ -90,7 +91,7 @@
 											<td>服务商金额</td>
 											<td>折扣</td>
 											<td>利润率</td>
-											<td>产品说明</td>
+											<td>政策说明</td>
 											<td class="span2">备注</td>
 										</tr>
 									</thead>
@@ -266,6 +267,7 @@ function loadDialog(){
 		modal: true,
 		width: 800,
 		maxHeight: 800,
+		height: 460,
 		position: ["center",50],
 		buttons:{
 			'{:L("OK")}':function(){
@@ -459,8 +461,9 @@ $("#dialog-message2").dialog({
 		"{:L('AFFIRM')}": function () {
 			var item = $('input:radio[name="customerB"]:checked').val();
 			var name = $('input:radio[name="customerB"]:checked').parent().next().next().html();
+			var code = $('input:radio[name="customerB"]:checked').parent().next().html();
 			if(item){
-				$('#customerB_name').val(name);
+				$('#customerB_name').val(code+"_"+name);
 				$('#customerB_id').val(item);
 			}
 			$(this).dialog("close");

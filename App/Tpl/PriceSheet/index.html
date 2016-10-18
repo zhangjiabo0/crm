@@ -3,29 +3,20 @@
 	<!-- Docs nav ================================================== -->
 	<div class="page-header" style="border:none; font-size:14px;">
 		<ul class="nav nav-tabs">
-		  <li class="active"><a  href="{:U('contract/index')}"><img src="__PUBLIC__/img/hetong.png"/>&nbsp; {:L('CONTRACT')}</a></li>
+		  <li class="active"><a  href="{:U('priceSheet/index')}"><img src="__PUBLIC__/img/hetong.png"/>&nbsp; {:L('CONTRACT')}</a></li>
 		</ul>
 	</div>
 	<include file="Public:alert" />
 	<p class="view"><b>{:L('VIEW_NAV')}</b>
-	<img src=" __PUBLIC__/img/by_owner.png"/> <a href="{:U('contract/index')}" <if condition="$Think.get.by eq null">class="active"</if>>{:L('ALL')}</a> |
-	<a href="{:U('contract/index','by=me')}" <if condition="$Think.get.by eq 'me'">class="active"</if>>{:L('MY_RESPONSIBLE')}</a> | 
-	<a href="{:U('contract/index','by=sub')}" <if condition="$Think.get.by eq 'sub'">class="active"</if>>{:L('SUBORDINATE_RESPONSIBLE')}</a> | 
-	<a href="{:U('contract/index','by=create')}" <if condition="$Think.get.by eq 'create'">class="active"</if>>{:L('I_CREATED')}</a> |
-	<a href="{:U('contract/index','by=subcreate')}" <if condition="$Think.get.by eq 'subcreate'">class="active"</if>>{:L('SUBORDINATE_CREATE')}</a> &nbsp; &nbsp; &nbsp; &nbsp;
-	<img src="__PUBLIC__/img/by_time.png"/> 
-	<a href="{:U('contract/index','by=today')}" <if condition="$Think.get.by eq 'today'">class="active"</if>>{:L('SIGN_UP_TODAY')}</a> | 
-	<a href="{:U('contract/index','by=week')}" <if condition="$Think.get.by eq 'week'">class="active"</if>>{:L('THIS_WEEK_SIGNED_A_CONTRACT')}</a> | 
-	<a href="{:U('contract/index','by=month')}" <if condition="$Think.get.by eq 'month'">class="active"</if>>{:L('THIS_MONTH_SIGNED_A_CONTRACT')}</a> | 
-	<a href="{:U('contract/index','by=add')}" <if condition="$Think.get.by eq 'add'">class="active"</if>>{:L('RECENTLY_CREATED')}</a> | 
-	<a href="{:U('contract/index','by=update')}" <if condition="$Think.get.by eq 'update'">class="active"</if>>{:L('RECENT_UPDATES')}</a>  &nbsp;  &nbsp;   &nbsp;  &nbsp; 
+	<img src=" __PUBLIC__/img/by_owner.png"/> <a href="{:U('priceSheet/index')}" <if condition="$Think.get.by eq null">class="active"</if>>{:L('ALL')}</a> |
+	<a href="{:U('priceSheet/index','by=create')}" <if condition="$Think.get.by eq 'create'">class="active"</if>>{:L('I_CREATED')}</a> |
+	<a href="{:U('priceSheet/index','by=subcreate')}" <if condition="$Think.get.by eq 'subcreate'">class="active"</if>>{:L('SUBORDINATE_CREATE')}</a> &nbsp; &nbsp; &nbsp; &nbsp;
 	
-	<a href="{:U('contract/index','by=deleted')}" <if condition="$Think.get.by eq 'deleted'">class="active"</if>><img src="__PUBLIC__/img/task_garbage.png"/> {:L('RECYCLE_BIN')}</a> &nbsp; &nbsp;
+	<a href="{:U('priceSheet/index','by=deleted')}" <if condition="$Think.get.by eq 'deleted'">class="active"</if>><img src="__PUBLIC__/img/task_garbage.png"/> {:L('RECYCLE_BIN')}</a> &nbsp; &nbsp;
 	</p>
 	<div class="row">
 		<div class="span12">
 			<ul class="nav pull-left">
-				<li class="pull-left"><a id="delete"  class="btn" style="margin-right: 8px;"><i class="icon-remove"></i>{:L('DELETE')}</a></li>
 				<li class="pull-left">
 				<form class="form-inline" id="searchForm" onsubmit="return checkSearchForm();" action="" method="get">
 					<ul class="nav pull-left">
@@ -33,11 +24,10 @@
 							<select id="field" style="width:auto" onchange="changeCondition()" name="field">
 								<option class="all" value="all">{:L('ANY_FIELD')}</option>
 								<option class="word" value="number">{:L('CONTRACT_NO')}</option>
-								<option class="role" value="owner_role_id">{:L('SERVICE_NAME')}</option>
-								<option class="customer" value="customer_id">{:L('DEPARTMENT')}</option>
-								<option class="date" value="create_time">{:L('SALESMAN')}</option>
-								<option class="date" value="update_time">{:L('APPLY_TIME')}</option>
-								<option class="date" value="due_time">{:L('APPROVAL_STATUS')}</option>
+								<option class="word" value="department">{:L('DEPARTMENT')}</option>
+								<option class="role" value="role_id">{:L('SALESMAN')}</option>
+								<option class="date" value="create_time">{:L('APPLY_TIME')}</option>
+								<option class="word" value="approve_status">{:L('APPROVAL_STATUS')}</option>
 							</select>&nbsp;&nbsp;
 						</li>
 						<li id="conditionContent" class="pull-left">
@@ -53,7 +43,7 @@
 							<input id="search" type="text" class="input-medium search-query" name="search"/>&nbsp;&nbsp;
 						</li>
 						<li class="pull-left">
-							<input type="hidden" name="m" value="contract"/>
+							<input type="hidden" name="m" value="priceSheet"/>
 							<if condition="$Think.get.by neq null"><input type="hidden" name="by" value="{$Think.get.by}"/></if>
 							<button type="submit" class="btn"> <img src="__PUBLIC__/img/search.png"/>  {:L('SEARCH')}</button>
 						</li>
@@ -71,7 +61,6 @@
 				<notempty name="list">
 					<thead>
 						<tr>
-							<th><input class="check_all" id="check_all" type="checkbox" /> &nbsp;</th>
 							<th>{:L('CONTRACT_NO')}</th>
 							<th>{:L('SOURCE_OF_CUSTOMERS')}</th>
 							<th>{:L('SERVICE_NAME')}</th>
@@ -88,26 +77,35 @@
 					<tbody>
 						<volist name="list" id="vo">
 							<tr>
-								<td><input type="checkbox" class="check_list" name="contract_id[]" value="{$vo.contract_id}"/> &nbsp;</td>
 								<td>{$vo.number}</a></td>
 								<td>{$vo.customer_name}</td>
 								<td>{$vo.service_name}</td>
 								<td>{$vo.department}</td>
 								<td>{$vo.true_name}</td>
 								<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
-								<td></td>
-								<td><a href="{:U('priceSheet/view', 'id='.$vo['id'])}">{:L('VIEW')}</a>&nbsp;
+								<td><if condition="$vo['approve_status'] eq 0">审批中<else />通过</if></td>
+								<td>
+									<if condition="$vo['confirm'] eq $Think.session.name">
+										<a href="{:U('priceSheet/view', array('id'=>$vo['id'],'flow'=>'0'))}">{:L('VIEW')}</a>&nbsp;
+									<else/>
+										<a href="{:U('priceSheet/view', array('id'=>$vo['id'],'flow'=>'1'))}">{:L('VIEW')}</a>&nbsp;
+									</if>
+								<if condition="$vo.is_del eq 0">
 									<a onclick="javascript:return confirm('您确定要作废吗？')"  href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('RECALL')}</a>
-									<if condition="$vo['t_service'] eq 0">
-									<a href="{:U('contract/add', 'price_sheet_id='.$vo['id'])}">{:L('T_SERVER')}</a>
-									<else />
-									<span style="color:#ccc;">{:L('T_SERVER')}</span>
+									<if condition="$vo['approve_status'] eq 1">
+										<if condition="($vo['t_service'] eq 0) and ($vo['role_id'] eq $role_id)">
+											<a href="{:U('contract/add', 'price_sheet_id='.$vo['id'])}">{:L('T_SERVER')}</a>
+										<else />
+											<span style="color:#ccc;">{:L('T_SERVER')}</span>
+										</if>
+										
+										<if condition="($vo['t_epiboly'] eq 0) and ($vo['role_id'] eq $role_id)">
+											<a href="{:U('priceSheet', 'id='.$vo['id'])}">{:L('T_EPIBOLY')}</a>
+										<else />
+											<span style="color:#ccc;">{:L('T_EPIBOLY')}</span>
+										</if>
 									</if>
-									<if condition="$vo['t_epiboly'] eq 0">
-									<a href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('T_EPIBOLY')}</a>
-									<else />
-									<span style="color:#ccc;">{:L('T_EPIBOLY')}</span>
-									</if>
+								</if>
 								</td>
 							</tr> 
 						</volist>
@@ -142,10 +140,10 @@ $(function(){
 	$('#delete').click(function(){
 		if(confirm('{:L('ARE_YOU_SURE_YOU_WANT_TO_DELETE')}')){
 		<if condition="$Think.session.admin eq 1 and $Think.get.by eq 'deleted'">
-			$("#form1").attr('action', '{:U("contract/completedelete")}');
+			$("#form1").attr('action', '{:U("priceSheet/completedelete")}');
 			$("#form1").submit();
 		<else />
-			$("#form1").attr('action', '{:U("contract/delete")}');
+			$("#form1").attr('action', '{:U("priceSheet/delete")}');
 			$("#form1").submit();
 		</if>
 		}

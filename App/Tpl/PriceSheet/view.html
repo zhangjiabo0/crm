@@ -9,6 +9,8 @@
 				<form action="{:U('priceSheet/add')}" method="post">
 				    <input type="hidden" name="refer_url" value="{$refer_url}">
 				    <input type="hidden" id="add_file" name="add_file" value="{$leadsB.add_file}">
+				    <input type="hidden" name="id" id="id" value="{$vo.id}">
+				    <input type="hidden" name="fid" id="fid" value="{$vo['flow']['id']}">
 					<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
 						<tbody width="100%">
 							<tr><th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th></tr>
@@ -69,7 +71,7 @@
 											<td>服务商金额</td>
 											<td>折扣</td>
 											<td>利润率</td>
-											<td>产品说明</td>
+											<td>政策说明</td>
 											<td class="span2">备注</td>
 										</tr>
 									</thead>
@@ -110,10 +112,21 @@
 								</table>
 							</td>
 						</tr>
+						<if condition="$vo['isflow']">
+							<tr>
+								<td class="tdleft">意见</td>
+								<td><textarea class="span6" rows="3" name="opinion" id="opinion"></textarea></td>
+							</tr>
+						</if>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="2"></td>
+								<td colspan="2">
+									<if condition="$vo['isflow']">
+										<input name="buttom" class="btn btn-danger pull-right" type="button" value="拒绝" onclick="flowSbu(0)"/>
+										<input name="buttom" class="btn btn-primary pull-right" type="button" value="同意" onclick="flowSbu(1)"/>
+									</if> 
+								</td>
 								<td colspan="2">
 									<input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>&nbsp;&nbsp;
 								</td>
@@ -152,6 +165,25 @@ function  init_style(){
 			lirun.attr('style','');
 		}
 	});
+}
+function flowSbu(re){
+	var id = $("#id").val().trim();
+	var fid = $("#fid").val().trim();
+	var comm = $("#opinion").val().trim();
+	$.ajax({
+	     type: 'POST',
+	     url: "{:U('flowlog')}" ,
+	    data: {id:id,fid:fid,re:re,comm:comm} ,
+	    dataType: 'json',
+	    success:  function(data){
+	    	alert(data);
+	    },
+	    error: function(){
+	    	alert('修改失败...');
+	    	return false;
+	    }
+	});
+	
 }
 	
 	
