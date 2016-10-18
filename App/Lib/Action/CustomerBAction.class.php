@@ -1877,11 +1877,11 @@ class CustomerBAction extends CommonAction {
 	}
 	
 	public function getCustomerBList(){	
-		$idArray = getSubRoleId();
+		$idArray = getSubRoleIdByYuan();
 		$idArray[] = session("role_id");
 		
 		//获取下级和自己的客户列表,搜索
-		$customerBList = M('customerB')->where('owner_role_id in (%s) and is_deleted = 0', implode(',', $idArray))->select();
+		$customerBList = M('customerB')->where('creator_role_id in (%s) and is_deleted = 0', implode(',', $idArray))->select();
 		$this->assign('customerBlist',$list);
 
 		$this->ajaxReturn($customerBList, '', 1);

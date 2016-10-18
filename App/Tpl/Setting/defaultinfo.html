@@ -93,6 +93,12 @@
 							</td>
 						</tr>
 						<tr>
+							<td class="tdleft">{:L('CONTRACT_EPIBOLY_PREFIX')}</td>  
+							<td>
+								<input class="input-small" type="text" name="contract_epiboly_custom" value="{$contract_epiboly_custom|default='crm'}"><font color="red">{:L('MODIFY_PREFIX2')}
+							</td>
+						</tr>
+						<tr>
 							<td class="tdleft">{:L('TASK_ALLOCATION_MODE')}</td>
 							<td>
 								<input name="task_model" type="radio" <if condition="$defaultinfo.task_model != 2">checked="checked"</if> value="1"/>{:L('ALLOW_ONLY_ASSIGNED_TO_THE_LOWER')} &nbsp;  &nbsp; 

@@ -2301,3 +2301,52 @@ function getContractFlow($role_id){
 		}
 	}
 }
+function getContractEpibolyFlow($role_id){
+	$user_id = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
+	$d_user = D('RoleView');
+	$user = $d_user->where('user.role_id = %d', $role_id)->find();
+	$parents = array();
+	if($user['parent_id'] == '0'){
+		//顶级岗位
+		return array();
+	}else if($user['role_name'] == '园区老大'){
+		return array();
+	}else{
+		$parent = $user['parent_id'];
+		while ($parent){
+			$parents[] = $parent;
+			$parent = M('Position')->where(array('position_id'=>$parent))->getField('parent_id');
+		}
+		if(count($parents)>1){
+			$last_2 = $parents[count($parents)-2];
+			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
+			if($last_2_name == '园区老大'){
+				//园区的
+				if(count($parents)>2){
+					$last_3 = $parents[count($parents)-3];
+					$department_id = M('RoleDepartment')->where(array('parent_id'=>$last_3,'name'=>array('like','%财务部%')))->getField('department_id');
+					$position_id = M('Position')->where(array('department_id'=>$department_id,'name'=>array('like','%出纳%')))->getField('position_id');
+					$role_id2 = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
+					return getConfirmText(array(getMarketOperativeId(),$role_id,getMarketOperativeId(),$role_id2));
+				}else{//各园区老大
+					return array();
+				}
+
+			}else if($last_2_name == '总部（杭州）老大'){
+				if(count($parents)>2){
+					//总部老大下面的
+					return getConfirmText(getMarketOperativeId());
+				}else{
+					//总部部门老大
+					return array();
+				}
+			}
+		}
+	}
+}
+function show_result($int){
+	return $int=='1'?'同意':($int=='0'?'否决':'');
+}
+function get_user_info($field,$role_id){
+	return D('UserView')->where(array('role_id'=>$role_id))->getField($field);
+}

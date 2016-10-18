@@ -81,7 +81,22 @@ function changeCondition(){
 			success:function(data){
 				options = '';
 				$.each(data.data, function(k, v){
-					options += '<option value="'+v.customer_id+'">'+v.name+'</option>';
+					options += '<option value="'+v.customer_id+'">'+v.gongsiquancheng+'</option>';
+				});
+				$("#searchContent").html('<select id="search" style="width:auto" name="search">' + options + '</select>&nbsp;&nbsp;');
+				$("#conditionContent").html('');
+			},
+			dataType:'json'
+		});		
+	}else if (a == 'customerB') {
+		$.ajax({
+			type:'get',
+			url:'index.php?m=customerB&a=getcustomerBlist',
+			async:false,
+			success:function(data){
+				options = '';
+				$.each(data.data, function(k, v){
+					options += '<option value="'+v.customerB_id+'">'+v.name+'</option>';
 				});
 				$("#searchContent").html('<select id="search" style="width:auto" name="search">' + options + '</select>&nbsp;&nbsp;');
 				$("#conditionContent").html('');

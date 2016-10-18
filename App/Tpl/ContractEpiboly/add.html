@@ -1,6 +1,7 @@
 <include file="Public:header" />
 <script type="text/javascript" src="__PUBLIC__/js/kindeditor-all-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/zh_CN.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/kindeditor.css" type="text/css" />
 <script type="text/javascript" src="__PUBLIC__/js/formValidator-4.0.1.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="__PUBLIC__/js/formValidatorRegex.js" charset="UTF-8"></script>
 <link rel="stylesheet" href="__PUBLIC__/css/kindeditor.css" type="text/css" />
@@ -17,94 +18,78 @@
 		});
 	</if>
 </script>
-<div class="container">
-	<div class="page-header">
-		<h4>{:L('CONTRACT_EDITOR')}</h4>
-	</div>
-	<include file="Public:alert"/>
-	<div class="row">
-		<div class="tabbable span12">
-			<div class="tab-content">
-				<div class="tab-pane active" id="tab1">
-				<form id="form1" action="{:U('contract/edit')}" method="post">
-				<input type="hidden" name="id" value="{$info.contract_id}">
-				<input type="hidden" name="price_sheet_id" id="price_sheet_id" value="{$price_sheet_id}">
-				<input type="hidden" name="total_amount" id="total_amount" value="0">
-				<input type="hidden" id="add_file" name="add_file" value="{$info.add_file}">
-					<table class="table table-hover">
-						<if condition="$can_confirm eq false">
+	<div class="container">
+        <!-- Docs nav ================================================== -->
+		<div class="page-header">
+			<h4>{:L('THE_NEW_CONTRACT')}</h4>
+		</div>
+        <div class="row">
+			<div class="span12">
+				<include file="Public:alert"/>
+				<form id="form1" action="{:U('contractEpiboly/add')}" method="post">
+					<input type="hidden" name="price_sheet_id" value="{$price_sheet_id}">
+				    <input type="hidden" name="refer_url" value="{$refer_url}">
+				    <input type="hidden" id="add_file" name="add_file" value="{$contract.add_file}">
+					<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
 						<thead>
 							<tr>
 								<td>&nbsp;</td>
-								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;<input type="button" class="btn" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
+								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>&nbsp; <input type="button" class="btn" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
 							</tr>
 						</thead>
-						</if>
-						<tbody>
+
+						<tbody width="100%">
 							<tr><th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th></tr>
 							<tr>
-								<td class="tdleft">{:L('CONTRACT_NO')}</td>
-								<td><input  type="text" name="number" id="number" value="{$info.number}" readonly="readonly"></td>
+								<td width="15%" class="tdleft">{:L('CONTRACT_NO')}</td>
+								<td width="35%"><input  type="text" readonly="readonly" name="number" id="number" value="{$contract_custom}"></td>
 								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft">{:L('SOURCE_OF_CUSTOMER')}</td>
+								<td class="tdleft">{:L('SIGNING_TIME')}</td>
+								<td><input onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:s'})"  type="text" id="due_time" name="due_time"/><span id="due_timeTip" style="color:red;"></span></td>
+							</tr>
+							<tr>
+								<td width="15%" class="tdleft">{:L('SOURCE_OF_CUSTOMERB')}</td>
 								<td>
-									<input type="text" readonly="readonly" id="customer_name" value="{$info.customer_name}"/>
-									<input type="hidden" name="customer_id" id="customer_id" value="{$info.customer_id}"/>
+									<input type="text" readonly="readonly" id="customerB_name" value="{$price_sheet.service_name}"/>
+									<input type="hidden" name="customerB_id" id="customerB_id" value="{$price_sheet.customerB_id}"/>
+								</td>
+								<if condition="C('ismobile') eq 1"></tr><tr></if>
+								<td class="tdleft">{:L('OWNER_ROLE')}</td>
+								<td>
+									<input type="hidden" name="owner_role_id" id="owner_id" value="{$Think.session.role_id}"/>
+									<input type="text" readonly="readonly" name="owner_role_name" id="owner_name" value="{$Think.session.name}"/>
 								</td>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('BELONG_TO_DEPT')}</td>
 								<td>
-									<input readonly="readonly" type="text" name="dept_name" id="dept_name" value="{$info.dept_name}"/>
+									<input readonly="readonly" type="text" name="dept_name" id="dept_name" value="{$price_sheet.department}"/>
+									<input type="hidden" name="dept_id" id="dept_id" value=""/>
 								</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft">{:L('CUSTOMER')}</td>
-								<td><input type="text" readonly="readonly" id="customer_name" value="{$info.customer_name}"> </td>
-							</tr>
-							<tr>
-								<td class="tdleft">{:L('OWNER_ROLE_CLICK_ON_THE_SELECT')}</td>
-								<td>
-									<input type="hidden" name="owner_role_id" id="owner_id" value="{$info.owner_role_id}"/>
-									<input type="text" name="owner_role_name" id="owner_name" value="{$info.owner_name}" readonly="readonly"/>
-								</td>
-								
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('QUOTATION')}</td>
-								<td><input type="text" name="price" id="price" value="{$info.price}"<if condition="$can_confirm eq true"> readonly="readonly"</if>/><span id="priceTip" style="color:red;"></span></td>
+								<td><input type="text" name="price" id="price"/><span id="priceTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('THE_TIME_WHICH_THE_CONTRACT_COMES_INTO_FORCE')}</td>
 								<td>
-									<input type="text" id="start_date" name="start_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2038-01-01'}&quot;})" class="Wdate" <if condition="$info['start_date']">value="{$info['start_date']|date="Y-m-d",###}"</if><if condition="$can_confirm eq true"> disabled</if>/>
+									<input type="text" id="start_date" name="start_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', maxDate:&quot;#F{$dp.$D('end_date')||'2038-01-01'}&quot;})" class="Wdate"/>
 									<span id="start_dateTip" style="color:red;"></span>
 								</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
 								<td class="tdleft">{:L('CONTRACT_TIME')}</td>
-								<td>
-									<input type="text" id="end_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_date\')}&quot;,maxDate:'2038-01-01'})" name="end_date" class="Wdate" <if condition="$info['end_date']">value="{$info['end_date']|date="Y-m-d",###}"</if><if condition="$can_confirm eq true"> disabled</if>/>
+								<td colspan="3">
+									<input type="text" id="end_date" onClick="WdatePicker({dateFmt:'yyyy-MM-dd', minDate:&quot;#F{$dp.$D(\'start_date\')}&quot;,maxDate:'2038-01-01'})" name="end_date" class="Wdate"/>
 									<span id="end_dateTip" style="color:red;"></span>
 								</td>
 							</tr>
 							<tr>
-								<td class="tdleft">{:L('STATUS')}</td>
-								<td>
-									<input type="text" value="{$info.status}" readonly="readonly"/>
-								</td>
-								<if condition="C('ismobile') eq 1"></tr><tr></if>
-								<td class="tdleft">{:L('SIGNING_TIME')}</td>
-								<td><input onclick="WdatePicker()"  type="text" id="due_time" name="due_time" value="{$info.due_time|date='Y-m-d',###}" <if condition="$can_confirm eq true"> disabled</if>/><span id="due_timeTip" style="color:red;"></span></td>
 							</tr>
 							<tr>
-								<td class="tdleft">{:L('DESCRIBE')}</td>
-								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="description" id="description"<if condition="$can_confirm eq true"> readonly="readonly"</if>>{$info.description}</textarea></td>
+								<td class="tdleft">{:L('THE_CONTRACT_DESCRIPTION')}</td>
+								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="description" id="description"></textarea></td>
 							</tr>
 							<tr>
 	                        	<td class="tdleft" width="15%">上传合同盖章附件:</td>
-	                        	<if condition="$can_confirm eq true">
-	                        		<td width="35%">{:W('File',array('add_file'=>$info['add_file'],'mode'=>'show'))}
-	                        	<else/>
-	                        		<td width="35%">{:W('File',array('add_file'=>$info['add_file'],'mode'=>'edit'))}
-	                        	</if>
+	                        	<td width="35%">{:W('File',array('add_file'=>$vo['add_file'],'mode'=>'add'))}
 	                        	<span id="add_fileTip" style="color:red;"></span>
 	                        	</td>
 	                        </tr>
@@ -115,10 +100,10 @@
 							<tr>
 								<td style="padding:0px;" colspan="4">
 									<!-- 隐藏域 -->
-									<input type="hidden" name="subtotal_val" class="subtotal_val" value="{$info.subtotal_val}"/>
-									<input type="hidden" name="total_amount" class="total_amount" value="{$info.total_amount}"/>
-									<input type="hidden" name="willtotal_val" class="willtotal_val" value="{$info.willtotal_val}"/>
-									<input type="hidden" name="service_val" class="service_val" value="{$info.service_val}"/>
+									<input type="hidden" name="subtotal_val" class="subtotal_val" value="{$price_sheet.subtotal_val}"/>
+									<input type="hidden" name="total_amount" class="total_amount" value="{$price_sheet.total_amount}"/>
+									<input type="hidden" name="willtotal_val" class="willtotal_val" value="{$price_sheet.willtotal_val}"/>
+									<input type="hidden" name="service_val" class="service_val" value="{$price_sheet.service_val}"/>
 									<!-- 隐藏域 END-->
 									<table class="table table-bordered" id="no-input-border" width="95%" border="0" cellspacing="1" cellpadding="0">
 										<thead>
@@ -159,9 +144,9 @@
 										<tbody>
 											<tr style="background-color:#FFFFF3;color:#808080">
 												<td>合计</td>
-												<td style="text-align:center" id="total_amount_val">{$info.total_amount}</td>
+												<td style="text-align:center" id="total_amount_val">{$price_sheet.total_amount}</td>
 												<td></td>
-												<td style="text-align:center" id="subtotal_val">{$info.willtotal_val}</td>
+												<td style="text-align:center" id="subtotal_val">{$price_sheet.willtotal_val}</td>
 												<td></td>
 											</tr>
 										</tbody>
@@ -170,46 +155,34 @@
 							</tr>
 						</tbody>
 						<tfoot>
-							<if condition="$can_confirm eq true">
-								<tr>
-									<td class="tdleft">{:L('COMMENT')}</td>
-									<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="comment" id="comment"></textarea></td>
-								</tr>
-							</if>
-							
 							<tr>
 								<td>&nbsp;</td>
-								<if condition="$can_confirm eq true">
-									<td colspan="3">
-										<input type="button" class="btn btn-primary" onclick="approve({$Think.get.id})" value="{:L('APPROVE')}"/> &nbsp;
-										<input type="button" class="btn" onclick="reject({$Think.get.id})" value="{:L('REJECT')}"/>
-									</td>
-								<else/>
-									<td colspan="3">
-										<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;
-										<input type="button" class="btn" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>
-									</td>
-								</if>
-								
+								<td colspan="3">
+									<input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/> &nbsp;
+									<input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>&nbsp;&nbsp;
+								</td>
 							</tr>
 						</tfoot>
 					</table>
 				</form>
-				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<!-- <div id="dialog-business" title="{:L('SELECT_BUSINESS_OPPORTUNITIES')}">loading...</div>
-<div id="dialog-role-list2" title="{:L('SELECT_HEAD')}">loading...</div> -->
+	<!-- <div id="dialog-business" title="{:L('SELECT_BUSINESS_OPPORTUNITIES')}">loading...</div>
+	<div id="dialog-customer" title="{:L('DIALOG_SELECT_CUSTOMER')}">loading...</div>
+	<div id="dialog-role-list2" title="{:L('SELECT_HEAD')}">loading...</div> -->
 <script type="text/javascript">
 <if condition="C('ismobile') eq 1">width=$('.container').width() * 0.9;<else/>width=800;</if>
+
 	/* $(function(){
-		$('#business_name').click(function () {
+		$(document).on('click','#business_name',function () {
 			$('#dialog-business').dialog('open');
 			$('#dialog-business').load("{:U('business/listDialog')}");
 		});
-		
+		$(document).on('click','#customer_name',function () {
+			$('#dialog-customer').dialog('open');
+			$('#dialog-customer').load('{:U("customer/listDialog")}');
+		});
 		$('#owner_name').click(function () {
 			$('#dialog-role-list2').dialog('open');
 			$('#dialog-role-list2').load('{:U("user/listDialog")}');
@@ -227,12 +200,14 @@
 				var name = $('input:radio[name="business"]:checked').parent().next().html();
 				var name2 = $('input:radio[name="business"]:checked').parent().next().next().find('a').html();
 				var name3 = $('input:radio[name="business"]:checked').parent().next().next().next().find('a').html();
+				var dialog_customer_id = $('input:radio[name="business"]:checked').next().val();
 				$('#business_name').val(name);
 				$('#business_id').val(item);
 				$('#customer_name').val(name2);
 				$('#contacts_name').val(name3);
-				if ($('input[name="name"]').val() == "")$('input[name="name"]').val(name);
+				$('#customer_id').val(dialog_customer_id);
 				
+				if ($('input[name="name"]').val() == "")$('input[name="name"]').val(name);
 				$(this).dialog("close");
 			},
 			"Cancel": function () {
@@ -241,6 +216,7 @@
 		},
 		position:["center",100]
 	});
+	
 	$("#dialog-role-list2").dialog({
 		autoOpen: false,
 		modal: true,
@@ -252,6 +228,26 @@
 				var name = $('input:radio[name="owner"]:checked').parent().next().html();
 				$('#owner_id').val(item);
 				$('#owner_name').val(name);
+				$(this).dialog("close"); 
+			},
+			"Cancel": function () {
+				$(this).dialog("close");
+			}
+		},
+		position: ["center", 100]
+	});
+	
+	$("#dialog-customer").dialog({
+		autoOpen: false,
+		modal: true,
+		width: width,
+		maxHeight: 400,
+		buttons: { 
+			"Ok": function () {
+				var item = $('input:radio[name="customer"]:checked').val();
+				var name = $('input:radio[name="customer"]:checked').parent().next().html();
+				$('#customer_id').val(item);
+				$('#customer_name').val(name);
 				$(this).dialog("close"); 
 			},
 			"Cancel": function () {
@@ -329,38 +325,6 @@
 	        onErrorMin:"请上传合同盖章附件"
 	    });
 	})
-function approve(id){
-		var comment = $("#comment").val();
-		$.ajax({
-			type: "post",
-			data:{contract_id:id,comment:comment,type:"approve"},
-			url: "{:U('contract/mark')}",    
-			dataType: "json",
-			success: function(result){
-				alert(result.info);
-				location.href = "{:U('contract/index')}";
-			},
-			error:function(){
-				alert(0);
-			}
-		})
-}
-function reject(id){
-	var comment = $("#comment").val();
-	$.ajax({
-		type: "post",
-		data:{contract_id:id,comment:comment,type:"reject"},
-		url: "{:U('contract/mark')}",    
-		dataType: "json",
-		success: function(result){
-			alert(result.info);
-			location.href = "{:U('contract/index')}";
-		},
-		error:function(){
-			alert(0);
-		}
-	})
-}
 </script>
 
 <script type="text/javascript">

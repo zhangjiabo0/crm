@@ -85,6 +85,16 @@
 			<td>&nbsp;</td>
 		</tr>
 		<tr>
+			<td><input <php>if(in_array('contractEpiboly/all', $owned_permission)){ echo 'checked="checked"';}</php> type="checkbox" rel="19" class="check_all" name="check_contractEpiboly" value="contractEpiboly/all"/></td>
+			<td>{:L('CONTRACTEpiboly')}</td>
+			<td><input <php>if(in_array('contractEpiboly/index', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list19" type="checkbox" name="per[]" value="contractEpiboly/index"></td>
+			<td><input <php>if(in_array('contractEpiboly/view', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list19" type="checkbox" name="per[]" value="contractEpiboly/view"></td>
+			<td><input <php>if(in_array('contractEpiboly/add', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list19" type="checkbox" name="per[]" value="contractEpiboly/add"></td>
+			<td><input <php>if(in_array('contractEpiboly/edit', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list19" type="checkbox" name="per[]" value="contractEpiboly/edit"></td>
+			<td><input <php>if(in_array('contractEpiboly/delete', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list19" type="checkbox" name="per[]" value="contractEpiboly/delete"/></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
 			<td><input <php>if(in_array('finance/all', $owned_permission)){ echo 'checked="checked"';}</php> type="checkbox" rel="10" class="check_all" name="check_finance" value="finance/all"/></td>
 			<td>{:L('FINANCE')}</td>
 			<td><input <php>if(in_array('finance/index', $owned_permission)){ echo 'checked="checked"';}</php> class="check_list10" type="checkbox" name="per[]" value="finance/index"></td>
