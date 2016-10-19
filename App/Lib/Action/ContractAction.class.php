@@ -281,6 +281,18 @@ class ContractAction extends CommonAction {
 			$this->assign('can_edit',false);
 		}
 
+		if($info['is_cancel'] == '1'){
+			$info['status'] = '已作废';
+		}else{
+			if($ContractEpibolyFlowLogLast['result'] === '0'){
+				$info['status'] = '否决';
+			}else if($ContractEpibolyFlowLogLast['result'] === '1'){
+				$info['status'] = '通过';
+			}else if(!empty($ContractEpibolyFlowLogLast)){
+				$info['status'] = '审批中';
+			}
+		}
+		
 		//已走流程
 		$flow_log_already = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id,'_string'=>'result is not null'))->order('step desc')->select();
 		$this->assign('flow_log_already',$flow_log_already);
@@ -352,7 +364,6 @@ class ContractAction extends CommonAction {
 			$file_count++;
 		}
 		$info['file_count'] = $file_count;
-		
 		
 		$this->assign('info',$info);
 		$this->alert = parseAlert();
