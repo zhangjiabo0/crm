@@ -54,6 +54,10 @@ class ContractAction extends CommonAction {
 					$flow_data['create_time'] = time();
 					$flow_data['is_read'] = 0;
 					M('ContractFlowLog')->add($flow_data);
+					
+					//发站内信，提示去审核
+					$content = '<a href="'.U('contract/edit?id='.$contractId.'&type=confirm').'">有一个服务合同需要您审批，点击查看</a>';
+					sendMessage($flow_data['role_id'],$content,1);
 				}
 // 				M('RBusinessContract')->add(array('contract_id'=>$contractId,'business_id'=>$data['business_id']));
 				actionLog($contractId);
@@ -223,10 +227,14 @@ class ContractAction extends CommonAction {
 					$next_data['step'] = $last_step?$last_step+1:21;
 					$next_data['create_time'] = time();
 					M('ContractFlowLog')->add($next_data);
+					
+					//发站内信，提示去审核
+					$content = '<a href="'.U('contract/edit?id='.$contract_id.'&type=confirm').'">有一个服务合同需要您审批，点击查看</a>';
+					sendMessage($next_data['role_id'],$content,1);
 				}else{
 					//发站内信，通过审核
 					$owner_role_id = M('Contract')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
-					$content = '<a href="'.U('contract/index').'">您的服务合同已通过审核，点击查看</a>';
+					$content = '<a href="'.U('contract/view?id='.$contract_id).'">您的服务合同已通过审核，点击查看</a>';
 					sendMessage($owner_role_id,$content,1);
 				}
 			}else{
@@ -240,7 +248,7 @@ class ContractAction extends CommonAction {
 			}else{
 				//发站内信，否决审核
 				$owner_role_id = M('Contract')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
-				$content = '<a href="'.U('contract/index').'">您的服务合同已被否决，点击查看</a>';
+				$content = '<a href="'.U('contract/view?id='.$contract_id).'">您的服务合同已被否决，点击查看</a>';
 				sendMessage($owner_role_id,$content,1);
 			}
 		}
