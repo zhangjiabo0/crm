@@ -21,16 +21,6 @@
 		</div> -->
 		<div class="tab-content span8 mar-lefts" style="width:1170px;">
 			<div class="tab-pane fade in active" id="tab1">
-				<div class="container2 top-pad" >
-					<span class="basic_information" name="tab">基本信息</span>
-					<div class="pull-right"style="margin:-3px 10px 0 0;">
-						<if condition="$can_edit eq true">
-						<a href="{:U('contract/edit', 'id='.$info['contract_id'])}" class="btn btn-primary">{:L('EDITING')}</a>
-						</if>
-						<!-- <a href="{:U('contract/delete', 'contract_id='.$info['contract_id'])}" class="btn btn-primary del_confirm">{:L('DELETE')}</a> -->
-						<a href="javascript:void(0)" onclick="javascript:history.go(-1)" class="btn btn-primary">{:L('RETURN')}</a>
-					</div>
-				</div>
 				<div class="back_box" style="margin-top:10px;">
 					<include file="Public:alert"/>
 					<table class="table table-hover">
@@ -148,6 +138,15 @@
 							</tbody>
 						</if>
 					</table>
+					
+					<div class="container2 top-pad" >
+						<div style="margin:-3px 10px 0 0;text-align:center;">
+							<if condition="$can_edit eq true">
+							<a href="{:U('contract/edit', 'id='.$info['contract_id'])}" class="btn btn-primary">{:L('EDITING')}</a>
+							</if>
+							<a href="javascript:void(0)" onclick="javascript:history.go(-1)" class="btn btn-primary">{:L('RETURN')}</a>
+						</div>
+					</div>
 				</div>
 				
 				
@@ -239,7 +238,9 @@
 						</tbody>
 					</table>
 				</div>
+			
 			</div>
+			
 			<!-- <div class="tab-pane fade back_box" id="tab2">
 				<div class="header1">
 					<div class="pull-left two-title" > {:L('RELATED_PRODUCTS')} </div>
