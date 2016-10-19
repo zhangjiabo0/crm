@@ -92,102 +92,136 @@
 							</tr>
 						</tbody>
 					</table>
+					<div class="header1">
+						<div class="pull-left two-title" > {:L('RELATED_PRODUCTS')} </div>
+						<!-- <if condition="$info['is_deleted'] == 0">
+							<div class="pull-right"> <a href="javascript:void(0);" class="btn btn-primary add_product">{:L('ADD')}</a></div>
+						</if> -->
+						<div style="clear:both;"></div>
+					</div>
+					<table class="table back_box">
+						<if condition="$info.product eq null">
+							<tr>
+								<td>{:L('THERE_IS_NO_DATA')} </td>
+							</tr>
+						<else /> 
+							<thead>
+								<tr>
+									<!-- <td>&nbsp;</td> -->
+									<td>{:L('PRODUCT_NAME')}</td>
+									<td>{:L('AMOUNT')}</td>
+									<td>{:L('WILL_PRICE')})</td>
+									<td>{:L('WILL_TOTAL')}</td>
+									<td width="30%">{:L('REMARK')}</td>
+								</tr>
+							</thead>
+							<tbody>
+								<volist name="info.product" id="vo">
+									<tr>
+										<td>
+											<a href="{:U('product/view', 'id='.$vo['product_id'])}">{$vo.info.name}</a>
+										</td>
+										<td>
+											{$vo.amount}
+										</td>
+										<td>
+											{$vo.provider_price}
+										</td>
+										<td>
+											{$vo.provider_total}
+										</td>
+										<td style="word-break:break-word;">
+											{$vo.description}
+										</td>
+									</tr>
+								</volist>
+							</tbody>
+							<tbody>
+								<tr style="background-color:#FFFFF3;color:#808080">
+									<td>{:L('SUM')}</td>
+									<td id="total_amount_val">{$info.total_amount}</td>
+									<td></td>
+									<td id="subtotal_val">{$info.service_val}</td>
+									<td></td>
+								</tr>
+							</tbody>
+						</if>
+					</table>
 				</div>
 				
-				<div class="header1">
-					<div class="pull-left two-title" > {:L('RELATED_PRODUCTS')} </div>
-					<!-- <if condition="$info['is_deleted'] == 0">
-						<div class="pull-right"> <a href="javascript:void(0);" class="btn btn-primary add_product">{:L('ADD')}</a></div>
-					</if> -->
-					<div style="clear:both;"></div>
-				</div>
-				<table class="table">
-					<if condition="$info.product eq null">
-						<tr>
-							<td>{:L('THERE_IS_NO_DATA')} </td>
-						</tr>
-					<else /> 
+				<div class="back_box" style="margin-top:10px;">
+					<!-- 流程 -->
+					<ul class="flow-schedule" style="margin-bottom: 20px;padding-bottom: 20px;">
+						<li class="li1">开始</li>
+						<volist name="flow_all" id="vo">
+							<if condition="$vo.title eq '申请人'">
+								<li>→</li>
+						    	<li class="{$vo.class}"><a title="{$vo.name}">申请人</a></li>
+						    <else/>
+						    	<li>→</li>
+						    	<li class="{$vo.class}"><a title="{$vo.name}">{$vo.position_name}</a></li>
+							</if>
+					    </volist>
+					    <li>→</li>
+					    <li class="li3">结束</li>
+					</ul>
+				
+					<table class="table back_box">
 						<thead>
 							<tr>
-								<!-- <td>&nbsp;</td> -->
-								<td>{:L('PRODUCT_NAME')}</td>
-								<td>{:L('PRODUCT_CATEGORY')}</td>
-								<if condition="C('ismobile') neq 1">
-								<td>{:L('QUOTATION_YUAN')})</td>
-								</if>
-								<td>{:L('TRADING_YUAN')}</td>
-								<if condition="C('ismobile') neq 1">
-								<td>{:L('THE_COST_PRICE_YUAN')}</td>
-								<td width="30%">{:L('REMARK')}</td>
-								</if>
+								<td>{:L('TITLE')}</td>
+								<td>{:L('RESULT')}</td>
+								<td>{:L('COMMENT')}</td>
+								<td>{:L('CONFIRM_NAME')}</td>
+								<td>{:L('CONFIRM_TIME')}</td>
 							</tr>
 						</thead>
 						<tbody>
-							<volist name="info.product" id="vo">
+							<if condition="$info.is_cancel eq '1'">
 								<tr>
-									<!-- <td class="tdleft"><a href="{:U('product/mdelete', 'r=rContractProduct&id='.$vo['id'])}" class="del_confirm">{:L('DELETE')}</a>&nbsp;<a class="edit_product" href="javascript:void(0)" rel="{$vo.id}">{:L('EDITING')}</a></a></td> -->
 									<td>
-										<a href="{:U('product/view', 'id='.$vo['product_id'])}">{$vo.info.name}</a>
+										申请人作废
 									</td>
 									<td>
-										{$vo.category_name}
+										作废
 									</td>
-									<if condition="C('ismobile') neq 1">
 									<td>
-										<if condition="$vo['estimate_price'] gt 0">{$vo.estimate_price}</if>
+										
 									</td>
-									</if>
 									<td>
-										<if condition="$vo['sales_price'] gt 0">{$vo.sales_price}</if>
+										{$info['role_id']|get_user_info="true_name",###}
 									</td>
-									<if condition="C('ismobile') neq 1">
 									<td>
-										<if condition="$vo['info']['cost_price'] gt 0">{$vo.info.cost_price}</if>
+										{$info.cancel_time|date="Y-m-d H:i:s",###}
 									</td>
-									<td style="word-break:break-word;">
-										{$vo.description}
+								</tr>
+							</if>
+							<volist name="flow_log_already" id="vo">
+								<tr>
+									<td>
+										
 									</td>
-									</if>
+									<td>
+										{$vo.result|show_result}
+									</td>
+									<td>
+										{$vo.comment}
+									</td>
+									<td>
+										{$vo.user_name}
+									</td>
+									
+									<td>
+										{$vo.update_time|date="Y-m-d H:i:s",###}
+									</td>
 								</tr>
 							</volist>
-						</tbody>
-					</if>
-				</table>
-				
-				<!-- 流程 -->
-				<ul class="flow-schedule" style="margin-bottom: 20px;padding-bottom: 20px;padding-top: 20px;">
-					<li class="li1">开始</li>
-					<volist name="flow_all" id="vo">
-						<if condition="$vo.title eq '申请人'">
-							<li>→</li>
-					    	<li class="{$vo.class}"><a title="{$vo.name}">申请人</a></li>
-					    <else/>
-					    	<li>→</li>
-					    	<li class="{$vo.class}"><a title="{$vo.name}">{$vo.position_name}</a></li>
-						</if>
-				    </volist>
-				    <li>→</li>
-				    <li class="li3">结束</li>
-				</ul>
-				
-				<table class="table">
-					<thead>
-						<tr>
-							<td>{:L('TITLE')}</td>
-							<td>{:L('RESULT')}</td>
-							<td>{:L('COMMENT')}</td>
-							<td>{:L('CONFIRM_NAME')}</td>
-							<td>{:L('CONFIRM_TIME')}</td>
-						</tr>
-					</thead>
-					<tbody>
-						<if condition="$info.is_cancel eq '1'">
 							<tr>
 								<td>
-									申请人作废
+									申请人创建
 								</td>
 								<td>
-									作废
+									创建
 								</td>
 								<td>
 									
@@ -195,52 +229,14 @@
 								<td>
 									{$info['role_id']|get_user_info="true_name",###}
 								</td>
-								<td>
-									{$info.cancel_time|date="Y-m-d H:i:s",###}
-								</td>
-							</tr>
-						</if>
-						<volist name="flow_log_already" id="vo">
-							<tr>
-								<td>
-									
-								</td>
-								<td>
-									{$vo.result|show_result}
-								</td>
-								<td>
-									{$vo.comment}
-								</td>
-								<td>
-									{$vo.user_name}
-								</td>
 								
 								<td>
-									{$vo.update_time|date="Y-m-d H:i:s",###}
+									{$info.create_time|date="Y-m-d H:i:s",###}
 								</td>
 							</tr>
-						</volist>
-						<tr>
-							<td>
-								申请人创建
-							</td>
-							<td>
-								创建
-							</td>
-							<td>
-								
-							</td>
-							<td>
-								{$info['role_id']|get_user_info="true_name",###}
-							</td>
-							
-							<td>
-								{$info.create_time|date="Y-m-d H:i:s",###}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<!-- <div class="tab-pane fade back_box" id="tab2">
 				<div class="header1">
