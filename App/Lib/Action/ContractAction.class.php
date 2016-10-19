@@ -223,9 +223,10 @@ class ContractAction extends CommonAction {
 					$next_data['step'] = $last_step?$last_step+1:21;
 					$next_data['create_time'] = time();
 					M('ContractFlowLog')->add($next_data);
-				}else{
+				}else{//最后一个人审批
+					
 					//发站内信，通过审核
-					$owner_role_id = M('Contract')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
+					$owner_role_id = M('Contract')->where(array('contract_id'=>$contract_id))->getField('role_id');
 					$content = '<a href="'.U('contract/index').'">您的服务合同已通过审核，点击查看</a>';
 					sendMessage($owner_role_id,$content,1);
 				}

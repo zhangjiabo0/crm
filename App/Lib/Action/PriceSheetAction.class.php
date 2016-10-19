@@ -211,11 +211,12 @@ class PriceSheetAction extends CommonAction {
 					}
 				}
 				$info['id'] = $sid;
+				$info['is_again'] = $info['confirm'];
 				if($sheet -> save($info)){
 					//加上流程日志
 					$confirm_array = array_filter(explode('|',$info['confirm']));
 					if(!empty($confirm_array[0])){
-						$flow_data['contract_flow_id'] = $sid;
+						$flow_data['price_flow_id'] = $sid;
 						$flow_data['emp_no'] = $confirm_array[0];
 						$flow_data['user_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('user_id');
 						$flow_data['role_id'] = M('User')->where(array('name'=>$confirm_array[0]))->getField('role_id');
@@ -225,6 +226,9 @@ class PriceSheetAction extends CommonAction {
 						$flow_data['create_time'] = time();
 						$flow_data['is_read'] = 0;
 						M('PriceSheetFlowLog')->add($flow_data);
+						//发站内信，通过审核
+						$content = '<a href="'.U('priceSheet/index').'">有一个报价单需要您审批，点击查看</a>';
+						sendMessage($flow_data['role_id'],$content,1);
 					}
 				}
 			actionLog($sid);
@@ -281,8 +285,8 @@ class PriceSheetAction extends CommonAction {
 						$flag = true;
 					}
 				}
-				$list['isflow'] = $flag;
 			}
+			$list['isflow'] = $flag;
 		}
 		$this-> vo = $list;
 		$this -> display();
@@ -312,15 +316,9 @@ class PriceSheetAction extends CommonAction {
 			if($data['result'] == '1'){//同意
 				$confirm = M('PriceSheet') -> find($data['price_flow_id']);
 				$confirm_array = array_filter(explode('|',$confirm['confirm']));
-				$flow_log = $log -> where('id = '.$data['id'])->field('emp_no,is_again')-> find();
-				if($flow_log['is_again'] == '1'){
-					$k = array_search($flow_log['emp_no'],$confirm_array);
-					unset($confirm_array[$k]);
-					$i = array_search($flow_log['emp_no'],array_values($confirm_array));
-				}else{
-					$i = array_search($flow_log['emp_no'],$confirm_array);
-				}
-				if($i < count($confirm_array)-1){
+				$flow_log = $log -> where('id = '.$data['id'])->getField('emp_no');
+				$i = array_search($flow_log,$confirm_array);
+				if($i < count($confirm_array)-1){//下一步
 					$next_emp_no = $confirm_array[$i+1];
 					$next_data['price_flow_id'] = $data['price_flow_id'];
 					$next_data['emp_no'] = $next_emp_no;
@@ -333,7 +331,12 @@ class PriceSheetAction extends CommonAction {
 						$next_data['role_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('role_id');
 						$next_data['user_name'] = M('User')->where(array('name'=>$next_emp_no))->getField('true_name');
 					}else{//多人审批
-						$log -> save(array('id'=>$_REQUEST['fid'],'is_again'=>1));
+						//当轮到多人审批的时候去除掉重复审批人
+						$k = array_search($flow_log,$confirm_array);
+						unset($confirm_array[$k]);
+						$arr = array_values($confirm_array);
+						$confirm['confirm'] = implode('|',$arr);
+						M('PriceSheet') -> save($confirm);
 						$emps = array_filter(explode(',',$next_emp_no));
 						foreach ($emps as $k => $v){
 							$user = M('User')->where(array('name'=>$v))->field('user_id,role_id,true_name')->find();
@@ -343,11 +346,16 @@ class PriceSheetAction extends CommonAction {
 						}
 					}
 					$flag =$log -> add($next_data);
+				}else{//最后一人审批
+					$confirm['approve_status'] = 1;
+					$flag = M('PriceSheet') -> save($confirm);
+					//发站内信，通过审核
+					$content = '<a href="'.U('priceSheet/index').'">您的报价单已通过审核，点击查看</a>';
+					sendMessage($confirm['role_id'],$content,1);
 				}
 			}else{//拒绝
 				$flag = M('PriceSheet') -> save(array('id'=>$data['price_flow_id'],'approve_status'=>-1));
 			}
-			
 			if($flag && $tmp){
 				$log -> commit();
 				$this -> ajaxReturn('1');
