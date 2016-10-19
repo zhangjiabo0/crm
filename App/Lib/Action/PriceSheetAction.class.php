@@ -116,6 +116,13 @@ class PriceSheetAction extends CommonAction {
 		$price = D('PriceSheetView');
 		$list = $price -> where($where) -> order($order)->page($p.','.$listrows) -> select();
 		$count = $price -> where($where) -> count();
+		//循环添加可以审批的人
+		$log = M('PriceSheetFlowLog');
+		foreach ($list as $k => $v){
+			$where2['price_flow_id'] = $v['id'];
+			$where2['result'] = '-1';
+			$list[$k]['flow'] = $log -> where($where2) -> getField('role_id');
+		}
 		//判断是否是审批人
 		import("@.ORG.Page");
 		$Page = new Page($count,$listrows);
@@ -194,14 +201,15 @@ class PriceSheetAction extends CommonAction {
 						$data['description'] = $val['description'];//备注
 						$data['sheet_id'] = $sid;//报价单id
 						$m_rbusinessProduct->add($data);
-						$lirun_total += is_numeric(substr($val['lirun'],0,-1)) ? intval(substr($val['lirun'],0,-1)) : 0;
-						$zhekou_total += is_numeric($val['tax_rate']) ? intval($val['tax_rate']) : 0;
+						
+						$lt = is_numeric(substr($val['lirun'],0,-1)) ? floatval(substr($val['lirun'],0,-1)) : 0;
+						$lirun_total = $lirun_total > $lt ? $lirun_total : $lt ;
+						$zt = is_numeric($val['tax_rate']) ? floatval($val['tax_rate']) : 0;
+						$zhekou_total = $zhekou_total > $zt ? $zhekou_total : $zt ;
 					}
 				}
 				//添加流程
-				$lirun_total = $lirun_total/(count($_POST['product']));
-				$zhekou_total = $zhekou_total/(count($_POST['product']));
-				if($lirun_total > 20 || $zhekou_total > 8){//利润大于8折...
+				if($lirun_total > 20 && $zhekou_total > 8){//利润大于8折...
 					list($info['confirm'],$info['confirm_name']) = getPriceSheetFlow(session('role_id'),true);
 				}else{
 					if($lirun_total <= 20 && $zhekou_total <= 8){
@@ -227,7 +235,7 @@ class PriceSheetAction extends CommonAction {
 						$flow_data['is_read'] = 0;
 						M('PriceSheetFlowLog')->add($flow_data);
 						//发站内信，通过审核
-						$content = '<a href="'.U('priceSheet/index').'">有一个报价单需要您审批，点击查看</a>';
+						$content = '<a href="'.U('priceSheet/view','id='.$sid).'">有一个报价单需要您审批，点击查看</a>';
 						sendMessage($flow_data['role_id'],$content,1);
 					}
 				}
@@ -289,6 +297,9 @@ class PriceSheetAction extends CommonAction {
 			$list['isflow'] = $flag;
 		}
 		$this-> vo = $list;
+		//审批流程日志
+		$flowLog = M("PriceSheetFlowLog") -> where(array('price_flow_id'=>$id,'result'=>array('neq','-1'))) -> order("step DESC") -> select();
+		$this -> flowlog = $flowLog;
 		$this -> display();
 	}
 	/**
@@ -296,7 +307,7 @@ class PriceSheetAction extends CommonAction {
 	 */
 	public function del(){
 		$id = $_GET['id'];
-		$flag = M('PriceSheet')->save(array('id'=>$id,'is_del'=>1));
+		$flag = M('PriceSheet')->save(array('id'=>$id,'is_del'=>1,'update_time'=>time()));
 		alert('success', '作废成功!', U('priceSheet/index'));
 	}
 	/**
@@ -330,6 +341,9 @@ class PriceSheetAction extends CommonAction {
 						$next_data['user_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('user_id');
 						$next_data['role_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('role_id');
 						$next_data['user_name'] = M('User')->where(array('name'=>$next_emp_no))->getField('true_name');
+						//发站内信，通过审核
+						$content = '<a href="'.U('priceSheet/view','id='.$confirm['id']).'">有一个报价单需要您审批，点击查看</a>';
+						sendMessage($next_data['role_id'],$content,1);
 					}else{//多人审批
 						//当轮到多人审批的时候去除掉重复审批人
 						$k = array_search($flow_log,$confirm_array);
@@ -343,6 +357,9 @@ class PriceSheetAction extends CommonAction {
 							$next_data['user_id'] .= $user['user_id'].',';
 							$next_data['role_id'] .= $user['role_id'].',';
 							$next_data['user_name'] .= $user['true_name'].',';
+							//发站内信，通过审核
+							$content = '<a href="'.U('priceSheet/view','id='.$confirm['id']).'">有一个报价单需要您审批，点击查看</a>';
+							sendMessage($next_data['role_id'],$content,1);
 						}
 					}
 					$flag =$log -> add($next_data);

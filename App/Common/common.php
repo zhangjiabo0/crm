@@ -2363,15 +2363,15 @@ function getPriceSheetFlow($role_id,$flag,$also=true){
 				$marketBoss = getRoleIdByDeptPosition('市场部','市场部老大');
 				$role_id = M('Role')->where(array('position_id'=>$parents[0]))->getField('role_id');
 				if($flag){//折扣大于8折或者利润大于20%
-					return getConfirmText($role_id);
+					if($role_id){return getConfirmText($role_id);}
 				}else{
 					if($also){//折扣小于等于8折并且利润小于等于20%
-						return getConfirmText(array($role_id,$hjx[0],$marketBoss[0]));
+						if($role_id){return getConfirmText(array($role_id,$hjx[0],$marketBoss[0]));}else {return getConfirmText(array($hjx[0],$marketBoss[0]));}
 					}else{
-						return getConfirmText(array($role_id,$hjx[0],'more',$hjx[0],$marketBoss[0]));
+						if($role_id){return getConfirmText(array($role_id,$hjx[0],'more',$hjx[0],$marketBoss[0]));}else{return getConfirmText(array($hjx[0],'more',$hjx[0],$marketBoss[0]));}
 					}
 				}
-				
+				return array();
 			}else{//各园区老大
 				return array();
 			}

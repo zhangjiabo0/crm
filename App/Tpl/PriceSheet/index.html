@@ -87,10 +87,8 @@
 									<elseif condition="$vo['approve_status'] eq -1" />拒绝
 									<else />通过</if></td>
 								<td>
-									<if condition="$vo['confirm'] eq $Think.session.name">
-										<a href="{:U('priceSheet/view', array('id'=>$vo['id'],'flow'=>'0'))}">{:L('VIEW')}</a>&nbsp;
-									<else/>
-										<a href="{:U('priceSheet/view', array('id'=>$vo['id'],'flow'=>'1'))}">{:L('VIEW')}</a>&nbsp;
+									<if condition="($vo.flow eq $role_id) and ($vo.is_del eq 0)"><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">审批</a>&nbsp;
+									<else /><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">{:L('VIEW')}</a>&nbsp;
 									</if>
 								<if condition="$vo.is_del eq 0">
 									<a onclick="javascript:return confirm('您确定要作废吗？')"  href="{:U('priceSheet/del', 'id='.$vo['id'])}">{:L('RECALL')}</a>

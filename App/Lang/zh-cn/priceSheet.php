@@ -101,4 +101,9 @@
 	'T_SERVER'=>'转服务',
 	'T_EPIBOLY' => '转外包',
 	'APPROVE_NAME' => '审批',
+	'TITLE' => '标题',
+	'RESULT' => '操作',
+	'CONFIRM_NAME' => '操作人',
+	'CONFIRM_TIME'=>'操作时间',
+			
 	);

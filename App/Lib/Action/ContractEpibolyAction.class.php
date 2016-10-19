@@ -53,6 +53,10 @@ class ContractEpibolyAction extends CommonAction {
 					$flow_data['create_time'] = time();
 					$flow_data['is_read'] = 0;
 					M('ContractEpibolyFlowLog')->add($flow_data);
+					
+					//发站内信，提示去审核
+					$content = '<a href="'.U('contractEpiboly/edit?id='.$contractId.'&type=confirm').'">有一个服务外包合同需要您审批，点击查看</a>';
+					sendMessage($flow_data['role_id'],$content,1);
 				}
 // 				M('RBusinessContract')->add(array('contract_id'=>$contractId,'business_id'=>$data['business_id']));
 				actionLog($contractId);
@@ -206,10 +210,14 @@ class ContractEpibolyAction extends CommonAction {
 					$next_data['step'] = $last_step?$last_step+1:21;
 					$next_data['create_time'] = time();
 					M('ContractEpibolyFlowLog')->add($next_data);
+					
+					//发站内信，提示去审核
+					$content = '<a href="'.U('contractEpiboly/edit?id='.$contract_id.'&type=confirm').'">有一个服务外包合同需要您审批，点击查看</a>';
+					sendMessage($next_data['role_id'],$content,1);
 				}else{
 					//发站内信，通过审核
 					$owner_role_id = M('ContractEpiboly')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
-					$content = '<a href="'.U('contractEpiboly/index').'">您的服务外包合同已通过审核，点击查看</a>';
+					$content = '<a href="'.U('contractEpiboly/view?id='.$contract_id).'">您的服务外包合同已通过审核，点击查看</a>';
 					sendMessage($owner_role_id,$content,1);
 				}
 			}else{
@@ -223,7 +231,7 @@ class ContractEpibolyAction extends CommonAction {
 			}else{
 				//发站内信，否决审核
 				$owner_role_id = M('ContractEpiboly')->where(array('contract_id'=>$contract_id))->getField('owner_role_id');
-				$content = '<a href="'.U('contractEpiboly/index').'">您的服务外包合同已被否决，点击查看</a>';
+				$content = '<a href="'.U('contractEpiboly/view?id='.$contract_id).'">您的服务外包合同已被否决，点击查看</a>';
 				sendMessage($owner_role_id,$content,1);
 			}
 		}
@@ -277,9 +285,16 @@ class ContractEpibolyAction extends CommonAction {
 		
 		//已走流程
 		$flow_log_already = M('ContractEpibolyFlowLog')->where(array('contract_flow_id'=>$contract_id,'_string'=>'result is not null'))->order('step desc')->select();
+		foreach ($flow_log_already as $k=>$v){
+			$position_name = D('UserView')->where(array('user_id'=>$v['user_id']))->getField('role_name');
+			if($k==0 && $v['result'] == '1' && $ContractEpibolyFlowLogLast['id'] == $v['id']){
+				$flow_log_already[$k]['title'] = $position_name.'归档';
+			}else{
+				$flow_log_already[$k]['title'] = $position_name.'审批';
+			}
+		}
 		$this->assign('flow_log_already',$flow_log_already);
-		// 		dump($flow_log_already);
-		// 		$flow_log = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step asc')->select();
+
 		//已走的最后一步
 		$flow_log_last = M('ContractEpibolyFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step desc')->limit(1)->find();
 		//已走的最后一个拒绝
