@@ -2338,12 +2338,8 @@ function getContractFlow($role_id){
 		}
 	}
 }
-<<<<<<< HEAD
 //获取报价单审批流程
 function getPriceSheetFlow($role_id,$flag,$also=true){
-=======
-function getContractEpibolyFlow($role_id){
->>>>>>> cf656bb768cb4f76012f04bb630c64d24da5d230
 	$user_id = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
 	$d_user = D('RoleView');
 	$user = $d_user->where('user.role_id = %d', $role_id)->find();
@@ -2356,17 +2352,12 @@ function getContractEpibolyFlow($role_id){
 	}else{
 		$parent = $user['parent_id'];
 		while ($parent){
-<<<<<<< HEAD
 			$parents[] = $parent;//获取所有的父级id
-=======
-			$parents[] = $parent;
->>>>>>> cf656bb768cb4f76012f04bb630c64d24da5d230
 			$parent = M('Position')->where(array('position_id'=>$parent))->getField('parent_id');
 		}
 		if(count($parents)>1){
 			$last_2 = $parents[count($parents)-2];
 			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
-<<<<<<< HEAD
 			if(count($parents)>2){
 				$hjx = getRoleIdByDeptPosition('市场部','市场拓展部','parent_id');
 				$marketBoss = getRoleIdByDeptPosition('市场部','市场部老大');
@@ -2387,7 +2378,26 @@ function getContractEpibolyFlow($role_id){
 	
 		}
 	}
-=======
+}
+function getContractEpibolyFlow($role_id){
+	$user_id = M('User')->where(array('role_id'=>$role_id))->getField('user_id');
+	$d_user = D('RoleView');
+	$user = $d_user->where('user.role_id = %d', $role_id)->find();
+	$parents = array();
+	if($user['parent_id'] == '0'){
+		//顶级岗位
+		return array();
+	}else if($user['role_name'] == '园区老大'){
+		return array();
+	}else{
+		$parent = $user['parent_id'];
+		while ($parent){
+			$parents[] = $parent;
+			$parent = M('Position')->where(array('position_id'=>$parent))->getField('parent_id');
+		}
+		if(count($parents)>1){
+			$last_2 = $parents[count($parents)-2];
+			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
 			if($last_2_name == '园区老大'){
 				//园区的
 				if(count($parents)>2){
@@ -2417,5 +2427,4 @@ function show_result($int){
 }
 function get_user_info($field,$role_id){
 	return D('UserView')->where(array('role_id'=>$role_id))->getField($field);
->>>>>>> cf656bb768cb4f76012f04bb630c64d24da5d230
 }

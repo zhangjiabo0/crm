@@ -267,18 +267,23 @@ class PriceSheetAction extends CommonAction {
 			$flow =  M('PriceSheetFlowLog') -> where(array('price_flow_id'=>$list['id'],'result'=>'-1'))->field('id,role_id') -> find();
 			$list['flow'] = $flow;
 			$role_id = session('role_id');
-			$flag = true;
-			if(strpos($flow['role_id'],',')){
-				$emps = array_filter(explode(',',$flow['role_id']));
-				foreach ($emps as $k => $v){
-					if($v == $role_id){
-						$flag = false;break;
+			$flag = false;
+			if(($list['approve_status']== '0') && !empty($flow)){
+				if(strpos($flow['role_id'],',')){//多人审批
+					$emps = array_filter(explode(',',$flow['role_id']));
+					foreach ($emps as $k => $v){
+						if($v == $role_id){
+							$flag = true;break;
+						}
+					}
+				}else{//单人审批
+					if($role_id == $flow['role_id']){
+						$flag = true;
 					}
 				}
+				$list['isflow'] = $flag;
 			}
-			$list['isflow'] = $flag;
 		}
-		dump($list);
 		$this-> vo = $list;
 		$this -> display();
 	}
@@ -302,13 +307,19 @@ class PriceSheetAction extends CommonAction {
 			$log = M('PriceSheetFlowLog');
 			$log->startTrans(); //开启事物
 			$tmp = $log ->save($data);
-			$flag = false;
+			$flag = true;
 			//加上流程日志
 			if($data['result'] == '1'){//同意
-				$confirm = M('PriceSheet') -> find($_REQUEST['id']);
+				$confirm = M('PriceSheet') -> find($data['price_flow_id']);
 				$confirm_array = array_filter(explode('|',$confirm['confirm']));
-				$emp_no = $log -> where('id = '.$data['id'])->getField('emp_no');
-				$i = array_search($emp_no,$confirm_array);
+				$flow_log = $log -> where('id = '.$data['id'])->field('emp_no,is_again')-> find();
+				if($flow_log['is_again'] == '1'){
+					$k = array_search($flow_log['emp_no'],$confirm_array);
+					unset($confirm_array[$k]);
+					$i = array_search($flow_log['emp_no'],array_values($confirm_array));
+				}else{
+					$i = array_search($flow_log['emp_no'],$confirm_array);
+				}
 				if($i < count($confirm_array)-1){
 					$next_emp_no = $confirm_array[$i+1];
 					$next_data['price_flow_id'] = $data['price_flow_id'];
@@ -322,6 +333,7 @@ class PriceSheetAction extends CommonAction {
 						$next_data['role_id'] = M('User')->where(array('name'=>$next_emp_no))->getField('role_id');
 						$next_data['user_name'] = M('User')->where(array('name'=>$next_emp_no))->getField('true_name');
 					}else{//多人审批
+						$log -> save(array('id'=>$_REQUEST['fid'],'is_again'=>1));
 						$emps = array_filter(explode(',',$next_emp_no));
 						foreach ($emps as $k => $v){
 							$user = M('User')->where(array('name'=>$v))->field('user_id,role_id,true_name')->find();
@@ -332,6 +344,8 @@ class PriceSheetAction extends CommonAction {
 					}
 					$flag =$log -> add($next_data);
 				}
+			}else{//拒绝
+				$flag = M('PriceSheet') -> save(array('id'=>$data['price_flow_id'],'approve_status'=>-1));
 			}
 			
 			if($flag && $tmp){

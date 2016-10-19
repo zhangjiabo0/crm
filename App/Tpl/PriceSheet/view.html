@@ -176,7 +176,13 @@ function flowSbu(re){
 	    data: {id:id,fid:fid,re:re,comm:comm} ,
 	    dataType: 'json',
 	    success:  function(data){
-	    	alert(data);
+	    	if(data == '1'){
+	    		alert('修改成功!');
+	    	}else{
+	    		alert('修改失败');
+	    	}
+	    	location.reload();
+	    	return false;
 	    },
 	    error: function(){
 	    	alert('修改失败...');
