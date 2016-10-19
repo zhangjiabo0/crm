@@ -285,9 +285,16 @@ class ContractEpibolyAction extends CommonAction {
 		
 		//已走流程
 		$flow_log_already = M('ContractEpibolyFlowLog')->where(array('contract_flow_id'=>$contract_id,'_string'=>'result is not null'))->order('step desc')->select();
+		foreach ($flow_log_already as $k=>$v){
+			$position_name = D('UserView')->where(array('user_id'=>$v['user_id']))->getField('role_name');
+			if($k==0 && $v['result'] == '1' && $ContractEpibolyFlowLogLast['id'] == $v['id']){
+				$flow_log_already[$k]['title'] = $position_name.'归档';
+			}else{
+				$flow_log_already[$k]['title'] = $position_name.'审批';
+			}
+		}
 		$this->assign('flow_log_already',$flow_log_already);
-		// 		dump($flow_log_already);
-		// 		$flow_log = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step asc')->select();
+
 		//已走的最后一步
 		$flow_log_last = M('ContractEpibolyFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step desc')->limit(1)->find();
 		//已走的最后一个拒绝

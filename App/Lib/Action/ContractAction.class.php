@@ -302,11 +302,23 @@ class ContractAction extends CommonAction {
 		
 		//已走流程
 		$flow_log_already = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id,'_string'=>'result is not null'))->order('step desc')->select();
+		foreach ($flow_log_already as $k=>$v){
+			$position_name = D('UserView')->where(array('user_id'=>$v['user_id']))->getField('role_name');
+			if($k==0 && $v['result'] == '1' && $ContractFlowLogLast['id'] == $v['id']){
+				$flow_log_already[$k]['title'] = $position_name.'归档';
+			}else{
+				$flow_log_already[$k]['title'] = $position_name.'审批';
+			}
+		}
 		$this->assign('flow_log_already',$flow_log_already);
+		
 // 		dump($flow_log_already);
 // 		$flow_log = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step asc')->select();
 		//已走的最后一步
 		$flow_log_last = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id))->order('step desc')->limit(1)->find();
+		//已走的步数，包括未审核的
+		$flow_log_sum = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract_id))->count();
+		$this->assign('flow_log_sum',$flow_log_sum);
 		//全部流程
 		$flow_all = array();
 		$flow_log_should = array_filter(explode('|',$info['confirm']));
