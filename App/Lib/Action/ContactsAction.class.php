@@ -180,10 +180,10 @@ class ContactsAction extends Action {
 			case 'add' : $order = 'create_time desc'; break;
 			case 'update' : $order = 'update_time desc'; break;
 			case 'deleted' : $where['is_deleted'] = 1; break;
-			default : $where['owner_role_id'] = array('in',$all_ids); break;
+			default : $where['creator_role_id'] = array('in',$all_ids); break;
 		}
-		if (!isset($where['owner_role_id'])) {
-			$where['owner_role_id'] = array('in', $all_ids);
+		if (!isset($where['creator_role_id'])) {
+			$where['creator_role_id'] = array('in', $all_ids);
 		}
 		if (!isset($where['is_deleted'])) {
 			$where['is_deleted'] = 0;

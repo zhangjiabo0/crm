@@ -3,7 +3,7 @@ class ContractEpibolyAction extends CommonAction {
 	public function _initialize(){
 		$action = array(
 			'permission'=>array(),
-			'allow'=>array('changecontent','listdialog','getcontractlist','upload','del_file','mark','cancel')
+			'allow'=>array('changecontent','listdialog','getcontractlist','upload','del_file','mark','cancel','down')
 		);
 		B('Authenticate', $action);
 	}
@@ -76,7 +76,6 @@ class ContractEpibolyAction extends CommonAction {
 				
 				$this->assign('price_sheet', $price_sheet);
 				$this->assign('product', $product);
-				
 				$last_number = M('contractEpiboly')->where(array('number'=>array('like',$contract_epiboly_custom.date('Ymd').'%')))->order('number desc')->limit(1)->getField('number');
 				if($last_number){
 					$num = intval(substr($last_number,-4));
@@ -251,6 +250,11 @@ class ContractEpibolyAction extends CommonAction {
 		}
 	}
 	public function view(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
+		
 		$contract_id = intval($_REQUEST['id']);
 // 		if(!check_permission($contract_id, 'contract')) $this->error(L('HAVE NOT PRIVILEGES'));
 		$contract_epiboly = D('ContractEpibolyView');
@@ -364,7 +368,6 @@ class ContractEpibolyAction extends CommonAction {
 			$file_count++;
 		}
 		$info['file_count'] = $file_count;
-		
 		$this->assign('info',$info);
 		$this->alert = parseAlert();
 		$this->display();

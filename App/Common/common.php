@@ -2245,14 +2245,15 @@ function getRoleIdByDeptPosition($dept_name,$position_name,$type='department_id'
 		return  array_values($role_ids);
 	}
 }
-function getMarketOperativeId(){
-	$department_id = M('RoleDepartment')->where(array('name'=>array('like','%市场部%')))->getField('department_id');
-	if($department_id){
-		$position_id = M('Position')->where(array('department_id'=>$department_id,'name'=>array('like',array('%运营专员%'))))->getField('position_id');
-		$role_id = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
-		return $role_id;
-	}
-}
+//可用getRoleIdByDeptPosition()代替
+// function getMarketOperativeId(){
+// 	$department_id = M('RoleDepartment')->where(array('name'=>array('like','%市场部%')))->getField('department_id');
+// 	if($department_id){
+// 		$position_id = M('Position')->where(array('department_id'=>$department_id,'name'=>array('like',array('%运营专员%'))))->getField('position_id');
+// 		$role_id = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
+// 		return $role_id;
+// 	}
+// }
 function getConfirmText($role_id){
 	if(!empty($role_id)){
 		$emp_no = '';
@@ -2320,8 +2321,10 @@ function getContractFlow($role_id){
 					$last_3 = $parents[count($parents)-3];
 					$department_id = M('RoleDepartment')->where(array('parent_id'=>$last_3,'name'=>array('like','%财务部%')))->getField('department_id');
 					$position_id = M('Position')->where(array('department_id'=>$department_id,'name'=>array('like','%出纳%')))->getField('position_id');
-					$role_id = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
-					return getConfirmText(array(getMarketOperativeId(),$role_id));
+					$role_id_tmp = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
+					$role_id = M('User')->where(array('role_id'=>$role_id_tmp,'status'=>'1'))->getField('role_id');
+					$market_operative_ids = getRoleIdByDeptPosition('市场部','运营专员');
+					return getConfirmText(array($market_operative_ids[0],$role_id));
 				}else{//各园区负责人
 					return array();
 				}
@@ -2329,7 +2332,8 @@ function getContractFlow($role_id){
 			}else if($last_2_name == '总部（杭州）负责人'){
 				if(count($parents)>2){
 					//总部负责人下面的
-					return getConfirmText(getMarketOperativeId());
+					$market_operative_ids = getRoleIdByDeptPosition('市场部','运营专员');
+					return getConfirmText($market_operative_ids[0]);
 				}else{
 					//总部部门负责人
 					return array();
@@ -2404,8 +2408,10 @@ function getContractEpibolyFlow($role_id){
 					$last_3 = $parents[count($parents)-3];
 					$department_id = M('RoleDepartment')->where(array('parent_id'=>$last_3,'name'=>array('like','%财务部%')))->getField('department_id');
 					$position_id = M('Position')->where(array('department_id'=>$department_id,'name'=>array('like','%出纳%')))->getField('position_id');
-					$role_id2 = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
-					return getConfirmText(array(getMarketOperativeId(),$role_id,getMarketOperativeId(),$role_id2));
+					$role_id_tmp = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
+					$role_id2 = M('User')->where(array('role_id'=>$role_id_tmp,'status'=>'1'))->getField('role_id');
+					$market_operative_ids = getRoleIdByDeptPosition('市场部','运营专员');
+					return getConfirmText(array($market_operative_ids[0],$role_id,$market_operative_ids[0],$role_id2));
 				}else{//各园区负责人
 					return array();
 				}
@@ -2413,7 +2419,8 @@ function getContractEpibolyFlow($role_id){
 			}else if($last_2_name == '总部（杭州）负责人'){
 				if(count($parents)>2){
 					//总部负责人下面的
-					return getConfirmText(getMarketOperativeId());
+					$market_operative_ids = getRoleIdByDeptPosition('市场部','运营专员');
+					return getConfirmText($market_operative_ids[0]);
 				}else{
 					//总部部门负责人
 					return array();

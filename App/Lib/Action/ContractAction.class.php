@@ -3,7 +3,7 @@ class ContractAction extends CommonAction {
 	public function _initialize(){
 		$action = array(
 			'permission'=>array(),
-			'allow'=>array('changecontent','listdialog','getcontractlist','upload','del_file','mark','cancel')
+			'allow'=>array('changecontent','listdialog','getcontractlist','upload','del_file','mark','cancel','down')
 		);
 		B('Authenticate', $action);
 	}
@@ -268,6 +268,10 @@ class ContractAction extends CommonAction {
 		}
 	}
 	public function view(){
+		$widget['date'] = true;
+		$widget['uploader'] = true;
+		$widget['editor'] = true;
+		$this -> assign("widget", $widget);
 		
 		$contract_id = intval($_REQUEST['id']);
 // 		if(!check_permission($contract_id, 'contract')) $this->error(L('HAVE NOT PRIVILEGES'));

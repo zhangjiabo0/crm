@@ -108,11 +108,11 @@
 									<table class="table table-bordered" id="no-input-border" width="95%" border="0" cellspacing="1" cellpadding="0">
 										<thead>
 											<tr style="background-color:#E0E8FF;text-align:center;">
-												<td class="span2">产品</td>
-												<td>数量</td>
-												<td>单价</td>
-												<td>金额</td>
-												<td class="span2">备注</td>
+												<td class="span2">{:L('PRODUCT_NAME')}</td>
+												<td>{:L('AMOUNT')}</td>
+												<td>{:L('PRICE')}</td>
+												<td>{:L('TOTAL')}</td>
+												<td class="span2">{:L('REMARK')}</td>
 											</tr>
 										</thead>
 										
@@ -128,10 +128,10 @@
 														<input type="text" name="product[{$key+1}][amount]" id="product_amount_{$key+1}" class="amount" value="{$vo.amount}" readonly="readonly"/>
 													</td>
 													<td>
-														<input type="text" name="product[{$key+1}][will_price]" id="product_will_price_{$key+1}" value="{$vo.will_price}" readonly="readonly"/>
+														<input type="text" name="product[{$key+1}][provider_price]" id="product_will_price_{$key+1}" value="{$vo.provider_price}" readonly="readonly"/>
 													</td>
 													<td>
-														<input type="text" name="product[{$key+1}][will_total]" id="product_will_total_{$key+1}" value="{$vo.will_total}" readonly="readonly"/>
+														<input type="text" name="product[{$key+1}][provider_total]" id="product_will_total_{$key+1}" value="{$vo.provider_total}" readonly="readonly"/>
 													</td>
 													<td>
 														<input type="text" name="product[{$key+1}][description]" value="{$vo.description}" readonly="readonly"/>
@@ -146,7 +146,7 @@
 												<td>合计</td>
 												<td style="text-align:center" id="total_amount_val">{$price_sheet.total_amount}</td>
 												<td></td>
-												<td style="text-align:center" id="subtotal_val">{$price_sheet.willtotal_val}</td>
+												<td style="text-align:center" id="subtotal_val">{$price_sheet.service_val}</td>
 												<td></td>
 											</tr>
 										</tbody>

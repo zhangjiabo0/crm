@@ -80,6 +80,11 @@
 								<td class="tdleft" width="15%">{:L('DESCRIBE')}</td>
 								<td style="word-break:break-word;" <if condition="C('ismobile') neq 1">colspan="3"</if>><if condition="$info.description neq null">{$info.description}</if></td>
 							</tr>
+							<tr>
+	                        	<td class="tdleft" width="15%">合同盖章附件:</td>
+	                        	<td width="35%">{:W('File',array('add_file'=>$info['add_file'],'mode'=>'view'))}
+	                        	</td>
+	                        </tr>
 						</tbody>
 					</table>
 					
@@ -101,8 +106,8 @@
 									<!-- <td>&nbsp;</td> -->
 									<td>{:L('PRODUCT_NAME')}</td>
 									<td>{:L('AMOUNT')}</td>
-									<td>{:L('WILL_PRICE')})</td>
-									<td>{:L('WILL_TOTAL')}</td>
+									<td>{:L('PRICE')}</td>
+									<td>{:L('TOTAL')}</td>
 									<td width="30%">{:L('REMARK')}</td>
 								</tr>
 							</thead>
