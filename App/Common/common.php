@@ -2361,7 +2361,8 @@ function getPriceSheetFlow($role_id,$flag,$also=true){
 			if(count($parents)>2){
 				$hjx = getRoleIdByDeptPosition('市场部','市场拓展部','parent_id');
 				$marketBoss = getRoleIdByDeptPosition('市场部','市场部负责人');
-				$role_id = M('Role')->where(array('position_id'=>$parents[0]))->getField('role_id');
+				$role_id_tmp = M('Role')->where(array('position_id'=>$parents[0]))->getField('role_id');
+				$role_id = M('User')->where(array('role_id'=>$role_id_tmp,'status'=>'1'))->getField('role_id');
 				if($flag){//折扣大于8折或者利润大于20%
 					if($role_id){return getConfirmText($role_id);}
 				}else{
