@@ -87,7 +87,7 @@
 									<elseif condition="$vo['approve_status'] eq -1" />拒绝
 									<else />通过</if></td>
 								<td>
-									<if condition="($vo.flow eq $role_id) and ($vo.is_del eq 0)"><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">审批</a>&nbsp;
+									<if condition="$vo.flow and ($vo.is_del eq 0)"><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">审批</a>&nbsp;
 									<else /><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">{:L('VIEW')}</a>&nbsp;
 									</if>
 								<if condition="$vo.is_del eq 0">

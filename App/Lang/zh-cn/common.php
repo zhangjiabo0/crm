@@ -49,7 +49,7 @@
         'ANNOUNCEMENT_MANAGEMENT' =>'公告管理',
         'STATISTICS'=>'统计',
         'AUTHOR'	=>'CRM',
-        'RIGHTS'	=>'CRM &copy; 神洲酷奇科技发展有限公司 2013-2015',
+        'RIGHTS'	=>'CRM &copy; 神洲酷奇科技发展有限公司 2013-2016',
         'LOGIN_TITLE'	=>'员工登录 - Powered By CRM',
         'USING_HELP'=>'使用帮助',
         'TECHNICAL_SUPPORT'=>'技术支持',

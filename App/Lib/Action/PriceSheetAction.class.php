@@ -121,7 +121,19 @@ class PriceSheetAction extends CommonAction {
 		foreach ($list as $k => $v){
 			$where2['price_flow_id'] = $v['id'];
 			$where2['result'] = '-1';
-			$list[$k]['flow'] = $log -> where($where2) -> getField('role_id');
+			$tmp = $log -> where($where2) -> getField('role_id');
+			$sign = false;
+			if(strpos($tmp,',')){
+				$rs = array_filter(explode(',',$tmp));
+				foreach ($rs as $kk => $vv){
+					if($_SESSION['role_id'] == $vv){
+						$sign = true;break;
+					}
+				}
+			}else{
+				if($tmp == $_SESSION['role_id']){$sign = true;}
+			}
+			$list[$k]['flow'] = $sign ;
 		}
 		//判断是否是审批人
 		import("@.ORG.Page");
@@ -298,8 +310,59 @@ class PriceSheetAction extends CommonAction {
 		}
 		$this-> vo = $list;
 		//审批流程日志
-		$flowLog = M("PriceSheetFlowLog") -> where(array('price_flow_id'=>$id,'result'=>array('neq','-1'))) -> order("step DESC") -> select();
+		$log = M("PriceSheetFlowLog");
+		$flowLog = $log -> where(array('price_flow_id'=>$id,'result'=>array('neq','-1'))) -> order("step DESC") -> select();
+		$lastFlowLog = $log -> where(array('price_flow_id'=>$id)) -> order("step DESC") -> find();
+		foreach ($flowLog as $k => $v){
+			$position_name = D('UserView')->where(array('user_id'=>$v['user_id']))->getField('role_name');
+			if($k == 0 && $v['result'] == '1' && $lastFlowLog['id'] == $v['id']){
+				$flowLog[$k]['title'] = $position_name .'归档'; 
+			}else{
+				$flowLog[$k]['title'] = $position_name .'审批';
+			}
+		}
 		$this -> flowlog = $flowLog;
+		//添加流程头部信息
+		$flow_log_should = array_filter(explode('|',$list['is_again']));
+		$flow_log_should_name = array_filter(explode('<>',$list['confirm_name']));
+		$flow_log_last = M('PriceSheetFlowLog')->where(array('price_flow_id'=>$id))->order('step desc')->limit(1)->find();
+		$user_creator = D('UserView') -> where('role_id = '.$list['role_id'])->find();
+		if($flow_log_last['result'] === '1'){//通过
+			$flowinfo[] = array('color'=>'green','class'=>'li1','title'=>'申请人','name'=>$user_creator['true_name'],'role_id'=>$list['role_id'],'department_name'=>$user_creator['department_name'],'position_name'=>$user_creator['role_name']);
+			$flowinfo = $this -> toolFlowLog($list,1);
+		}elseif($flow_log_last['result'] === '0'){//拒绝
+			$flowinfo[] = array('color'=>'orange','class'=>'li2','title'=>'申请人','name'=>$user_creator['true_name'],'role_id'=>$info['creator_role_id'],'department_name'=>$user_creator['department_name'],'position_name'=>$user_creator['role_name']);
+			$flowinfo = $this -> toolFlowLog($list,3);
+		}else{//默认
+			$flowinfo[] = array('color'=>'green','class'=>'li1','title'=>'申请人','name'=>$user_creator['true_name'],'role_id'=>$info['creator_role_id'],'department_name'=>$user_creator['department_name'],'position_name'=>$user_creator['role_name']);
+			foreach ($flow_log_should as $k=>$v){
+				if(strpos($v,',') === false){//单人审批
+					$user = D('UserView')->where(array('name'=>$v))->find();
+					if($v == $flow_log_last['emp_no'] && $k == $flow_log_last['step']-21){
+						$flowinfo[] = array('color'=>'orange','class'=>'li2','name'=>$flow_log_should_name[$k],'emp_no'=>$v,'role_id'=>$user['role_id'],'department_name'=>$user['department_name'],'position_name'=>$user['role_name']);
+					}else{
+						$flowinfo[] = array('color'=>'green','class'=>'li1','name'=>$flow_log_should_name[$k],'emp_no'=>$v,'role_id'=>$user['role_id'],'department_name'=>$user['department_name'],'position_name'=>$user['role_name']);
+					}
+				}else{//多人审批
+					$emc = array_filter(explode(',',$v));
+					$emcnm = array_filter(explode(',',$flow_log_should_name[$k]));
+					foreach ($emc as $kk => $vv){
+						$user = D('UserView')->where(array('name'=>$vv))->find();
+						$role_ids .= $user['role_id'].',';
+						$role_names .= $user['role_name'].',';
+						$department_names .= $user['department_name'].',';
+						$emp_no .= $vv.',';
+						$name .= $emcnm[$kk].',';
+					}
+					if($v == $flow_log_last['emp_no'] && $k == $flow_log_last['step']-21){
+						$flowinfo[] = array('color'=>'orange','class'=>'li2','name'=>rtrim($name,','),'emp_no'=>$emp_no,'role_id'=>$role_ids,'department_name'=>rtrim($department_names,','),'position_name'=>rtrim($role_names,','));
+					}else{
+						$flowinfo[] = array('color'=>'green','class'=>'li1','name'=>rtrim($name,','),'emp_no'=>$emp_no,'role_id'=>$role_ids,'department_name'=>rtrim($department_names,','),'position_name'=>rtrim($role_names,','));
+					}
+					}
+				}
+			}
+		$this -> flow_all = $flowinfo;
 		$this -> display();
 	}
 	/**
@@ -324,8 +387,8 @@ class PriceSheetAction extends CommonAction {
 			$tmp = $log ->save($data);
 			$flag = true;
 			//加上流程日志
+			$confirm = M('PriceSheet') -> find($data['price_flow_id']);
 			if($data['result'] == '1'){//同意
-				$confirm = M('PriceSheet') -> find($data['price_flow_id']);
 				$confirm_array = array_filter(explode('|',$confirm['confirm']));
 				$flow_log = $log -> where('id = '.$data['id'])->getField('emp_no');
 				$i = array_search($flow_log,$confirm_array);
@@ -359,7 +422,7 @@ class PriceSheetAction extends CommonAction {
 							$next_data['user_name'] .= $user['true_name'].',';
 							//发站内信，通过审核
 							$content = '<a href="'.U('priceSheet/view','id='.$confirm['id']).'">有一个报价单需要您审批，点击查看</a>';
-							sendMessage($next_data['role_id'],$content,1);
+							sendMessage($user['role_id'],$content,1);
 						}
 					}
 					$flag =$log -> add($next_data);
@@ -367,11 +430,14 @@ class PriceSheetAction extends CommonAction {
 					$confirm['approve_status'] = 1;
 					$flag = M('PriceSheet') -> save($confirm);
 					//发站内信，通过审核
-					$content = '<a href="'.U('priceSheet/index').'">您的报价单已通过审核，点击查看</a>';
+					$content = '<a href="'.U('priceSheet/index','id='.$confirm['id']).'">您的报价单已通过审核，点击查看</a>';
 					sendMessage($confirm['role_id'],$content,1);
 				}
 			}else{//拒绝
 				$flag = M('PriceSheet') -> save(array('id'=>$data['price_flow_id'],'approve_status'=>-1));
+				//发站内信，通过拒绝
+				$content = '<a href="'.U('priceSheet/index','id='.$confirm['id']).'">您有一个报价单没有通过审核，点击查看</a>';
+				sendMessage($confirm['role_id'],$content,1);
 			}
 			if($flag && $tmp){
 				$log -> commit();
@@ -380,5 +446,33 @@ class PriceSheetAction extends CommonAction {
 				$log -> rollback();
 				$this -> ajaxReturn('0');
 			}
+	}
+	
+	/**
+	 * 组装流程日志信息
+	 */
+	private function toolFlowLog($list,$i){
+		$flow_all = array();
+		$flow_log_should = array_filter(explode('|',$list['is_again']));
+		$flow_log_should_name = array_filter(explode('<>',$list['confirm_name']));
+		foreach ($flow_log_should as $k=>$v){
+			if(strpos($v,',') === false){//单人审批
+				$user = D('UserView')->where(array('name'=>$v))->find();
+				$flow_all[] = array('color'=>'green','class'=>"li$i",'name'=>$flow_log_should_name[$k],'emp_no'=>$v,'role_id'=>$user['role_id'],'department_name'=>$user['department_name'],'position_name'=>$user['role_name']);
+			}else{//多人审批
+				$emc = array_filter(explode(',',$v));
+				$emcnm = array_filter(explode(',',$flow_log_should_name[$k]));
+				foreach ($emc as $kk => $vv){
+					$user = D('UserView')->where(array('name'=>$vv))->find();
+					$role_ids .= $user['role_id'].',';
+					$role_names .= $user['role_name'].',';
+					$department_names .= $user['department_name'].',';
+					$emp_no .= $vv.',';
+					$name .= $emcnm[$kk].',';
+				}
+				$flow_all[] = array('color'=>'green','class'=>"li$i",'name'=>rtrim($name,','),'emp_no'=>rtrim($emp_no,','),'role_id'=>rtrim($role_ids,','),'department_name'=>rtrim($department_names,','),'position_name'=>rtrim($role_names,','));
+			}
+		}
+		return $flow_all;
 	}
 }

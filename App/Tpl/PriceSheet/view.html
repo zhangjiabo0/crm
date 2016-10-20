@@ -154,7 +154,7 @@
 						    	<li class="{$vv.class}"><a title="{$vv.name}">申请人</a></li>
 						    <else/>
 						    	<li>→</li>
-						    	<li class="{$vv.class}"><a title="{$vv.name}">{$vo.position_name}</a></li>
+						    	<li class="{$vv.class}"><a title="{$vv.name}">{$vv.position_name}</a></li>
 							</if>
 					    </volist>
 					    <li>→</li>
@@ -183,7 +183,7 @@
 							</if>
 							<volist name="flowlog" id="v">
 								<tr>
-									<td></td>
+									<td>{$v.title}</td>
 									<td>{$v.result|show_result}</td>
 									<td>{$v.comment}</td>
 									<td>{$v.user_name}</td>
