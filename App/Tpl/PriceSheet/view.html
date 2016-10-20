@@ -1,4 +1,12 @@
 <include file="Public:header" />
+<style>
+/*重置*/
+.flow-schedule,.flow-schedule li{ list-style: none; margin: 0; padding: 0;}
+.flow-schedule li{ float:left; font-size:12px; color:#6c706a; height:24px; line-height:24px; padding:0 10px;}
+.flow-schedule .li1{ background:#cbdd9f;}
+.flow-schedule .li2{ background:#f3bd7c;}
+.flow-schedule .li3{ background:#d8dad8;}
+</style>
 <div class="container">
 		<div class="page-header">
 			<h4>{:L('THE_VIEW_CONTRACT')}</h4>
@@ -128,7 +136,7 @@
 									</if> 
 								</td>
 								<td colspan="2">
-									<input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>&nbsp;&nbsp;
+									<input class="btn btn-primary" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/>&nbsp;&nbsp;
 								</td>
 							</tr>
 						</tfoot>
@@ -136,6 +144,62 @@
 				</form>
 			</div>
 		</div>
+		<div class="back_box" style="margin-top:10px;">
+				<!-- 流程 -->
+					<ul class="flow-schedule" style="margin-bottom: 20px;padding-bottom: 20px;">
+						<li class="li1">开始</li>
+						<volist name="flow_all" id="vv">
+							<if condition="$vv.title eq '申请人'">
+								<li>→</li>
+						    	<li class="{$vv.class}"><a title="{$vv.name}">申请人</a></li>
+						    <else/>
+						    	<li>→</li>
+						    	<li class="{$vv.class}"><a title="{$vv.name}">{$vo.position_name}</a></li>
+							</if>
+					    </volist>
+					    <li>→</li>
+					    <li class="li3">结束</li>
+					</ul>
+				
+					<table class="table back_box">
+						<thead>
+							<tr>
+								<td>{:L('TITLE')}</td>
+								<td>{:L('RESULT')}</td>
+								<td>{:L('COMMENT')}</td>
+								<td>{:L('CONFIRM_NAME')}</td>
+								<td>{:L('CONFIRM_TIME')}</td>
+							</tr>
+						</thead>
+						<tbody>
+							<if condition="$vo.is_del eq '1'">
+								<tr>
+									<td>申请人作废</td>
+									<td>作废</td>
+									<td></td>
+									<td>{$info['role_id']|get_user_info="true_name",###}</td>
+									<td>{$info.update_time|date="Y-m-d H:i:s",###}</td>
+								</tr>
+							</if>
+							<volist name="flowlog" id="v">
+								<tr>
+									<td></td>
+									<td>{$v.result|show_result}</td>
+									<td>{$v.comment}</td>
+									<td>{$v.user_name}</td>
+									<td>{$v.update_time|date="Y-m-d H:i:s",###}</td>
+								</tr>
+							</volist>
+							<tr>
+								<td>申请人创建</td>
+								<td>创建</td>
+								<td></td>
+								<td>{$vo['role_id']|get_user_info="true_name",###}</td>
+								<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 	</div>
 <script type="text/javascript">
 $(window).load(function(){
