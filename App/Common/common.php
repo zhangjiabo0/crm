@@ -354,8 +354,8 @@ function getSubRoleIdByYuan(){
 	$user = $d_user->where('user.role_id = %d', $role_id)->find();
 	$parents = array();
 // 	return $user;
-	if($category_id == '1' || $user['parent_id'] == '0' || $user['role_name'] == '园区老大'){
-		//管理员、顶级岗位、园区总老大
+	if($category_id == '1' || $user['parent_id'] == '0' || $user['role_name'] == '园区负责人'){
+		//管理员、顶级岗位、园区总负责人
 		$below_role = getSubRole(0, $all_role);
 	}else{
 		$parent = $user['parent_id'];
@@ -367,17 +367,17 @@ function getSubRoleIdByYuan(){
 		if(count($parents)>1){
 			$last_2 = $parents[count($parents)-2];
 			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
-			if($last_2_name == '园区老大'){
+			if($last_2_name == '园区负责人'){
 				//园区的
 				if(count($parents)>2){
 					$last_3 = $parents[count($parents)-3];
 					$target_role_id = M('Role')->where(array('position_id'=>$last_3))->getField('role_id');
 					$below_role = getSubRole($target_role_id, $all_role);
-				}else{//各园区老大
+				}else{//各园区负责人
 					$below_role = getSubRole($role_id, $all_role);
 				}
 				
-			}else if($last_2_name == '总部（杭州）老大'){
+			}else if($last_2_name == '总部（杭州）负责人'){
 				//总部的
 				$below_role = getSubRole(0, $all_role);
 			}
@@ -405,9 +405,9 @@ function getDept_3_Name($role_id){
 	if($user['parent_id'] == '0'){
 		//顶级岗位
 		return $user['department_name'];
-	}else if($user['role_name'] == '园区老大'){
+	}else if($user['role_name'] == '园区负责人'){
 		return $user['department_name'];
-		//园区总老大
+		//园区总负责人
 	}else{
 		$parent = $user['parent_id'];
 		while ($parent){
@@ -417,26 +417,26 @@ function getDept_3_Name($role_id){
 		if(count($parents)>1){
 			$last_2 = $parents[count($parents)-2];
 			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
-			if($last_2_name == '园区老大'){
+			if($last_2_name == '园区负责人'){
 				//园区的
 				if(count($parents)>2){
 					$last_3 = $parents[count($parents)-3];
 					$department_id = M('Position')->where(array('position_id'=>$last_3))->getField('department_id');
 					$department_name = M('RoleDepartment')->where(array('department_id'=>$department_id))->getField('name');
 					return $department_name;
-				}else{//各园区老大
+				}else{//各园区负责人
 					return $user['department_name'];
 				}
 
-			}else if($last_2_name == '总部（杭州）老大'){
+			}else if($last_2_name == '总部（杭州）负责人'){
 				if(count($parents)>2){
-					//总部老大下面的
+					//总部负责人下面的
 					$last_3 = $parents[count($parents)-3];
 					$department_id = M('Position')->where(array('position_id'=>$last_3))->getField('department_id');
 					$department_name = M('RoleDepartment')->where(array('department_id'=>$department_id))->getField('name');
 					return $department_name;
 				}else{
-					//总部部门老大
+					//总部部门负责人
 					return $user['department_name'];
 				}
 			}
@@ -2303,7 +2303,7 @@ function getContractFlow($role_id){
 	if($user['parent_id'] == '0'){
 		//顶级岗位
 		return array();
-	}else if($user['role_name'] == '园区老大'){
+	}else if($user['role_name'] == '园区负责人'){
 		return array();
 	}else{
 		$parent = $user['parent_id'];
@@ -2314,7 +2314,7 @@ function getContractFlow($role_id){
 		if(count($parents)>1){
 			$last_2 = $parents[count($parents)-2];
 			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
-			if($last_2_name == '园区老大'){
+			if($last_2_name == '园区负责人'){
 				//园区的
 				if(count($parents)>2){
 					$last_3 = $parents[count($parents)-3];
@@ -2322,16 +2322,16 @@ function getContractFlow($role_id){
 					$position_id = M('Position')->where(array('department_id'=>$department_id,'name'=>array('like','%出纳%')))->getField('position_id');
 					$role_id = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
 					return getConfirmText(array(getMarketOperativeId(),$role_id));
-				}else{//各园区老大
+				}else{//各园区负责人
 					return array();
 				}
 
-			}else if($last_2_name == '总部（杭州）老大'){
+			}else if($last_2_name == '总部（杭州）负责人'){
 				if(count($parents)>2){
-					//总部老大下面的
+					//总部负责人下面的
 					return getConfirmText(getMarketOperativeId());
 				}else{
-					//总部部门老大
+					//总部部门负责人
 					return array();
 				}
 			}
@@ -2347,7 +2347,7 @@ function getPriceSheetFlow($role_id,$flag,$also=true){
 	if($user['parent_id'] == '0'){
 		//顶级岗位
 		return array();
-	}else if($user['role_name'] == '园区老大'){
+	}else if($user['role_name'] == '园区负责人'){
 		return array();
 	}else{
 		$parent = $user['parent_id'];
@@ -2360,7 +2360,7 @@ function getPriceSheetFlow($role_id,$flag,$also=true){
 			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
 			if(count($parents)>2){
 				$hjx = getRoleIdByDeptPosition('市场部','市场拓展部','parent_id');
-				$marketBoss = getRoleIdByDeptPosition('市场部','市场部老大');
+				$marketBoss = getRoleIdByDeptPosition('市场部','市场部负责人');
 				$role_id = M('Role')->where(array('position_id'=>$parents[0]))->getField('role_id');
 				if($flag){//折扣大于8折或者利润大于20%
 					return getConfirmText($role_id);
@@ -2372,7 +2372,7 @@ function getPriceSheetFlow($role_id,$flag,$also=true){
 					}
 				}
 				
-			}else{//各园区老大
+			}else{//各园区负责人
 				return array();
 			}
 	
@@ -2387,7 +2387,7 @@ function getContractEpibolyFlow($role_id){
 	if($user['parent_id'] == '0'){
 		//顶级岗位
 		return array();
-	}else if($user['role_name'] == '园区老大'){
+	}else if($user['role_name'] == '园区负责人'){
 		return array();
 	}else{
 		$parent = $user['parent_id'];
@@ -2398,7 +2398,7 @@ function getContractEpibolyFlow($role_id){
 		if(count($parents)>1){
 			$last_2 = $parents[count($parents)-2];
 			$last_2_name = M('Position')->where(array('position_id'=>$last_2))->getField('name');
-			if($last_2_name == '园区老大'){
+			if($last_2_name == '园区负责人'){
 				//园区的
 				if(count($parents)>2){
 					$last_3 = $parents[count($parents)-3];
@@ -2406,16 +2406,16 @@ function getContractEpibolyFlow($role_id){
 					$position_id = M('Position')->where(array('department_id'=>$department_id,'name'=>array('like','%出纳%')))->getField('position_id');
 					$role_id2 = M('Role')->where(array('position_id'=>$position_id))->getField('role_id');
 					return getConfirmText(array(getMarketOperativeId(),$role_id,getMarketOperativeId(),$role_id2));
-				}else{//各园区老大
+				}else{//各园区负责人
 					return array();
 				}
 
-			}else if($last_2_name == '总部（杭州）老大'){
+			}else if($last_2_name == '总部（杭州）负责人'){
 				if(count($parents)>2){
-					//总部老大下面的
+					//总部负责人下面的
 					return getConfirmText(getMarketOperativeId());
 				}else{
-					//总部部门老大
+					//总部部门负责人
 					return array();
 				}
 			}

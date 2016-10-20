@@ -9,12 +9,6 @@
 			<form action="{:U('customer/caresadd')}" method="post">
 			    <input type="hidden" name="refer_url" value="{$refer_url}">
 				<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
-					<thead>
-						<tr>
-							<td>&nbsp;</td>
-							<td <if condition="C('ismobile') neq 1">colspan="3"</if>><input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE')}"/>&nbsp; <input name="submit" class="btn btn-primary" type="submit" value="{:L('SAVE_AND_NEW')}"/> &nbsp;<input class="btn" type="button" onclick="javascript:history.go(-1)" value="{:L('RETURN')}"/></td>
-						</tr>
-					</thead>
 					<tfoot>
 						<tr> 
 							<td>&nbsp;</td>

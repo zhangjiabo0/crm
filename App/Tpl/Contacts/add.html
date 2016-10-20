@@ -50,7 +50,7 @@
 						</tr>
 						<tr>
 							<td class="tdleft" >{:L('PHONE')}</td>
-							<td><input class="text-input large-input" id="tel" name="telephone" type="text" /><span id="telTip" style="color:red;"></span></td>
+							<td><input class="text-input large-input" id="mobile" name="telephone" type="text" /><span id="mobileTip" style="color:red;"></span></td>
 							<if condition="C('ismobile') eq 1"></tr><tr></if>
 							<td class="tdleft" >{:L('EMAIL')}</td>
 							<td><input class="text-input large-input" id="email" name="email" type="text" /><span id="emailTip" style="color:red;"></span></td>
@@ -156,8 +156,8 @@ $(function(){
         onError:"手机{:L('INCORRECT_FORMAT')}"
     });
     
-    $("#tel").formValidator({
-        tipID:"telTip",
+    $("#mobile").formValidator({
+        tipID:"mobileTip",
         empty:true,
         onShow:" ",
         onFocus:" ",
@@ -167,10 +167,10 @@ $(function(){
         onErrorMin:"电话{:L('CAN_NOT_EMPTY')}",
         onErrorMax:"电话{:L('EXCEEDS_THE_MAXIMUM_LENGTH')}255"
     });
-    $("#tel").regexValidator({
-        regExp:"tel",
+    $("#mobile").regexValidator({
+        regExp:"mobile",
         dataType:"enum",
-        onError:"电话{:L('INCORRECT_FORMAT')}"
+        onError:"手机号码{:L('INCORRECT_FORMAT')}"
     });
     
     $("#zip_code").formValidator({

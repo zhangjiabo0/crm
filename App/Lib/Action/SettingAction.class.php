@@ -59,7 +59,7 @@ class SettingAction extends Action{
 			$dept = D('OADept')->where(array('is_del'=>0,'is_real_dept'=>1))->select();
 			foreach ($dept as $v){
 				M('RoleDepartment')->add(array('department_id'=>$v['id'],'parent_id'=>$v['pid'],'name'=>$v['name'],'description'=>$v['short']));
-				M('Position')->add(array('position_id'=>$v['id'],'parent_id'=>$v['pid'],'name'=>$v['name'].'老大','department_id'=>$v['id'],'description'=>$v['short']));
+				M('Position')->add(array('position_id'=>$v['id'],'parent_id'=>$v['pid'],'name'=>$v['name'].'负责人','department_id'=>$v['id'],'description'=>$v['short']));
 			}
 			$pos = D('OADept')->where(array('is_del'=>0,'is_real_dept'=>0))->select();
 			foreach ($pos as $v){

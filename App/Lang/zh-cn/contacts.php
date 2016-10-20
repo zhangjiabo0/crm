@@ -20,7 +20,7 @@
 	'RESPECTFULLY'=>'尊称',
 	'DEPARTMENT '=>'部门',
 	'POSITION'=>'职位',
-	'PHONE'=>'电话',
+	'PHONE'=>'手机号码',
 	'ADDRESS'=>'地址',
 	'REMARK'=>'备注',
 	'BELONGS TO THE CUSTOMER'=>'所属客户',
