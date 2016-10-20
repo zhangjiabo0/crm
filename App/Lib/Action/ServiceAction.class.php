@@ -162,7 +162,7 @@ class ServiceAction extends Action {
 		$p = isset($_GET['p']) ? intval($_GET['p']) : 1 ;
 		$by = isset($_GET['by']) ? trim($_GET['by']) : '';
 		$below_ids = getSubRoleId(false);
-		$all_ids = getSubRoleId();
+		$all_ids = getSubRoleIdByYuan(true);
 		$where = array();
 		$params = array();
 		$order = "create_time desc";
@@ -180,10 +180,10 @@ class ServiceAction extends Action {
 			case 'add' : $order = 'create_time desc'; break;
 			case 'update' : $order = 'update_time desc'; break;
 			case 'deleted' : $where['is_deleted'] = 1; break;
-			default : $where['owner_role_id'] = array('in',$all_ids); break;
+			default : $where['creator_role_id'] = array('in',$all_ids); break;
 		}
-		if (!isset($where['owner_role_id'])) {
-			$where['owner_role_id'] = array('in', $all_ids);
+		if (!isset($where['creator_role_id'])) {
+			$where['creator_role_id'] = array('in', $all_ids);
 		}
 		if (!isset($where['is_deleted'])) {
 			$where['is_deleted'] = 0;

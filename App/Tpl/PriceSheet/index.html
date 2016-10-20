@@ -100,7 +100,7 @@
 										</if>
 										
 										<if condition="($vo['t_epiboly'] eq 0) and ($vo['role_id'] eq $role_id)">
-											<a href="{:U('priceSheet', 'id='.$vo['id'])}">{:L('T_EPIBOLY')}</a>
+											<a href="{:U('contractEpiboly/add', 'price_sheet_id='.$vo['id'])}">{:L('T_EPIBOLY')}</a>
 										<else />
 											<span style="color:#ccc;">{:L('T_EPIBOLY')}</span>
 										</if>
