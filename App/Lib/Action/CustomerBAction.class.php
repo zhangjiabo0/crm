@@ -510,7 +510,6 @@ class CustomerBAction extends CommonAction {
 					if($_POST['con_name']){
 						$contactsB = array();
 						if($_POST['con_name']) $contactsB['name'] = $_POST['con_name'];
-// 						if($_POST['owner_role_id']) $contactsB['owner_role_id'] = $_POST['owner_role_id'];
 						if($_POST['con_sex']) $contactsB['sex'] = $_POST['con_sex'];
 						if($_POST['con_email']) $contactsB['email'] = $_POST['con_email'];
 						if($_POST['con_post']) $contactsB['post'] = $_POST['con_post'];
@@ -531,7 +530,7 @@ class CustomerBAction extends CommonAction {
 					$m_customerB->update_time = time();
 					if($contactsB_id) $m_customerB->contactsB_id = $contactsB_id;
 					$m_customerB->creator_role_id = session('role_id');
-					
+					$m_customerB->owner_role_id = session('role_id');
 					$service = array_filter($_POST['service']);
 					$m_customerB->service = !empty($service) ? implode(chr(10),$service) : '';
 					
@@ -920,20 +919,20 @@ class CustomerBAction extends CommonAction {
 			case 'month' : $where['create_time'] = array('gt',strtotime(date('Y-m-01', time()))); break;
 			case 'add' : $order = 'create_time desc'; break;
 			case 'update' : $order = 'update_time desc'; break;
-			case 'sub' : $where['creator_role_id'] = array('in',implode(',', $below_ids)); break;
+			case 'sub' : $where['owner_role_id'] = array('in',implode(',', $below_ids)); break;
 			case 'deleted' : $where['is_deleted'] = 1;break;
-			case 'me' : $where['creator_role_id'] = session('role_id'); break;
+			case 'me' : $where['owner_role_id'] = session('role_id'); break;
 			case 'focus' : $where['customerB_id'] = array('in',$focus_id);break;
 			case 'share' : $where['customerB_id'] = array('in',$customerBid);break;
 			case 'myshare' : $where['customerB_id'] = array('in',$share_customerB_ids);break;
 			default :
 				if($this->_get('content') == 'resource'){
-		            $where['_string'] = "customerB.creator_role_id=0 or customerB.update_time < $outdate";
+		            $where['_string'] = "customerB.owner_role_id=0 or customerB.update_time < $outdate";
 		            $all_ids[] = "";
-		            $where['creator_role_id'] = array('in', $all_ids);
+// 		            $where['owner_role_id'] = array('in', $all_ids);
 					$where['is_locked'] = 0;
 		        }else{
-					$where['creator_role_id'] = array('in',implode(',', $all_ids));
+					$where['owner_role_id'] = array('in',implode(',', $all_ids));
 		        }
 			break;
 		}
@@ -941,9 +940,11 @@ class CustomerBAction extends CommonAction {
 			$where['is_deleted'] = array('neq',1);
 		}
 		
-		if (!isset($where['creator_role_id'])&&$by!='share') {
-			if($by != 'deleted'){
-				$where['creator_role_id'] = array('in', $all_ids);
+		if (!isset($where['owner_role_id'])&&$by!='share') {
+			if($by != 'deleted' && !isset($where['_string'])){
+				$where['owner_role_id'] = array('in', $all_ids);
+			}else{
+				$where['owner_role_id'] = array('in', '0,'.implode(',', getSubRoleIdByYuan(true)));
 			}
 		}
 		if($by == 'deleted') unset($where['update_time']);
@@ -1065,12 +1066,12 @@ class CustomerBAction extends CommonAction {
 					$list[$k]["delete_role"] = D('RoleView')->where('role.role_id = %d', $v['delete_role_id'])->find();
 					$list[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
 					$list[$k]["creator"]["Dept_3_Name"] = getDept_3_Name($list[$k]["creator"]["role_id"]);
-// 					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
+					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
 				}
 			} else {
 				foreach ($list as $k => $v) {
 					$days = 0;
-// 					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
+					$list[$k]["owner"] = D('RoleView')->where('role.role_id = %d', $v['owner_role_id'])->find();
 					$list[$k]["creator"] = D('RoleView')->where('role.role_id = %d', $v['creator_role_id'])->find();
 					$list[$k]["creator"]["Dept_3_Name"] = getDept_3_Name($list[$k]["creator"]["role_id"]);
 					$days =  M('CustomerB')->where('customerB_id = %d', $v['customerB_id'])->getField('update_time');
