@@ -35,7 +35,6 @@ class NavigationWidget extends Widget
 		foreach($navigationList AS $value) {
 			$menu[$value['postion']][] = $value;
 		}
-		
 		$menu['simple'] =unserialize(M('User')->where('user_id = %d', session('user_id'))->getField('simple_menu'));
 		return $this->renderFile ("index", $menu);
 	}

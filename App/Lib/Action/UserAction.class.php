@@ -317,17 +317,20 @@ class UserAction extends Action {
 			$all_or_below = $_GET['by'] == 'all' ? 1 : 0;
 		}
 		$d_role_view = D('RoleView');
-		$where = '';
+		$where = array();
 		$all_role = M('role')->where('user_id <> 0')->select();
-		$below_role = getSubRole(session('role_id'), $all_role);
+// 		$below_role = getSubRole(session('role_id'), $all_role);
+		$below_role = getSubRoleIdByYuan();
 		if(!$all_or_below){
-			$below_ids[] = session('role_id');
-			foreach ($below_role as $key=>$value) {
-				$below_ids[] = $value['role_id'];
-			}
-			$where = 'role.role_id in ('.implode(',', $below_ids).')';
+// 			$below_ids[] = session('role_id');
+// 			foreach ($below_role as $key=>$value) {
+// 				$below_ids[] = $value['role_id'];
+// 			}
+			$where['role.role_id'] = array('in',$below_role);
+// 			$where = 'role.role_id in ('.implode(',', $below_ids).')';
 		}
-		$where = 'user.status = 1';
+		$where['user.status'] = 1;
+// 		$where = 'user.status = 1';
 		$role_list  = $d_role_view->where($where)->select();
 		foreach ($role_list as $k => $v){
 			$role_list[$k]['depts'] = getDept_3_Name($v['role_id']);
@@ -543,24 +546,27 @@ class UserAction extends Action {
 			$p = !$_REQUEST['p']||$_REQUEST['p']<=0 ? 1 : intval($_REQUEST['p']);
             $department_id = $this->_get('department');
 			if($_GET['department'] == 'all'){
-				$department_id = session('department_id');
+// 				$department_id = session('department_id');
+				$below_role = getSubRoleIdByYuan();
+				$where['role_id'] = array('in', $below_role);
 			}else{
 				$department_id = $this->_get('department');
-			}
-			$departRoleArr = getRoleByDepartmentId($department_id);
-			$departRoleIdArr = array();
-			foreach($departRoleArr as $k=>$v){
-				$departRoleIdArr[] = $v['role_id'];
+				$departRoleArr = getRoleByDepartmentId($department_id,true);
+				$departRoleIdArr = array();
+				foreach($departRoleArr as $k=>$v){
+					$departRoleIdArr[] = $v['role_id'];
+				}
+				$where['role_id'] = array('in', $departRoleIdArr);
 			}
 			$where['status'] = array('eq', 1);
-			$where['role_id'] = array('in', $departRoleIdArr);
+			
 			if($this->_get('name','trim') == ''){
 				// $where['role_id'] = array('in', $departRoleIdArr);
 				$list = $d_role_view->where($where)->order('role_id')->page($p.',10')->select();
 				$data['list'] = $list;
 				$count = $d_role_view->where($where)->order('role_id')->count();
 			}else{
-				$where['true_name'] = array('like', '%'.trim($_GET['name']).'%');
+				$where['true_name|user.name'] = array('like', '%'.trim($_GET['name']).'%');
 				$list = $d_role_view->where($where)->order('role_id')->page($p.',10')->select();
 				$count = $d_role_view->where($where)->order('role_id')->count();
 				$data['list'] = $list;

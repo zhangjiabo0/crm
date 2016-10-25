@@ -520,7 +520,7 @@ function getRoleByDepartmentId($department_id, $sub=false){
 	foreach($departments AS $value) {
 		if ($department_id == $value['parent_id']) {
 			$id_array[] = $value['department_id'];
-			$role_list = getRoleByDepartmentId($value['department_id']);
+			$role_list = getRoleByDepartmentId($value['department_id'],$sub);
 			if(!empty($role_list)){
 				$roleList = array_merge($roleList, $role_list);
 			}
