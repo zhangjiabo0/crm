@@ -131,6 +131,25 @@ class PriceSheetAction extends CommonAction {
 				if($tmp == $_SESSION['role_id']){$sign = true;}
 			}
 			$list[$k]['flow'] = $sign ;
+			
+			//判断服务是否结束
+			if($v['t_service'] == '0' || $v['t_epiboly'] == '0'){
+				$list[$k]['service_end'] = false ;
+			}else{
+				$contract = M('Contract')->where(array('price_sheet_id'=>$v['id']))->find();
+				$contract_epiboly = M('ContractEpiboly')->where(array('price_sheet_id'=>$v['id']))->find();
+				$ContractFlowLogLast = M('ContractFlowLog')->where(array('contract_flow_id'=>$contract['contract_id']))->order('step desc')->limit(1)->find();
+				$ContractEpibolyFlowLogLast = M('ContractEpibolyFlowLog')->where(array('contract_flow_id'=>$contract_epiboly['contract_id']))->order('step desc')->limit(1)->find();
+				if($contract['is_cancel'] == '1' || $contract_epiboly['is_cancel'] == '1'){
+					$list[$k]['service_end'] = false;
+				}else{
+					if($ContractFlowLogLast['result'] === '1' && $ContractEpibolyFlowLogLast['result'] === '1'){
+						$list[$k]['service_end'] = true;
+					}else{
+						$list[$k]['service_end'] = false;
+					}
+				}
+			}
 		}
 		//判断是否是审批人
 		import("@.ORG.Page");
