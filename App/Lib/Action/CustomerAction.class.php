@@ -2089,10 +2089,10 @@ class CustomerAction extends CommonAction {
 				if(session('?admin')){
 					$roleList = M('role')->where('user_id <> 0')->getField('role_id',true);
 				}else{
-					$roleList = getRoleByDepartmentId($department_id);
+					$roleList = getRoleByDepartmentId($department_id,true);
 				}
 				foreach($roleList as $v){
-					$role_id_array[] = $v;
+					$role_id_array[] = $v['role_id'];
 				}
 			}else{
 				$role_id_array = getSubRoleId();
@@ -2124,13 +2124,15 @@ class CustomerAction extends CommonAction {
 		
 		//来源统计图
 		$source_count_array = array();
-		$setting = M('Fields')->where("model = 'customer' and field = 'origin'")->getField('setting');
-		$setting_str = '$sourceList='.$setting.';';
-		eval($setting_str);
+		$setting = M('Fields')->where("model = 'customer' and field = 'xinxilaiyuan'")->getField('setting');
+		if($setting){
+			$setting_str = '$sourceList='.$setting.';';
+			eval($setting_str);
+		}
 		$source_total_count = 0;
 		foreach($sourceList['data'] as $v){
-			unset($where_source['origin']);
-			$where_source['origin'] = $v;
+			unset($where_source['xinxilaiyuan']);
+			$where_source['xinxilaiyuan'] = $v;
 			$target_count = $m_customer ->where($where_source)->count();
 			$source_count_array[] = '['.'"'.$v.'",'.$target_count.']';
 			$source_total_count += $target_count;
@@ -2142,14 +2144,17 @@ class CustomerAction extends CommonAction {
 		
 		//客户行业统计图
 		$industry_count_array = array();
-		$setting = M('Fields')->where("model = 'customer' and field = 'industry'")->getField('setting');
-		$setting_str = '$industryList='.$setting.';';
-		eval($setting_str);
+		$setting = M('Fields')->where("model = 'customer' and field = 'zhuyinghangye'")->getField('setting');
+		if($setting){
+			$setting_str = '$industryList='.$setting.';';
+			eval($setting_str);
+		}
+		
 		$where_industry['is_deleted'] = 0;
 		$industry_total_count = 0;
 		foreach($industryList['data'] as $v){
-			unset($where_employees['industry']);
-			$where_industry['industry'] = $v;
+			unset($where_employees['zhuyinghangye']);
+			$where_industry['zhuyinghangye'] = $v;
 			$target_count = $m_customer ->where($where_industry)->count();
 			$industry_total_count += $target_count;
 			$industry_count_array[] = '["'.$v.'",'.$target_count.']';
@@ -2158,14 +2163,16 @@ class CustomerAction extends CommonAction {
 		$this->industry_count = implode(',', $industry_count_array);
 		//客户员工数统计
 		$employees_count_array = array();
-		$setting = M('Fields')->where("model = 'customer' and field = 'no_of_employees'")->getField('setting');
-		$setting_str = '$no_List='.$setting.';';
-		eval($setting_str);
+		$setting = M('Fields')->where("model = 'customer' and field = 'bangongrenshu'")->getField('setting');
+		if($setting){
+			$setting_str = '$no_List='.$setting.';';
+			eval($setting_str);
+		}
 		$where_employees['is_deleted'] = 0;
 		$no_total_count = 0;
 		foreach($no_List['data'] as $v){
-			unset($where_employees['no_of_employees']);
-			$where_employees['no_of_employees'] = $v;
+			unset($where_employees['bangongrenshu']);
+			$where_employees['bangongrenshu'] = $v;
 			$target_count = $m_customer ->where($where_employees)->count();
 			$no_total_count+=$target_count;
 			$employees_count_array[] = '["'.$v.'",'.$target_count.']';
@@ -2173,21 +2180,24 @@ class CustomerAction extends CommonAction {
 		$employees_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$no_total_count).']';
 		$this->employees_count = implode(',', $employees_count_array);	
 		//客户营业额统计
-		$revenue_count_array = array();
-		$setting = M('Fields')->where("model = 'customer' and field = 'annual_revenue'")->getField('setting');
-		$setting_str = '$revenueList='.$setting.';';
-		eval($setting_str);
-		$where_renenue['is_deleted'] = 0;
-		$revenue_total_count = 0; 
-		foreach($revenueList['data'] as $v){
-			unset($where_renenue['annual_revenue']);
-			$where_renenue['annual_revenue'] = $v;
-			$target_count = $m_customer ->where($where_renenue)->count();
-			$revenue_count_array[] = '['.'"'.$v.'",'.$target_count.']';
-			$revenue_total_count+=$target_count;
-		}
-		$revenue_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$target_count).']';
-		$this->revenue_count = implode(',', $revenue_count_array);
+// 		$revenue_count_array = array();
+// 		$setting = M('Fields')->where("model = 'customer' and field = 'annual_revenue'")->getField('setting');
+// 		if($setting){
+// 			$setting_str = '$revenueList='.$setting.';';
+// 			eval($setting_str);
+// 		}
+		
+// 		$where_renenue['is_deleted'] = 0;
+// 		$revenue_total_count = 0; 
+// 		foreach($revenueList['data'] as $v){
+// 			unset($where_renenue['annual_revenue']);
+// 			$where_renenue['annual_revenue'] = $v;
+// 			$target_count = $m_customer ->where($where_renenue)->count();
+// 			$revenue_count_array[] = '['.'"'.$v.'",'.$target_count.']';
+// 			$revenue_total_count+=$target_count;
+// 		}
+// 		$revenue_count_array[] = '["'.L('OTHER').'",'.($add_count_total-$target_count).']';
+// 		$this->revenue_count = implode(',', $revenue_count_array);
 		
 		
 		
