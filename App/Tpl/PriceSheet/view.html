@@ -14,26 +14,29 @@
         <div class="row">
 			<div class="span12">
 				<include file="Public:alert"/>
-				<form action="{:U('priceSheet/add')}" method="post">
+				<form action="{:U('priceSheet/flowlog')}" method="post">
 				    <input type="hidden" name="refer_url" value="{$refer_url}">
 				    <input type="hidden" id="add_file" name="add_file" value="{$leadsB.add_file}">
 				    <input type="hidden" name="id" id="id" value="{$vo.id}">
 				    <input type="hidden" name="fid" id="fid" value="{$vo['flow']['id']}">
+				    <input type="hidden" name="re" id="rex" value="">
 					<table class="table" width="95%" border="0" cellspacing="1" cellpadding="0">
 						<tbody width="100%">
 							<tr><th <if condition="C('ismobile') eq 1">colspan="2"<else />colspan="4"</if>>{:L('BASIC_INFO')}</th></tr>
 							<tr>
 								<td width="15%" class="tdleft">{:L('CONTRACT_NO')}</td>
-								<td width="35%"><input  type="text" name="number" id="number" value="{$vo.number}"></td>
+								<td width="35%"><input  type="text" name="number" id="number" value="{$vo.number}" readonly="readonly"></td>
 								<td width="15%" class="tdleft">{:L('SOURCE_OF_CUSTOMERS')}</td>
 								<td width="35%" colspan="3">
-									<input type="text" name="customer_id" id="customer_id" value="{$vo.customer_name}"/>
+									<input type="text" name="customer_id" id="customer_id" value="{$vo.customer_name}" readonly="readonly"/>
 								</td>
 							</tr>
 							<tr>
 								<td class="tdleft" >{:L('SERVICE_NAME')}</td>
-								<td><input type="text" name="customerB_id" id="customerB_id" value="{$vo.service_name}" /></td>
-							
+								<td>
+									<input type="hidden" name="customerB_id" id="customerB_id" value="{$vo.customerB_id}"/>
+									<input type="text" name="customerB_name" id="customerB_name" value="{$vo.service_name}"/>
+								</td>
 								<td class="tdleft">{:L('OWNER_ROLE')}</td>
 								<td>
 									<input readonly="readonly" type="text" name="owner_role_name" id="owner_name" value="{$vo.user_name}_{$vo.true_name}"/>
@@ -45,7 +48,7 @@
 							</tr>
 							<tr>
 								<td class="tdleft">{:L('APPLY_REASON')}</td>
-								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="reason" id="reason">{$vo.reason}</textarea></td>
+								<td <if condition="C('ismobile') neq 1">colspan="3"</if>><textarea class="span6" rows="3" name="reason" id="reason" readonly="readonly">{$vo.reason}</textarea></td>
 							</tr>
 							<tr>
 	                        	<td class="tdleft" width="15%">附件:</td>
@@ -61,10 +64,10 @@
 						<tr>
 							<td style="padding:0px;" colspan="4">
 								<!-- 隐藏域 -->
-								<input type="hidden" name="subtotal_val" class="subtotal_val" value=""/>
-								<input type="hidden" name="total_amount" class="total_amount" value=""/>
-								<input type="hidden" name="willtotal_val" class="willtotal_val" value=""/>
-								<input type="hidden" name="service_val" class="service_val" value=""/>
+								<input type="hidden" name="total_amount" class="total_amount" value="{$vo.total_amount}"/>
+								<input type="hidden" name="subtotal_val" class="subtotal_val" value="{$vo.subtotal_val}"/>
+								<input type="hidden" name="willtotal_val" class="willtotal_val" value="{$vo.willtotal_val}"/>
+								<input type="hidden" name="service_val" class="service_val" value="{$vo.service_val}"/>
 								<!-- 隐藏域 END-->
 								<table class="table table-bordered" id="no-input-border" width="95%" border="0" cellspacing="1" cellpadding="0">
 									<thead>
@@ -84,20 +87,46 @@
 										</tr>
 									</thead>
 									<tbody id="add_products">
-										<foreach name="vo.products" item="v">
+										<foreach name="vo.products" item="v" key="k">
 											<tr>
-												<td><input type="text" value="{$v.product_name}" title="{$v.product_name}" readonly="readonly"/></td>
-												<td>{$v.amount}</td>
-												<td class="unit_price">{$v.unit_price}</td>
+												<td><input type="text" value="{$v.product_name}" class="product_input" title="{$v.product_name}" readonly="readonly"/><input type="hidden" name="product[{$k}][product_id]" value="{$v.id}" /></td>
+												<td>
+													<input type="text" name="product[{$k}][amount]" id="product_amount_{$k}" class="amount" onkeyup="calculate({$k})" value="{$v.amount}" readonly="readonly"/>
+												</td>
+												<td class="unit_price">
+													<input type="text" name="product[{$k}][unit_price]" id="product_unit_price_{$k}" value="{$v.unit_price}" readonly="readonly"/>
+												</td>
 												<td>{$v.subtotal}</td>
-												<td class="will_price">{$v.will_price}</td>
-												<td>{$v.will_total}</td>
-												<td>{$v.provider_price}</td>
-												<td>{$v.provider_total}</td>
-												<td class="tax_rate">{$v.tax_rate}</td>
-												<td class="lirun">{$v.lirun}</td>
-												<td><input type="text" value="{$v.discount_rate}" title="{$v.discount_rate}" readonly="readonly"/></td>
-												<td><input type="text" value="{$v.description}" title="{$v.description}" readonly="readonly"/></td>
+												<td class="will_price">
+													<if condition="$vo['ismore']">
+														<input type="text" name="product[{$k}][will_price]" id="client_will_price_{$k}" onkeyup="calculate({$k})" value="{$v.will_price}" style=""/>	
+													<else/>
+														{$v.will_price}
+													</if>
+													
+												</td>
+												<td>
+													<input type="text" name="product[{$k}][will_total]" id="client_will_total_{$k}" class="willtotal"  value="{$v.will_total}" readonly="readonly" style=""/>
+												</td>
+												<td>
+													<if condition="$vo['ismore']">
+														<input type="text" name="product[{$k}][provider_price]" id="provider_price_{$k}" onkeyup="calculate({$k})" value="{$v.provider_price}"/>	
+													<else/>
+														{$v.provider_price}
+													</if>
+													
+												</td>
+												<td>
+													<input type="text" name="product[{$k}][provider_total]" id="provider_total_{$k}" class="servicemer" readonly value="{$v.provider_total}"/>
+												</td>
+												<td class="tax_rate">
+													<input type="text" name="product[{$k}][tax_rate]" id="product_tax_rate_{$k}" readonly="readonly" value="{$v.tax_rate}"/>
+												</td>
+												<td class="lirun">
+													<input type="text" name="product[{$k}][lirun]" id="lirun{$k}" readonly value="{$v.lirun}"/>
+												</td>
+												<td><input type="text" value="{$v.discount_rate}" class="product_input" title="{$v.discount_rate}" readonly="readonly"/></td>
+												<td><input type="text" value="{$v.description}" class="product_input" title="{$v.description}" readonly="readonly"/></td>
 											</tr>
 										</foreach>
 									</tbody>
@@ -131,8 +160,8 @@
 							<tr>
 								<td colspan="2">
 									<if condition="$vo['isflow']">
-										<input name="buttom" class="btn btn-danger pull-right" type="button" value="拒绝" onclick="flowSbu(0)"/>
-										<input name="buttom" class="btn btn-primary pull-right" type="button" value="同意" onclick="flowSbu(1)"/>
+										<input name="buttom" class="btn btn-danger pull-right" type="submit" value="拒绝" onclick="$('#rex').val(0)"/>
+										<input name="buttom" class="btn btn-primary pull-right" type="submit" value="同意" onclick="$('#rex').val(1)"/>
 									</if> 
 								</td>
 								<td colspan="2">
@@ -201,13 +230,147 @@
 						</tbody>
 					</table>
 				</div>
+<div id="dialog-message2" title="{:L('SERVICE_NAME')}">loading...</div>				
 <script type="text/javascript">
 $(window).load(function(){
 	init_style();
 });
+//服务商(合作)
+$("#dialog-message2").dialog({
+	autoOpen: false,
+	modal: true,
+	width: 800,
+	maxHeight: 400,
+	buttons: {
+		"{:L('AFFIRM')}": function () {
+			var item = $('input:radio[name="customerB"]:checked').val();
+			var name = $('input:radio[name="customerB"]:checked').parent().next().next().html();
+			var code = $('input:radio[name="customerB"]:checked').parent().next().html();
+			if(item){
+				$('#customerB_name').val(code+"_"+name);
+				$('#customerB_id').val(item);
+			}
+			$(this).dialog("close");
+		},
+		"{:L('CANCEL')}": function () {
+			$(this).dialog("close");
+		}
+	},
+	position: ["center", 100]
+});
+<if condition="$vo['ismore']">
+//获取服务商列表
+$(function(){
+	$("#customerB_name").click(
+		function(){
+			$('#dialog-message2').dialog('open');
+			$('#dialog-message2').load('{:U("customerB/listDialog")}');
+		}
+	);
+});
+</if>
+//计算
+function calculate(param){
+	if($('#product_id_'+param).val() != '' && $('#product_id_'+param).val() != '0'){
+		//先对当前Row进行计算
+		var amount = $('#product_amount_'+param).val(); //数量
+		var unit_price = $('#product_unit_price_'+param).val(); //单价
+		var subtotal_price = parseFloat(unit_price * amount).toFixed(2);//金额
+		var will_price = $('#client_will_price_'+param).val(); //客户意向单价
+		var will_subtotal = parseFloat(will_price * amount).toFixed(2);//客户意向金额
+		var discount_rate = $('#product_discount_rate_'+param).val(); //折扣率
+		var tax_rate = $('#product_tax_rate_'+param).val(); //税率
+		var discount_val = parseFloat(will_price/unit_price*10).toFixed(2);//折扣值
+		discount_val = (discount_val=='10.00') ? '无折扣' : discount_val ;
+		var service_price = $("#provider_price_"+param).val();//服务商单价
+		var service_total = parseFloat(service_price*amount).toFixed(2);//服务商金额
+		var lirun =  ((will_subtotal-service_total)/service_total*100);//利润率
+		liruns = isFinite(lirun) ? lirun : 0 ;
+		liruns = parseFloat(liruns).toFixed(2);
+		$('#provider_total_'+param).val(service_total);//服务商金额
+		$('#subtotal'+param).val(subtotal_price);						    
+		$('#client_will_total_'+param).val(will_subtotal);	
+		$('#product_tax_rate_'+param).val(discount_val);
+		$('#lirun'+param).val(liruns+'%');
+		
+		var total_amount = 0;
+		$('.amount').each(function(k, v){
+			//合计数量
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				total_amount += new Number($(v).val());
+			}
+		});
+		$('#total_amount_val').html(total_amount);
+		$('.total_amount').val(total_amount);
+		
+		//合计小计--原价
+		var sub_total = 0;
+		$('.subtotal').each(function(k , v){
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				sub_total += new Number($(v).val());
+			}
+		})
+		$('#subtotal_val').html(sub_total);
+		$('.subtotal_val').val(sub_total);
+		//合计小计--折扣价
+		var will_total = 0;
+		$('.willtotal').each(function(k , v){
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				will_total += new Number($(v).val());
+			}
+		})
+		$('#willtotal_val').html(will_total);
+		$('.willtotal_val').val(will_total);
+		//合计小计--服务商金额
+		var serv_total = 0;
+		$('.servicemer').each(function(k , v){
+			if($(v).val() != '' ||  $(v).val() != '0'){
+				serv_total += new Number($(v).val());
+			}
+		})
+		$('#service_val').html(serv_total);
+		$('.service_val').val(serv_total);
+		
+		var total_prime_price = 0.00;
+		total_prime_price = new Number($('#willtotal_val').html());
+		$('#prime_price').val(total_prime_price.toFixed(2));
+		$('#sales_price').val(total_prime_price.toFixed(2));
+		//修改了客户意向价之后添加样式
+		if($('#product_unit_price_'+param).val() != $('#client_will_price_'+param).val()){
+			$('#client_will_price_'+param).attr('style','background-color:red;color:#fff;');
+		}else{
+			$('#client_will_price_'+param).attr('style','');
+		}
+		//折扣添加样式
+		if($('#product_tax_rate_'+param).val() <= 8){
+			$('#product_tax_rate_'+param).attr('style','color:red;');
+		}else{
+			$('#product_tax_rate_'+param).attr('style','');
+		}
+		//添加利润样式
+		var lr = $('#lirun'+param).val().split('%');
+		if(lr[0] <= 20){
+			$('#lirun'+param).attr('style','color:red;');
+		}else{
+			$('#lirun'+param).attr('style','');
+		}
+		cal_discount_price();
+	}else{
+		return false;
+	}
+}
+/**
+ * 最终计算价格(没用到)
+ */
+function cal_discount_price(){
+	var discount_price = $('#discount_price').val();
+	sales_price = new Number($('#subtotal_val').html()) + new Number(discount_price);
+	$('#sales_price').val(sales_price.toFixed(2));
+}
+
 function  init_style(){
 	$("#add_products tr").each(function(){
-		$(this).find("input").attr('style','text-decoration: underline;color:blue;');
+		$(this).find(".product_input").attr('style','text-decoration: underline;color:blue;');
 		var will = $(this).find(".will_price");
 		var unit = $(this).find(".unit_price");
 		if(will.text().trim() != unit.text().trim()){
@@ -230,10 +393,12 @@ function  init_style(){
 		}
 	});
 }
-function flowSbu(re){
+/* function flowSbu(re){
 	var id = $("#id").val().trim();
 	var fid = $("#fid").val().trim();
 	var comm = $("#opinion").val().trim();
+	var vars = $("#form_data").serialize();
+	window.open();
 	$.ajax({
 	     type: 'POST',
 	     url: "{:U('flowlog')}" ,
@@ -254,7 +419,7 @@ function flowSbu(re){
 	    }
 	});
 	
-}
+} */
 	
 	
 </script>
