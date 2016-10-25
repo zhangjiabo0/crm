@@ -216,7 +216,8 @@ class PriceSheetAction extends CommonAction {
 						
 						$lt = is_numeric(substr($val['lirun'],0,-1)) ? floatval(substr($val['lirun'],0,-1)) : 0;
 						$lirun_total = $lirun_total > $lt ? $lirun_total : $lt ;
-						$zt = is_numeric($val['tax_rate']) ? floatval($val['tax_rate']) : 0;
+						$rate = $val['tax_rate'] == '无折扣' ? 10 : $val['tax_rate'] ;
+						$zt = is_numeric($rate) ? floatval($rate) : 0;
 						$zhekou_total = $zhekou_total > $zt ? $zhekou_total : $zt ;
 					}
 				}
@@ -390,8 +391,16 @@ class PriceSheetAction extends CommonAction {
 			$confirm = M('PriceSheet') -> find($data['price_flow_id']);
 			if($data['result'] == '1'){//同意
 				$confirm_array = array_filter(explode('|',$confirm['confirm']));
-				$flow_log = $log -> where('id = '.$data['id'])->getField('emp_no');
-				$i = array_search($flow_log,$confirm_array);
+				$flow_log = $log -> where('id = '.$data['id'])->find();
+				if(strpos($flow_log['emp_no'],',')){
+					$userinfo['emp_no'] = $_SESSION['name'];
+					$userinfo['user_id'] = $_SESSION['user_id'];
+					$userinfo['role_id'] = $_SESSION['role_id'];
+					$userinfo['user_name'] = $_SESSION['true_name'];
+					$userinfo['id'] = $flow_log['id'];
+					$log -> save($userinfo);
+				}
+				$i = array_search($flow_log['emp_no'],$confirm_array);
 				if($i < count($confirm_array)-1){//下一步
 					$next_emp_no = $confirm_array[$i+1];
 					$next_data['price_flow_id'] = $data['price_flow_id'];
@@ -409,7 +418,7 @@ class PriceSheetAction extends CommonAction {
 						sendMessage($next_data['role_id'],$content,1);
 					}else{//多人审批
 						//当轮到多人审批的时候去除掉重复审批人
-						$k = array_search($flow_log,$confirm_array);
+						$k = array_search($flow_log['emp_no'],$confirm_array);
 						unset($confirm_array[$k]);
 						$arr = array_values($confirm_array);
 						$confirm['confirm'] = implode('|',$arr);

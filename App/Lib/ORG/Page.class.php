@@ -31,7 +31,7 @@ class Page {
     // 分页的栏的总页数
     protected $coolPages   ;
     // 分页显示定制	
-	protected $config  =	array('header'=>'条记录','prev'=>'&laquo; 上一页','next'=>'下一页 &raquo;','first'=>'首页','last'=>'末页','theme'=>' <div class="pagination"><div class="span2">共%totalRow% %header% %nowPage%/%totalPage% 页</div><div class="span4"><div><ul><li>%first%</li><li>%upPage%</li><li>%linkPage%</li><li>%downPage%</li><li>%end%</li></ul></div></div><div class="span2">跳转至第%go%页</div></div> ');
+	protected $config  =	array('header'=>'条记录','prev'=>'&laquo; 上一页','next'=>'下一页 &raquo;','first'=>'首页','last'=>'末页','theme'=>' <div class="pagination"><div class="span2">共%totalRow% %header% %nowPage%/%totalPage% 页</div><div class="span5"><div><ul><li>%first%</li><li>%upPage%</li><li>%linkPage%</li><li>%downPage%</li><li>%end%</li></ul></div></div><div class="span2">跳转至第%go%页</div></div> ');
     // 默认分页变量名
     public $varPage;
 
