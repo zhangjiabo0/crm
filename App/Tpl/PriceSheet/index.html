@@ -83,9 +83,11 @@
 								<td>{$vo.department}</td>
 								<td>{$vo.true_name}</td>
 								<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
-								<td><if condition="$vo['approve_status'] eq 0">审批中
-									<elseif condition="$vo['approve_status'] eq -1" />拒绝
-									<else />通过</if></td>
+								<if condition="$vo['approve_status'] eq 0"><td style="color:red;">审批中</td>
+								<elseif condition="$vo['approve_status'] eq -1" /><td>拒绝</td>
+								<else /><td>通过</td>
+								</if>
+								
 								<td>
 									<if condition="$vo.flow and ($vo.is_del eq 0)"><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">审批</a>&nbsp;
 									<else /><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">{:L('VIEW')}</a>&nbsp;
@@ -103,6 +105,10 @@
 											<a href="{:U('contractEpiboly/add', 'price_sheet_id='.$vo['id'])}">{:L('T_EPIBOLY')}</a>
 										<else />
 											<span style="color:#ccc;">{:L('T_EPIBOLY')}</span>
+										</if>
+										
+										<if condition="($vo['service_end'] eq true)">
+											<span style="color:red;">{:L('SERVICE_END')}</span>
 										</if>
 									</if>
 								</if>

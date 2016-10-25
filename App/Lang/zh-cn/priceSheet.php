@@ -105,5 +105,5 @@
 	'RESULT' => '操作',
 	'CONFIRM_NAME' => '操作人',
 	'CONFIRM_TIME'=>'操作时间',
-			
+	'SERVICE_END'=>'服务结束',
 	);
