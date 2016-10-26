@@ -12,7 +12,6 @@
 	<a href="{:U('priceSheet/index','by=create')}" <if condition="$Think.get.by eq 'create'">class="active"</if>>{:L('I_CREATED')}</a> |
 	<a href="{:U('priceSheet/index','by=subcreate')}" <if condition="$Think.get.by eq 'subcreate'">class="active"</if>>{:L('SUBORDINATE_CREATE')}</a> &nbsp; &nbsp; &nbsp; &nbsp;
 	
-	<a href="{:U('priceSheet/index','by=deleted')}" <if condition="$Think.get.by eq 'deleted'">class="active"</if>><img src="__PUBLIC__/img/task_garbage.png"/> {:L('RECYCLE_BIN')}</a> &nbsp; &nbsp;
 	</p>
 	<div class="row">
 		<div class="span12">
@@ -83,11 +82,13 @@
 								<td>{$vo.department}</td>
 								<td>{$vo.true_name}</td>
 								<td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
-								<if condition="$vo['approve_status'] eq 0"><td style="color:red;">审批中</td>
-								<elseif condition="$vo['approve_status'] eq -1" /><td>拒绝</td>
-								<else /><td>通过</td>
+								<if condition="$vo.is_del eq 1"><td>作废</td>
+								<else/>
+									<if condition="$vo['approve_status'] eq 0"><td style="color:red;">审批中</td>
+									<elseif condition="$vo['approve_status'] eq -1" /><td>拒绝</td>
+									<else /><td>通过</td>
+									</if>
 								</if>
-								
 								<td>
 									<if condition="$vo.flow and ($vo.is_del eq 0)"><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">审批</a>&nbsp;
 									<else /><a href="{:U('priceSheet/view', array('id'=>$vo['id']))}">{:L('VIEW')}</a>&nbsp;

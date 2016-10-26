@@ -59,9 +59,6 @@ class PriceSheetAction extends CommonAction {
 				break;
 		}
 		
-		if (!isset($where['PriceSheet.is_del'])) {
-			$where['PriceSheet.is_del'] = 0;
-		}
 		if (!isset($where['PriceSheet.role_id'])) {
 			$where['PriceSheet.role_id'] = array('in',implode(',', $all_ids));
 		}
@@ -283,14 +280,21 @@ class PriceSheetAction extends CommonAction {
 				alert('error', L('FAILED_TO_CREATE_THE_CONTRACT'), U('priceSheet/add'));
 			}
 		}else{
+			$last_number = M('PriceSheet') -> where(array('number'=>array('like','BJ'.date("Ymd").'%'))) -> order('number desc') -> limit(1) -> getField('number');
+			if($last_number){
+				$num = intval(substr($last_number,-4));
+				$now_number = formatto4w($num+1);
+			}else{
+				$now_number = formatto4w(1);
+			}
 			if(intval($_GET['business_id'])){
 				$this->assign('business_id',intval($_GET['business_id']));
-				$this->assign('contract_custom', 'BJ'.date('Ymd').rand(1000,9999));
+				$this->assign('contract_custom', 'BJ'.date('Ymd').$now_number);
 				$this->alert = parseAlert();
 				$this->refer_url = $_SERVER['HTTP_REFERER'];
 				$this->display('adddialog');
 			}else{
-				$this->assign('contract_custom', 'BJ'.date('Ymd').rand(1000,9999));
+				$this->assign('contract_custom', 'BJ'.date('Ymd').$now_number);
 				$this->refer_url=$_SERVER['HTTP_REFERER'];
 				$this->alert = parseAlert();
 				$this->display();
@@ -312,12 +316,13 @@ class PriceSheetAction extends CommonAction {
 			$list['flow'] = $flow;
 			$role_id = session('role_id');
 			$flag = false;
+			$more = false; 
 			if(($list['approve_status']== '0') && !empty($flow)){
 				if(strpos($flow['role_id'],',')){//多人审批
 					$emps = array_filter(explode(',',$flow['role_id']));
 					foreach ($emps as $k => $v){
 						if($v == $role_id){
-							$flag = true;break;
+							$flag = true;$more = true;break;
 						}
 					}
 				}else{//单人审批
@@ -327,6 +332,7 @@ class PriceSheetAction extends CommonAction {
 				}
 			}
 			$list['isflow'] = $flag;
+			$list['ismore'] = $more;
 		}
 		$this-> vo = $list;
 		//审批流程日志
@@ -400,11 +406,29 @@ class PriceSheetAction extends CommonAction {
 			$data['price_flow_id'] = $_REQUEST['id'];
 			$data['id'] = $_REQUEST['fid'];
 			$data['result'] = $_REQUEST['re'];
-			$data['comment'] = $_REQUEST['comm'];
+			$data['comment'] = $_REQUEST['opinion'];
 			$data['update_time'] = time();
 			$log = M('PriceSheetFlowLog');
 			$log->startTrans(); //开启事物
-			$tmp = $log ->save($data);
+			$tmp = $log ->save($data);//修改审批状态
+			$ps['id'] = $data['price_flow_id'];
+			$ps['customerB_id'] = $_REQUEST['customerB_id'];
+			$ps['willtotal_val'] = $_REQUEST['willtotal_val'];
+			$ps['service_val'] = $_REQUEST['service_val'];
+			M('PriceSheet') ->save($ps);//修改服务商名称
+			if(is_array($_POST['product'])){
+				$product = M('RPriceSheetProduct');
+				foreach($_POST['product'] as $val){
+					$info['product_id'] = $val['product_id'];//产品id
+					$info['will_price'] = $val['will_price'];//客户意向单价
+					$info['will_total'] = $val['will_total'];//客户意向金额
+					$info['provider_price'] = $val['provider_price'];//服务商单价
+					$info['provider_total'] = $val['provider_total'];//服务商金额
+					$info['tax_rate'] = $val['tax_rate'];//折扣
+					$info['lirun'] = $val['lirun'];//利润
+					$product -> save($info);//修改关键节点
+				}
+			}
 			$flag = true;
 			//加上流程日志
 			$confirm = M('PriceSheet') -> find($data['price_flow_id']);
@@ -469,10 +493,10 @@ class PriceSheetAction extends CommonAction {
 			}
 			if($flag && $tmp){
 				$log -> commit();
-				$this -> ajaxReturn('1');
+				alert('success', L('MODIFY_THE_SUCCESS'), U('priceSheet/view','id='.$data['price_flow_id']));
 			}else{
 				$log -> rollback();
-				$this -> ajaxReturn('0');
+				alert('error', L('MODIFY_THE_ERROR'), U('priceSheet/view','id='.$data['price_flow_id']));
 			}
 	}
 	

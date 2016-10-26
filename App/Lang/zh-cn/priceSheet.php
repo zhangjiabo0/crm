@@ -6,6 +6,7 @@
 	'FAILED_TO_CREATE_THE_CONTRACT'=>'创建报价单失败',
 	'PARAMETER_ERROR'=>'参数错误!',
 	'MODIFY_THE_SUCCESS'=>'修改成功',
+	'MODIFY_THE_ERROR'=>'修改失败',
 	'THERE_WERE_NO_CHANGES_IN_DATA'=>'数据无变化',
 	'THERE_IS_NO_DATA'=>'数据不存在!',
 	'THE_CONTRACT_DOES_NOT_EXIST_OR_HAS_BEEN_DELETED'=>'报价单不存在或已被删除！',

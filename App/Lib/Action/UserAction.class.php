@@ -10,7 +10,7 @@ class UserAction extends Action {
 	public function _initialize(){
 		$action = array(
 			'permission'=>array('login','client_login','lostpw','resetpw','active','weixinbinding','notice'),
-			'allow'=>array('logout','role_ajax_add','getrolebydepartment','dialoginfo','edit', 'listdialog', 'mutilistdialog', 'getrolelist', 'getpositionlist',  'weixin','changecontent')
+			'allow'=>array('logout','role_ajax_add','getrolebydepartment','dialoginfo','edit', 'listdialog', 'mutilistdialog', 'getrolelist', 'getpositionlist',  'weixin','changecontent','chagnLogin')
 		);
 		B('Authenticate', $action);
 	}
@@ -54,14 +54,15 @@ class UserAction extends Action {
 		$where['status'] = array('eq', 1);
 		$where['isshow'] = array('eq', 1);
 		$this->announcement_list = $m_announcement->where($where)->order('order_id')->select();
-		if (session('?name')){
-			$this->redirect('index/index',array(), 0, '');
-		}elseif($_POST['submit']){
-			if((!isset($_POST['name']) || $_POST['name'] =='')||(!isset($_POST['password']) || $_POST['password'] =='')){
+// 		if (session('?name')){
+// 			$this->redirect('index/index',array(), 0, '');
+// 		}else
+			if($_REQUEST['submit']){
+			if((!isset($_REQUEST['name']) || $_REQUEST['name'] =='')||(!isset($_REQUEST['password']) || $_REQUEST['password'] =='')){
 				alert('error', L('INVALIDATE_USER_NAME_OR_PASSWORD')); 
-			}elseif (isset($_POST['name']) && $_POST['name'] != ''){
+			}elseif (isset($_REQUEST['name']) && $_REQUEST['name'] != ''){
 				$m_user = M('user');
-				$user = $m_user->where(array('name' => trim($_POST['name'])))->find();					
+				$user = $m_user->where(array('name' => trim($_REQUEST['name'])))->find();					
 				
 				$login_where['user_id'] = $user['user_id'];
 				$login_where['login_status'] = 2;
@@ -77,7 +78,7 @@ class UserAction extends Action {
 				$record['login_time'] = time();
 				$record['login_ip'] = get_client_ip();
 
-				if ($user['password'] == md5(md5(trim($_POST['password'])) . $user['salt'])) {				
+				if ($user['password'] == md5(md5(trim($_REQUEST['password'])) . $user['salt'])) {				
 					if (-1 == $user['status']) {
 						alert('error', L('YOU_ACCOUNT_IS_UNAUDITED'));
 					} elseif (0 == $user['status']) {
@@ -87,7 +88,7 @@ class UserAction extends Action {
 					}else {
 						$d_role = D('RoleView');
 						$role = $d_role->where('user.user_id = %d', $user['user_id'])->find();
-						if ($_POST['autologin'] == 'on') {
+						if ($_REQUEST['autologin'] == 'on') {
 							session(array('expire'=>259200));
 							cookie('user_id',$user['user_id'],259200);
 							cookie('name',$user['name'],259200);
@@ -1296,5 +1297,11 @@ class UserAction extends Action {
 		$weixin_config = unserialize($weixin);
 		$this->assign('weixin_config',$weixin_config);
 		$this->display();
+	}
+	
+	//erp自动登陆
+	public function changLogin(){
+		$user_naem = $_REQUEST['name'];
+		$password = $_REQUEST['password'];
 	}
 }
