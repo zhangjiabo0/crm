@@ -336,8 +336,9 @@ class PermissionAction extends Action{
 							$user_list = D('RoleView')->where('position.position_id = %d', $position_id)->select();
 							
 							foreach($user_list as $v){
-								$dashboard = unserialize($v['dashboard'])['dashboard'];
-								$sort = unserialize($v['dashboard'])['sort'];
+								$dashboard = unserialize($v['dashboard']);
+								$sort = $dashboard['sort'];
+								$dashboard = $dashboard['dashboard'];
 								$sort_flip = array_flip($sort);
 								if(!empty($dashboard)){
 									foreach($dashboard as $kk=>$vv){
@@ -405,8 +406,9 @@ class PermissionAction extends Action{
 					//改变首页widget权限
 					$user_list = D('RoleView')->where('position.position_id = %d', $position_id)->select();
 					foreach($user_list as $v){
-						$dashboard = unserialize($v['dashboard'])['dashboard'];
-						$sort = unserialize($v['dashboard'])['sort'];
+						$dashboard = unserialize($v['dashboard']);
+						$sort = $dashboard['sort'];
+						$dashboard = $dashboard['dashboard'];
 						$sort_flip = array_flip($sort);
 						if(!empty($dashboard)){
 							foreach($dashboard as $kk=>$vv){
