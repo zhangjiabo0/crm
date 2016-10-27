@@ -617,13 +617,12 @@ class CustomerBAction extends CommonAction {
             //服务字段预选
             $service_item_data = array();
             $service_item_str = '';
-            $simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->select();
+            $simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->order('data_code asc')->select();
             foreach ($simple_data_mapping as $k=>$v){
             	$class_id = substr($v['data_code'],4,2);
             	$item_id = substr($v['data_code'],-2,2);
             	$class_name = $v['data_type'];
             	$item_name = $v['data_name'];
-            	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
             	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
             }
             foreach ($service_item_data as $k=>$v){
@@ -848,13 +847,12 @@ class CustomerBAction extends CommonAction {
             //服务字段预选
             $service_item_data = array();
             $service_item_str = '';
-            $simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->select();
+            $simple_data_mapping = D('OASimpleDataMapping')->where(array('data_code'=>array('like','crm_%')))->order('data_code asc')->select();
             foreach ($simple_data_mapping as $k=>$v){
             	$class_id = substr($v['data_code'],4,2);
             	$item_id = substr($v['data_code'],-2,2);
             	$class_name = $v['data_type'];
             	$item_name = $v['data_name'];
-            	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
             	$service_item_data[$class_id][$item_id] = $class_name.'_'.$item_name;
             }
             foreach ($service_item_data as $k=>$v){
